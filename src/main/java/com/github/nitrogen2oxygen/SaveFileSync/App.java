@@ -1,6 +1,7 @@
 package com.github.nitrogen2oxygen.SaveFileSync;
 
 import com.github.nitrogen2oxygen.SaveFileSync.data.client.ClientData;
+import com.github.nitrogen2oxygen.SaveFileSync.data.client.DataManager;
 import com.github.nitrogen2oxygen.SaveFileSync.ui.SaveFileSyncUI;
 import com.github.nitrogen2oxygen.SaveFileSync.ui.ShowError;
 
@@ -19,12 +20,12 @@ public class App {
         }
 
         /* Create the data object. This object stores any kind of persistent data on the client */
-        ClientData data = new ClientData(clientDataFolder);
+        ClientData data = DataManager.load(clientDataFolder);
 
 
         /* Finally, creating the actual UI frame. Communication between front and backend is iffy but we make do */
         JFrame frame = new JFrame("Save File Sync");
-        frame.setContentPane(new SaveFileSyncUI().getRootPanel()); // The UI required a ClientData object to update the lists and such
+        frame.setContentPane(new SaveFileSyncUI(data).getRootPanel()); // The UI required a ClientData object to update the lists and such
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 800);
         frame.setLocationRelativeTo(null);
