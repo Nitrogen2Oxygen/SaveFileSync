@@ -29,6 +29,7 @@ public class SaveFileSyncUI {
         // User input to backend
         newSaveFile.addActionListener(e -> {
             Save save = NewSaveFile.main();
+            if (save == null) return;
             try {
                 data.addSave(save);
             } catch (Exception ee) {
