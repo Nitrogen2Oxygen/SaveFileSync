@@ -10,7 +10,7 @@ import java.nio.file.Paths;
 
 public class DataManager {
 
-    /* Saves data to the SaveFileSync/data.ser. This function should be called anytime there's change in data */
+    /* Saves data to the SaveFileSync/data.json. This function should be called anytime there's change in data */
     public static void save(ClientData data, File directory) {
         File file = new File(Paths.get(directory.toString(), "data.json").toString());
         try {
@@ -23,7 +23,7 @@ public class DataManager {
         }
     }
 
-    /* Loads data from the SaveFileSync/data.ser */
+    /* Loads data from the SaveFileSync/data.json */
     public static ClientData load(File directory) {
         File file = new File(Paths.get(directory.toString(), "data.json").toString());
         if (!file.exists()) return new ClientData(directory);

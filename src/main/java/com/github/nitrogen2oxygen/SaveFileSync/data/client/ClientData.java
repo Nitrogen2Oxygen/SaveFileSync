@@ -10,7 +10,7 @@ import java.util.List;
 public class ClientData {
 
     public File directory; // The save directory cuz why not
-    public Server server; // Everything we need server wise is located here
+    public Server server = null; // Everything we need server wise is located here
     public List<Save> saves = new ArrayList<>(); // Saves can either be retrieved from the server OR created locally.
 
     public ClientData(File directory) {

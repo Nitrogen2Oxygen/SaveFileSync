@@ -6,6 +6,8 @@ import com.github.nitrogen2oxygen.SaveFileSync.data.client.Save;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 
 public class SaveFileSyncUI {
@@ -14,6 +16,7 @@ public class SaveFileSyncUI {
     private JButton importButton;
     private JButton exportButton;
     private JTable saveList;
+    private JButton manageServerButton;
 
     private final ClientData data;
     private final String[] header = new String[] {
@@ -40,6 +43,9 @@ public class SaveFileSyncUI {
                         JOptionPane.ERROR_MESSAGE);
             }
             reloadUI();
+        });
+        manageServerButton.addActionListener(e -> {
+            data.server = ServerManagerUI.main(data);
         });
     }
 
