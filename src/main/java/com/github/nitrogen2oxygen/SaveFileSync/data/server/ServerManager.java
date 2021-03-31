@@ -4,9 +4,9 @@ public class ServerManager {
 
     public static Server ServerFactory(String type) {
         switch (type) {
-            case "webdav":
+            case "WebDav":
                 return new WebDavServer();
-            case "google_drive":
+            case "Google Drive":
                 return new GoogleDriveServer();
             default:
                 return null;
