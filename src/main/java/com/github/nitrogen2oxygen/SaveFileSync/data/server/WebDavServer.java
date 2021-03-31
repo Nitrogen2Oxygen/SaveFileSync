@@ -6,12 +6,7 @@ public class WebDavServer extends Server {
     }
 
     @Override
-    public String serverTypeName() {
-        return "webdav";
-    }
-
-    @Override
     public String serverDisplayName() {
-        return "Web Dav";
+        return "WebDav";
     }
 }

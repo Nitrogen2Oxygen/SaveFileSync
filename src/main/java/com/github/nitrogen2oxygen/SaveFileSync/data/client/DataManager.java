@@ -1,7 +1,9 @@
 package com.github.nitrogen2oxygen.SaveFileSync.data.client;
 
+import com.github.nitrogen2oxygen.SaveFileSync.data.server.Server;
 import com.github.nitrogen2oxygen.SaveFileSync.ui.ShowError;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -28,7 +30,9 @@ public class DataManager {
         File file = new File(Paths.get(directory.toString(), "data.json").toString());
         if (!file.exists()) return new ClientData(directory);
         try {
-            Gson gson = new Gson();
+            Gson gson = new GsonBuilder()
+                    .registerTypeAdapter(Server.class, new ServerDeserializer())
+                    .create();
             Reader reader = Files.newBufferedReader(file.toPath());
             return gson.fromJson(reader, ClientData.class);
         } catch (Exception e) {

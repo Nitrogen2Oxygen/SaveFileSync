@@ -2,6 +2,7 @@ package com.github.nitrogen2oxygen.SaveFileSync.data.client;
 
 import com.github.nitrogen2oxygen.SaveFileSync.data.server.Server;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -33,7 +34,9 @@ public class ClientData {
     }
 
     public String toJson() {
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Server.class, new ServerSerializer())
+                .create();
         return gson.toJson(this);
     }
 }

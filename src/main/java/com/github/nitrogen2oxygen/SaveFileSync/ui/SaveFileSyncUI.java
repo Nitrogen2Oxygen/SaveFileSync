@@ -1,6 +1,7 @@
 package com.github.nitrogen2oxygen.SaveFileSync.ui;
 
 import com.github.nitrogen2oxygen.SaveFileSync.data.client.ClientData;
+import com.github.nitrogen2oxygen.SaveFileSync.data.client.DataManager;
 import com.github.nitrogen2oxygen.SaveFileSync.data.client.Save;
 
 import javax.swing.*;
@@ -46,6 +47,8 @@ public class SaveFileSyncUI {
         });
         manageServerButton.addActionListener(e -> {
             data.server = ServerManagerUI.main(data);
+            DataManager.save(data, data.directory);
+            reloadUI();
         });
     }
 
