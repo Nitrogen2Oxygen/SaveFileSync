@@ -11,8 +11,8 @@ import java.util.List;
 public class SaveFileSyncUI {
     private JPanel rootPanel;
     private JButton newSaveFile;
-    private JButton syncButton;
-    private JButton backupButton;
+    private JButton importButton;
+    private JButton exportButton;
     private JTable saveList;
 
     private final ClientData data;
@@ -29,6 +29,7 @@ public class SaveFileSyncUI {
         // User input to backend
         newSaveFile.addActionListener(e -> {
             Save save = NewSaveFile.main();
+            // TODO: Fix messaging when input is empty
             if (save == null) return;
             try {
                 data.addSave(save);
