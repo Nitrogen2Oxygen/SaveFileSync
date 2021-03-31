@@ -4,17 +4,11 @@ import com.github.nitrogen2oxygen.SaveFileSync.data.client.ClientData;
 import com.github.nitrogen2oxygen.SaveFileSync.data.client.Save;
 
 import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.*;
 import java.util.List;
 
 public class SaveFileSyncUI {
-
-
     private JPanel rootPanel;
     private JButton newSaveFile;
     private JButton syncButton;
@@ -22,7 +16,7 @@ public class SaveFileSyncUI {
     private JTable saveList;
 
     private final ClientData data;
-    private final String header[] = new String[] {
+    private final String[] header = new String[] {
             "Name",
             "Location",
             "Status"
@@ -35,7 +29,14 @@ public class SaveFileSyncUI {
         // User input to backend
         newSaveFile.addActionListener(e -> {
             Save save = NewSaveFile.main();
-            data.addSave(save);
+            try {
+                data.addSave(save);
+            } catch (Exception ee) {
+                JOptionPane.showMessageDialog(SwingUtilities.getRoot((Component) e.getSource()),
+                        ee.getMessage(),
+                        "Error Creating New Save File",
+                        JOptionPane.ERROR_MESSAGE);
+            }
             reloadUI();
         });
     }
