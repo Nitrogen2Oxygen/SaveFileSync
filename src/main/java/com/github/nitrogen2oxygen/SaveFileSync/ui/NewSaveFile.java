@@ -17,6 +17,7 @@ public class NewSaveFile extends JDialog {
     private JLabel locationLabel;
 
     private Save save;
+    public Boolean saveChanges = true;
 
     public NewSaveFile() {
         setContentPane(contentPane);
@@ -39,9 +40,6 @@ public class NewSaveFile extends JDialog {
                 onCancel();
             }
         });
-
-        // call onCancel() on ESCAPE
-        contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         browseButton.addActionListener(e -> {
             /* We want to choose a file or folder to use. Multi-select files are not allowed, so either 1 folder or 1 file */
             JFileChooser fileChooser = new JFileChooser();
@@ -54,11 +52,13 @@ public class NewSaveFile extends JDialog {
     }
 
     private void onCancel() {
+        saveChanges = false;
         dispose();
     }
 
     public static Save main() {
         NewSaveFile dialog = new NewSaveFile();
+        if (!dialog.saveChanges) return null;
         dialog.pack();
         dialog.setVisible(true);
         return dialog.save;

@@ -1,4 +1,8 @@
-package com.github.nitrogen2oxygen.SaveFileSync.data.server;
+package com.github.nitrogen2oxygen.SaveFileSync.utils;
+
+import com.github.nitrogen2oxygen.SaveFileSync.data.server.GoogleDriveServer;
+import com.github.nitrogen2oxygen.SaveFileSync.data.server.Server;
+import com.github.nitrogen2oxygen.SaveFileSync.data.server.WebDavServer;
 
 public class ServerManager {
 

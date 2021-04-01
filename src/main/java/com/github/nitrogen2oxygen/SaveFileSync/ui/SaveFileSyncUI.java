@@ -1,14 +1,13 @@
 package com.github.nitrogen2oxygen.SaveFileSync.ui;
 
 import com.github.nitrogen2oxygen.SaveFileSync.data.client.ClientData;
-import com.github.nitrogen2oxygen.SaveFileSync.data.client.DataManager;
+import com.github.nitrogen2oxygen.SaveFileSync.utils.DataManager;
 import com.github.nitrogen2oxygen.SaveFileSync.data.client.Save;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.util.HashMap;
 import java.util.List;
 
 public class SaveFileSyncUI {
@@ -47,7 +46,7 @@ public class SaveFileSyncUI {
         });
         manageServerButton.addActionListener(e -> {
             data.server = ServerManagerUI.main(data);
-            DataManager.save(data, data.directory);
+            DataManager.save(data);
             reloadUI();
         });
     }
@@ -61,10 +60,11 @@ public class SaveFileSyncUI {
         setTable(data.saves);
     }
 
-    private void setTable(List<Save> saves) {
+    private void setTable(HashMap<String, Save> saves) {
         DefaultTableModel dtm = new DefaultTableModel();
         dtm.setColumnIdentifiers(header);
-        for (Save save : saves) {
+        for (String saveName : saves.keySet()) {
+            Save save = saves.get(saveName);
             dtm.addRow(new Object[] {
                     save.name,
                     save.file,

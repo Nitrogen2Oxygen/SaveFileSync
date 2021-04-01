@@ -29,13 +29,11 @@ public class ShowWarning extends JDialog {
     }
 
     private void onOK() {
-        // add your code here
         cont = true;
         dispose();
     }
 
     private void onCancel() {
-        // add your code here if necessary
         cont = false;
         dispose();
     }

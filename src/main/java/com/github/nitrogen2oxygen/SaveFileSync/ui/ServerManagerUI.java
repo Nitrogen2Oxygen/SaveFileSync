@@ -2,11 +2,10 @@ package com.github.nitrogen2oxygen.SaveFileSync.ui;
 
 import com.github.nitrogen2oxygen.SaveFileSync.data.client.ClientData;
 import com.github.nitrogen2oxygen.SaveFileSync.data.server.Server;
-import com.github.nitrogen2oxygen.SaveFileSync.data.server.ServerManager;
+import com.github.nitrogen2oxygen.SaveFileSync.utils.ServerManager;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 
 public class ServerManagerUI extends JDialog {
     private JPanel contentPane;
@@ -22,7 +21,7 @@ public class ServerManagerUI extends JDialog {
 
     private ClientData clientData;
     private Server server;
-    private final Server serverOld;
+    private final Server serverOld; // In case the user cancels, we want to return the exact same server we started with
     public Boolean cancelled = false;
 
     public ServerManagerUI(Server currentServer) {
@@ -30,12 +29,12 @@ public class ServerManagerUI extends JDialog {
         this.serverOld = currentServer;
 
         /* Create logic for the UI */
-        DefaultComboBoxModel<String> dcbm = new DefaultComboBoxModel<>();
-        dcbm.addElement("None");
-        dcbm.addElement("WebDav");
-        dcbm.addElement("Google Drive");
-        dcbm.setSelectedItem(currentServer != null ? currentServer.serverDisplayName() : "None");
-        serverTypeSelector.setModel(dcbm);
+        DefaultComboBoxModel<String> defaultComboBoxModel = new DefaultComboBoxModel<>();
+        defaultComboBoxModel.addElement("None");
+        defaultComboBoxModel.addElement("WebDav");
+        defaultComboBoxModel.addElement("Google Drive");
+        defaultComboBoxModel.setSelectedItem(currentServer != null ? currentServer.serverDisplayName() : "None");
+        serverTypeSelector.setModel(defaultComboBoxModel);
 
         /* Do all the lame UI stuff */
         setContentPane(contentPane);
