@@ -91,10 +91,10 @@ public class ServerManagerUI extends JDialog {
 
     private void reloadUI() {
         CardLayout cl = (CardLayout) optionsPanel.getLayout();
-        HashMap<String, String> serverData = server.getData();
         if (server == null) {
             cl.show(optionsPanel, "0");
         } else {
+            HashMap<String, String> serverData = server.getData();
             switch (server.serverDisplayName()) {
                 case "WebDav":
                     cl.show(optionsPanel, "1");
@@ -125,22 +125,32 @@ public class ServerManagerUI extends JDialog {
         cancelled = false;
 
         /* Take any front end data and send it to the server object before returning */
-        switch (server.serverDisplayName()) {
-            case "WebDav":
-                HashMap<String, String> newData = new HashMap<>();
-                newData.put("uri", webdavUriTextField.getText());
-                if (webdavUseAuthenticationBox.isSelected()) {
-                    if (webdavUsernameTextField.getText().length() > 0 && webdavPasswordField.getPassword().length > 0) {
-                        newData.put("username", webdavUsernameTextField.getText());
-                        newData.put("password", new String(webdavPasswordField.getPassword()));
-                    } else {
-                        ShowWarning.main("A username AND password is required if you're using WebDav authentication!");
-                        return;
-                    }
-                }
-                server.setData(newData);
-            case "Google Drive":
-                break;
+        if (server != null) {
+                switch (server.serverDisplayName()) {
+                    case "WebDav":
+                        HashMap<String, String> newData = new HashMap<>();
+                        newData.put("uri", webdavUriTextField.getText());
+                        if (webdavUseAuthenticationBox.isSelected()) {
+                            if (webdavUsernameTextField.getText().length() > 0 && webdavPasswordField.getPassword().length > 0) {
+                                newData.put("username", webdavUsernameTextField.getText());
+                                newData.put("password", new String(webdavPasswordField.getPassword()));
+                            } else {
+                                ShowWarning.main("A username AND password is required if you're using WebDav authentication!");
+                                return;
+                            }
+                        }
+                        server.setData(newData);
+                    case "Google Drive":
+                        break;
+            }
+            Boolean isValid = server.verifyServer();
+            if (isValid == null || !isValid) {
+                JOptionPane.showMessageDialog(this,
+                        "Something is wrong with your config. Check to make sure that all the credentials are correct.",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
         }
         dispose();
     }

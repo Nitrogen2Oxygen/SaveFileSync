@@ -1,9 +1,16 @@
 package com.github.nitrogen2oxygen.SaveFileSync.data.server;
 
+import com.github.sardine.DavResource;
 import com.github.sardine.Sardine;
 import com.github.sardine.SardineFactory;
+import com.google.gson.Gson;
 
+import java.io.IOException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 
 public class WebDavServer extends Server {
 
@@ -18,6 +25,10 @@ public class WebDavServer extends Server {
     /* Private functions for the class to use */
     private Sardine sardine() {
         return (username != null) ? SardineFactory.begin(username, password) : SardineFactory.begin();
+    }
+
+    private String authToken() {
+        return Base64.getEncoder().encodeToString((username + ":" + password).getBytes(StandardCharsets.UTF_8));
     }
 
     /* Abstract function overrides */
@@ -40,6 +51,34 @@ public class WebDavServer extends Server {
         data.put("username", username);
         data.put("password", password);
         return data;
+    }
+
+    @Override
+    public void initialize() throws Exception {
+        List<DavResource> resources = sardine().list(uri);
+        URL baseURL = new URL(uri);
+        boolean hasDataFile = false;
+        boolean hasSaveFolder = false;
+        for (DavResource res : resources) {
+            if (res.toString().equals(baseURL.getPath() + "/data.json")) {
+                hasDataFile = true;
+            }
+
+            if (res.toString().equals(baseURL.getPath() + "/saves/")) {
+                hasSaveFolder = true;
+            }
+        }
+
+        if (!hasSaveFolder) {
+            String url = new URL(baseURL, baseURL.getPath() + "/saves").toString();
+            sardine().createDirectory(url);
+        }
+
+        if (!hasDataFile) {
+            Gson gson = new Gson();
+            String url = new URL(baseURL, baseURL.getPath() + "/data.json").toString();
+            sardine().put(url, gson.toJson("").getBytes(StandardCharsets.UTF_8));
+        }
     }
 
     @Override
@@ -69,6 +108,12 @@ public class WebDavServer extends Server {
 
     @Override
     public Boolean verifyServer() {
-        return null;
+        Sardine sardine = sardine();
+        try {
+            return sardine.exists(uri);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

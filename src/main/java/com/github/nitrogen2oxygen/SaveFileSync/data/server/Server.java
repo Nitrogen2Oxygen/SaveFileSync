@@ -1,5 +1,7 @@
 package com.github.nitrogen2oxygen.SaveFileSync.data.server;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 
 public abstract class Server {
@@ -13,6 +15,9 @@ public abstract class Server {
 
     /* Gets the data in the same form its able to be set in */
     public abstract HashMap<String, String> getData();
+
+    /* Initialize the server OR if its already initialized, just return */
+    public abstract void initialize() throws Exception;
 
     /* Lists the names of all saves on the server */
     public abstract String[] getSaveNames();

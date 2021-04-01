@@ -23,6 +23,11 @@ public class GoogleDriveServer extends Server {
     }
 
     @Override
+    public void initialize() {
+
+    }
+
+    @Override
     public String[] getSaveNames() {
         return new String[0];
     }

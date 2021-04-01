@@ -10,9 +10,7 @@ public class ClientData {
     public Server server = null; // Everything we need server wise is located here
     public HashMap<String, Save> saves = new HashMap<>(); // Saves can either be retrieved from the server OR created locally.
 
-    public ClientData() {
-        DataManager.save(this);
-    }
+    public ClientData() {}
 
     public void addSave(Save save) throws Exception {
         // Check for duplicates FIRST
