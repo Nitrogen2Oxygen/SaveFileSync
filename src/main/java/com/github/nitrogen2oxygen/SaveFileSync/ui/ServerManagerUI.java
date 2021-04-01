@@ -5,6 +5,7 @@ import com.github.nitrogen2oxygen.SaveFileSync.data.server.Server;
 import com.github.nitrogen2oxygen.SaveFileSync.data.server.ServerManager;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 
 public class ServerManagerUI extends JDialog {
@@ -12,6 +13,12 @@ public class ServerManagerUI extends JDialog {
     private JButton saveButton;
     private JButton buttonCancel;
     private JComboBox<String> serverTypeSelector;
+    private JPanel optionsPanel;
+    private JPanel webdavPanel;
+    private JPanel googleDrivePanel;
+    private JPanel emptyPanel;
+    private JLabel webdavLabel;
+    private JLabel googleDriveLabel;
 
     private ClientData clientData;
     private Server server;
@@ -44,6 +51,7 @@ public class ServerManagerUI extends JDialog {
             } else {
                 server = ServerManager.ServerFactory(option); // Creates a new empty server object when changing the type
             }
+            reloadUI();
         });
 
         // call onCancel() when cross is clicked
@@ -56,6 +64,27 @@ public class ServerManagerUI extends JDialog {
 
         // call onCancel() on ESCAPE
         contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+
+        // Reload the UI before rendering
+        reloadUI();
+    }
+
+    private void reloadUI() {
+        CardLayout cl = (CardLayout) optionsPanel.getLayout();
+        if (server == null) {
+            cl.show(optionsPanel, "0");
+        } else {
+            switch (server.serverDisplayName()) {
+                case "WebDav":
+                    cl.show(optionsPanel, "1");
+                    break;
+                case "Google Drive":
+                    cl.show(optionsPanel, "2");;
+                    break;
+            }
+        }
+
+        pack();
     }
 
     private void onOK() {
