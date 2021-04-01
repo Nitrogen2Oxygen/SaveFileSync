@@ -23,6 +23,5 @@
 hs_err_pid*
 
 # Intellij stuff that for some reason just LOVES pushing itself all the damn time
-.idea/
 target/
 out/
