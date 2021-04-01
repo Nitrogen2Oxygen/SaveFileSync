@@ -9,6 +9,8 @@ import com.intellij.uiDesigner.core.Spacer;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
+import java.util.HashMap;
 
 public class ServerManagerUI extends JDialog {
     private JPanel contentPane;
@@ -21,6 +23,10 @@ public class ServerManagerUI extends JDialog {
     private JPanel emptyPanel;
     private JLabel webdavLabel;
     private JLabel googleDriveLabel;
+    private JTextField webdavUsernameTextField;
+    private JTextField webdavUriTextField;
+    private JCheckBox webdavUseAuthenticationBox;
+    private JPasswordField webdavPasswordField;
 
     private ClientData clientData;
     private Server server;
@@ -69,29 +75,73 @@ public class ServerManagerUI extends JDialog {
 
         // Reload the UI before rendering
         reloadUI();
+        webdavUseAuthenticationBox.addActionListener(e -> {
+            boolean authentication = webdavUseAuthenticationBox.isSelected();
+            if (authentication) {
+                webdavUsernameTextField.setEnabled(true);
+                webdavPasswordField.setEnabled(true);
+            } else {
+                webdavUsernameTextField.setEnabled(false);
+                webdavPasswordField.setEnabled(false);
+                webdavUsernameTextField.setText("");
+                webdavPasswordField.setText("");
+            }
+        });
     }
 
     private void reloadUI() {
         CardLayout cl = (CardLayout) optionsPanel.getLayout();
+        HashMap<String, String> serverData = server.getData();
         if (server == null) {
             cl.show(optionsPanel, "0");
         } else {
             switch (server.serverDisplayName()) {
                 case "WebDav":
                     cl.show(optionsPanel, "1");
+                    webdavUriTextField.setText(serverData.get("uri"));
+                    if (serverData.get("username") != null) {
+                        webdavUsernameTextField.setEnabled(true);
+                        webdavPasswordField.setEnabled(true);
+                        webdavUseAuthenticationBox.setSelected(true);
+                        webdavUsernameTextField.setText(serverData.get("username"));
+                        webdavPasswordField.setText(serverData.get("password"));
+                    } else {
+                        webdavUsernameTextField.setEnabled(false);
+                        webdavPasswordField.setEnabled(false);
+                        webdavUseAuthenticationBox.setSelected(false);
+                    }
                     break;
                 case "Google Drive":
                     cl.show(optionsPanel, "2");
-                    ;
                     break;
             }
         }
+
 
         pack();
     }
 
     private void onOK() {
         cancelled = false;
+
+        /* Take any front end data and send it to the server object before returning */
+        switch (server.serverDisplayName()) {
+            case "WebDav":
+                HashMap<String, String> newData = new HashMap<>();
+                newData.put("uri", webdavUriTextField.getText());
+                if (webdavUseAuthenticationBox.isSelected()) {
+                    if (webdavUsernameTextField.getText().length() > 0 && webdavPasswordField.getPassword().length > 0) {
+                        newData.put("username", webdavUsernameTextField.getText());
+                        newData.put("password", new String(webdavPasswordField.getPassword()));
+                    } else {
+                        ShowWarning.main("A username AND password is required if you're using WebDav authentication!");
+                        return;
+                    }
+                }
+                server.setData(newData);
+            case "Google Drive":
+                break;
+        }
         dispose();
     }
 
@@ -149,21 +199,40 @@ public class ServerManagerUI extends JDialog {
         optionsPanel.setEnabled(true);
         panel3.add(optionsPanel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         webdavPanel = new JPanel();
-        webdavPanel.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
+        webdavPanel.setLayout(new GridLayoutManager(5, 2, new Insets(0, 0, 0, 0), -1, -1));
         optionsPanel.add(webdavPanel, "1");
+        final JLabel label1 = new JLabel();
+        label1.setText("Use Authentication?");
+        webdavPanel.add(label1, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label2 = new JLabel();
+        label2.setText("Username");
+        webdavPanel.add(label2, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label3 = new JLabel();
+        label3.setText("Password");
+        webdavPanel.add(label3, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        webdavUsernameTextField = new JTextField();
+        webdavPanel.add(webdavUsernameTextField, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        final JLabel label4 = new JLabel();
+        label4.setText("URI");
+        webdavPanel.add(label4, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        webdavUriTextField = new JTextField();
+        webdavPanel.add(webdavUriTextField, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         webdavLabel = new JLabel();
         webdavLabel.setText("WebDav Setup");
-        webdavPanel.add(webdavLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final Spacer spacer2 = new Spacer();
-        webdavPanel.add(spacer2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        webdavPanel.add(webdavLabel, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        webdavUseAuthenticationBox = new JCheckBox();
+        webdavUseAuthenticationBox.setText("CheckBox");
+        webdavPanel.add(webdavUseAuthenticationBox, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        webdavPasswordField = new JPasswordField();
+        webdavPanel.add(webdavPasswordField, new GridConstraints(4, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         googleDrivePanel = new JPanel();
         googleDrivePanel.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
         optionsPanel.add(googleDrivePanel, "2");
         googleDriveLabel = new JLabel();
         googleDriveLabel.setText("Google Drive Setup");
         googleDrivePanel.add(googleDriveLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final Spacer spacer3 = new Spacer();
-        googleDrivePanel.add(spacer3, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        final Spacer spacer2 = new Spacer();
+        googleDrivePanel.add(spacer2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         emptyPanel = new JPanel();
         emptyPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         optionsPanel.add(emptyPanel, "0");
@@ -175,4 +244,5 @@ public class ServerManagerUI extends JDialog {
     public JComponent $$$getRootComponent$$$() {
         return contentPane;
     }
+
 }
