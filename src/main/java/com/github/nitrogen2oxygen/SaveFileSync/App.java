@@ -9,7 +9,6 @@ import com.github.nitrogen2oxygen.SaveFileSync.ui.ShowError;
 
 import javax.swing.*;
 import java.io.File;
-import java.nio.file.Paths;
 
 public class App {
 

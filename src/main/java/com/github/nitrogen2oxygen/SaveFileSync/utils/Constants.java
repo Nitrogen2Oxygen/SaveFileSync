@@ -4,6 +4,10 @@ import java.nio.file.Paths;
 
 public class Constants {
     public static String dataDirectory() {
-        return Paths.get(System.getProperty("user.home"), "SaveFileSync").toString();
+        return Paths.get(System.getProperty("user.home"), appName()).toString();
+    }
+
+    public static String appName() {
+        return "SaveFileSync";
     }
 }

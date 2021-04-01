@@ -1,4 +1,4 @@
-package com.github.nitrogen2oxygen.SaveFileSync.data.client;
+package com.github.nitrogen2oxygen.SaveFileSync.data.server;
 
 import com.github.nitrogen2oxygen.SaveFileSync.data.server.Server;
 import com.google.gson.*;

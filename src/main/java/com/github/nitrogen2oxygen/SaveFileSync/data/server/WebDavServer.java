@@ -3,8 +3,6 @@ package com.github.nitrogen2oxygen.SaveFileSync.data.server;
 import com.github.sardine.Sardine;
 import com.github.sardine.SardineFactory;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 
 public class WebDavServer extends Server {

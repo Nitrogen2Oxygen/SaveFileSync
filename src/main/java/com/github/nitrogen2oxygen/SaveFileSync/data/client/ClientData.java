@@ -3,7 +3,6 @@ package com.github.nitrogen2oxygen.SaveFileSync.data.client;
 import com.github.nitrogen2oxygen.SaveFileSync.data.server.Server;
 import com.github.nitrogen2oxygen.SaveFileSync.utils.DataManager;
 
-import java.io.File;
 import java.util.HashMap;
 
 public class ClientData {

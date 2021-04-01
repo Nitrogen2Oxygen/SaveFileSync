@@ -1,8 +1,8 @@
 package com.github.nitrogen2oxygen.SaveFileSync.utils;
 
 import com.github.nitrogen2oxygen.SaveFileSync.data.client.ClientData;
-import com.github.nitrogen2oxygen.SaveFileSync.data.client.ServerDeserializer;
-import com.github.nitrogen2oxygen.SaveFileSync.data.client.ServerSerializer;
+import com.github.nitrogen2oxygen.SaveFileSync.data.server.ServerDeserializer;
+import com.github.nitrogen2oxygen.SaveFileSync.data.server.ServerSerializer;
 import com.github.nitrogen2oxygen.SaveFileSync.data.server.Server;
 import com.github.nitrogen2oxygen.SaveFileSync.ui.ShowError;
 import com.google.gson.Gson;
