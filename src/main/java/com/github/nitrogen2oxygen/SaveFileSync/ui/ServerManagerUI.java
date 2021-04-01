@@ -44,7 +44,13 @@ public class ServerManagerUI extends JDialog {
         saveButton.addActionListener(e -> onOK());
         buttonCancel.addActionListener(e -> onCancel());
         serverTypeSelector.addActionListener(e -> {
-            // TODO: Warn the user before changing this
+            if (server != null) {
+                boolean cont = ShowWarning.main("Changing this option will RESET your server config. Please only do this if you're actually changing data servers!");
+                if (!cont) {
+                    serverTypeSelector.setSelectedItem(server == null ? "None" : server.serverDisplayName());
+                    return;
+                }
+            }
             String option = (String) serverTypeSelector.getSelectedItem();
             if (option == null || option.equals("None")) {
                 server = null; // Removes any kind of server aspect if the server is "none"
