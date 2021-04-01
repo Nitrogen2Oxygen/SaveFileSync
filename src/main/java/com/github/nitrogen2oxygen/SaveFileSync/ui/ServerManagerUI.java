@@ -22,9 +22,12 @@ public class ServerManagerUI extends JDialog {
 
     private ClientData clientData;
     private Server server;
+    private final Server serverOld;
+    public Boolean cancelled = false;
 
     public ServerManagerUI(Server currentServer) {
         this.server = currentServer;
+        this.serverOld = currentServer;
 
         /* Create logic for the UI */
         DefaultComboBoxModel<String> dcbm = new DefaultComboBoxModel<>();
@@ -40,7 +43,9 @@ public class ServerManagerUI extends JDialog {
         setLocationRelativeTo(null);
         setModal(true);
         getRootPane().setDefaultButton(saveButton);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
+        /* Actions ig */
         saveButton.addActionListener(e -> onOK());
         buttonCancel.addActionListener(e -> onCancel());
         serverTypeSelector.addActionListener(e -> {
@@ -59,17 +64,6 @@ public class ServerManagerUI extends JDialog {
             }
             reloadUI();
         });
-
-        // call onCancel() when cross is clicked
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                onCancel();
-            }
-        });
-
-        // call onCancel() on ESCAPE
-        contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
         // Reload the UI before rendering
         reloadUI();
@@ -94,12 +88,12 @@ public class ServerManagerUI extends JDialog {
     }
 
     private void onOK() {
-        // add your code here
+        cancelled = false;
         dispose();
     }
 
     private void onCancel() {
-        // add your code here if necessary
+        cancelled = true;
         dispose();
     }
 
@@ -107,6 +101,7 @@ public class ServerManagerUI extends JDialog {
         ServerManagerUI dialog = new ServerManagerUI(data.server);
         dialog.pack();
         dialog.setVisible(true);
+        if (dialog.cancelled) return dialog.serverOld;
         return dialog.server;
     }
 }
