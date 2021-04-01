@@ -14,7 +14,7 @@ import java.nio.file.Paths;
 public class App {
 
     public static void main(String[] args) {
-        /* Obtain the client data from <USER_HOME>/SaveFileSync */
+       /* Obtain the client data from <USER_HOME>/SaveFileSync */
         File clientDataFolder = new File(Constants.dataDirectory());
         if (!clientDataFolder.isDirectory() || !clientDataFolder.exists()) {
             boolean mkdir = clientDataFolder.mkdir();
