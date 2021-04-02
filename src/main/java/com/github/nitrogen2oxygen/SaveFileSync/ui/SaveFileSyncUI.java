@@ -54,12 +54,6 @@ public class SaveFileSyncUI {
         });
         manageServerButton.addActionListener(e -> {
             data.server = ServerManagerUI.main(data);
-            try {
-                data.server.initialize();
-            } catch (Exception ee) {
-                ee.printStackTrace();
-                // TODO: Error handle failure to initialize
-            }
             DataManager.save(data);
             reloadUI();
         });
