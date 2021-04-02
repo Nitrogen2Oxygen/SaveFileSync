@@ -61,7 +61,7 @@ public class WebDavServer extends Server {
     public byte[] getSaveData(String name) {
         try {
             URL baseURL = new URL(uri);
-            String url = new URL(baseURL, baseURL.getPath() + name + ".zip").toString();
+            String url = new URL(baseURL, baseURL.getPath() + "/" + name + ".zip").toString();
             InputStream stream = sardine().get(url);
             return IOUtils.toByteArray(stream);
         } catch (IOException e) {
@@ -73,7 +73,7 @@ public class WebDavServer extends Server {
     @Override
     public void uploadSaveData(String name, byte[] data) throws Exception {
         URL baseURL = new URL(uri);
-        String url = new URL(baseURL, baseURL.getPath() + name + ".zip").toString();
+        String url = new URL(baseURL, baseURL.getPath() + "/" + name + ".zip").toString();
         sardine().put(url, data);
     }
 

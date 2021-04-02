@@ -13,6 +13,8 @@ import javax.swing.plaf.FontUIResource;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.StyleContext;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
@@ -60,6 +62,31 @@ public class SaveFileSyncUI {
         });
 
         reloadUI();
+        exportButton.addActionListener(e -> {
+            if (data.server == null || !data.server.verifyServer()) {
+                JOptionPane.showMessageDialog(null, "Cannot export files without a working data server!", "Export Error!", JOptionPane.ERROR_MESSAGE);
+            }
+            int[] rows = saveList.getSelectedRows();
+            for (int i : rows) {
+                String name = (String) saveList.getValueAt(i, 0);
+                Save save = data.saves.get(name);
+                try {
+                    data.server.uploadSaveData(save.name, save.toZipFile());
+                } catch (Exception ee) {
+                    ee.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "There was en error uploading a file! Aborting export!", "Export Error!", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            }
+            reloadUI();
+            JOptionPane.showMessageDialog(null, "Successfully uploaded files(s)!", "Success!", JOptionPane.INFORMATION_MESSAGE);
+        });
+        importButton.addActionListener(e -> {
+            if (data.server == null || !data.server.verifyServer()) {
+                JOptionPane.showMessageDialog(null, "Cannot import files without a working data server!", "Export Error!", JOptionPane.ERROR_MESSAGE);
+            }
+            int[] rows = saveList.getSelectedRows();
+        });
     }
 
     public JPanel getRootPanel() {
@@ -71,16 +98,21 @@ public class SaveFileSyncUI {
         setTable(data.saves);
 
         // Set server status
-        Boolean status = data.server.verifyServer();
-        if (status == null) {
+        if (data.server != null) {
+            Boolean status = data.server.verifyServer();
+            if (status == null) {
+                serverStatus.setText("None");
+                serverStatus.setForeground(Color.white);
+            } else if (status) {
+                serverStatus.setText("Online");
+                serverStatus.setForeground(Color.green);
+            } else {
+                serverStatus.setText("Offline");
+                serverStatus.setForeground(Color.red);
+            }
+        } else {
             serverStatus.setText("None");
             serverStatus.setForeground(Color.white);
-        } else if (status) {
-            serverStatus.setText("Online");
-            serverStatus.setForeground(Color.green);
-        } else {
-            serverStatus.setText("Offline");
-            serverStatus.setForeground(Color.red);
         }
     }
 
@@ -89,7 +121,7 @@ public class SaveFileSyncUI {
         dtm.setColumnIdentifiers(header);
         for (String saveName : saves.keySet()) {
             Save save = saves.get(saveName);
-            String status = null;
+            String status;
             if (data.server != null) {
                 try {
                     byte[] remoteSave = data.server.getSaveData(save.name);
