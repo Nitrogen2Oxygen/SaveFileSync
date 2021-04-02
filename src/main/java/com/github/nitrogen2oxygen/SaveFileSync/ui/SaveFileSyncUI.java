@@ -83,9 +83,23 @@ public class SaveFileSyncUI {
         });
         importButton.addActionListener(e -> {
             if (data.server == null || !data.server.verifyServer()) {
-                JOptionPane.showMessageDialog(null, "Cannot import files without a working data server!", "Export Error!", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Cannot import files without a working data server!", "Import Error!", JOptionPane.ERROR_MESSAGE);
             }
             int[] rows = saveList.getSelectedRows();
+            for (int i : rows) {
+                String name = (String) saveList.getValueAt(i, 0);
+                Save save = data.saves.get(name);
+                byte[] remoteSaveData = data.server.getSaveData(save.name);
+                try {
+                    save.overwriteData(remoteSaveData);
+                } catch (Exception ee) {
+                    ee.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "There was en error importing a file! Aborting import!", "import Error!", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            }
+            reloadUI();
+            JOptionPane.showMessageDialog(null, "Successfully downloaded files(s)!", "Success!", JOptionPane.INFORMATION_MESSAGE);
         });
     }
 
