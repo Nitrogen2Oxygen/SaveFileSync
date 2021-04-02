@@ -78,6 +78,10 @@ public class Save {
         if (file.isDirectory()) {
             while (entry != null) {
                 String filePath = file.getPath() + File.separator + entry.getName().substring(name.length() + 1);
+                // Test if the file name is valid due to bug
+                File testFile = new File(filePath);
+                if (!testFile.toPath().normalize().startsWith(file.getPath()))
+                    throw new Exception("Bad Zip Entry! Aborting");
                 if (!entry.isDirectory()) {
                     FileUtils.extractFile(zin, filePath);
                 } else {
