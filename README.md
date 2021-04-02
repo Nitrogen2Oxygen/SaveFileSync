@@ -30,11 +30,10 @@ This will package all dependencies inside the `/out/SaveFileSync.jar` file.
 
 ## Roadmap
 Currently, the first release is in development. The following major features need to be completed:
-* Server functionality with WebDav/Google Drive
-* Proper sync logic, both manual and automatic syncing
+* Server functionality with Google Drive
+* Automatic sync logic
 * Finalized UI design
-* Proper storage of client data and management of credentials
-* Infinity bug fixes 
+* Infinity bug fixes!!!
 
 ## Contributing
 Anyone is welcome to contribute to the project.
