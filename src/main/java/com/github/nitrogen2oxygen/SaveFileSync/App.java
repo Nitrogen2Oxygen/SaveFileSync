@@ -28,7 +28,7 @@ public class App {
         JFrame frame = new JFrame("Save File Sync");
         frame.setContentPane(new SaveFileSyncUI(data).getRootPanel()); // The UI required a ClientData object to update the lists and such
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // TODO: Change this to something more useful
-        frame.setSize(800, 800);
+        frame.setSize(800, 600);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
