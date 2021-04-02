@@ -9,6 +9,7 @@ import org.apache.commons.io.IOUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -58,34 +59,6 @@ public class WebDavServer extends Server {
     }
 
     @Override
-    public void initialize() throws Exception {
-        List<DavResource> resources = sardine().list(uri);
-        URL baseURL = new URL(uri);
-        boolean hasDataFile = false;
-        boolean hasSaveFolder = false;
-        for (DavResource res : resources) {
-            if (res.toString().equals(baseURL.getPath() + "/data.json")) {
-                hasDataFile = true;
-            }
-
-            if (res.toString().equals(baseURL.getPath() + "/saves/")) {
-                hasSaveFolder = true;
-            }
-        }
-
-        if (!hasSaveFolder) {
-            String url = new URL(baseURL, baseURL.getPath() + "/saves").toString();
-            sardine().createDirectory(url);
-        }
-
-        if (!hasDataFile) {
-            Gson gson = new Gson();
-            String url = new URL(baseURL, baseURL.getPath() + "/data.json").toString();
-            sardine().put(url, gson.toJson("").getBytes(StandardCharsets.UTF_8));
-        }
-    }
-
-    @Override
     public String[] getSaveNames() {
         return new String[0];
     }
@@ -94,7 +67,7 @@ public class WebDavServer extends Server {
     public byte[] getSaveData(String name) {
         try {
             URL baseURL = new URL(uri);
-            String url = new URL(baseURL, baseURL.getPath() + "/saves/" + name + ".zip").toString();
+            String url = new URL(baseURL, baseURL.getPath() + name + ".zip").toString();
             InputStream stream = sardine().get(url);
             return IOUtils.toByteArray(stream);
         } catch (IOException e) {
@@ -106,18 +79,8 @@ public class WebDavServer extends Server {
     @Override
     public void uploadSaveData(String name, byte[] data) throws Exception {
         URL baseURL = new URL(uri);
-        String url = new URL(baseURL, baseURL.getPath() + "/saves/" + name + ".zip").toString();
+        String url = new URL(baseURL, baseURL.getPath() + name + ".zip").toString();
         sardine().put(url, data);
-    }
-
-    @Override
-    public String getServerData() {
-        return null;
-    }
-
-    @Override
-    public void setServerData() {
-
     }
 
     @Override
