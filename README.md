@@ -18,10 +18,9 @@ Here is a link to the [latest release](https://github.com/Nitrogen2Oxygen/SaveFi
 1. Clone the repository: `git clone https://github.com/<Name>/SaveFileSync.git`
 2. Open the containing `SaveFileSync` folder as an IntelliJ project.
    The settings from the `.idea` folder should load the environment properly.
-   Adjust anything if necessary.
 3. Make your changes if necessary
 4. To build, simply run IntelliJ's **Build** command and run `mvn install` from the sidebar or terminal.
-This will package all dependencies inside the `/out/SaveFileSync.jar` file.
+This will package all dependencies inside the `/target/SaveFileSync.jar` file.
    For guidelines for contributing, see [Contributing](#Contributing)
 
 
@@ -30,11 +29,10 @@ This will package all dependencies inside the `/out/SaveFileSync.jar` file.
 
 ## Roadmap
 Currently, the first release is in development. The following major features need to be completed:
-* Server functionality with WebDav/Google Drive
-* Proper sync logic, both manual and automatic syncing
+* Server functionality with Google Drive
+* Automatic sync logic
 * Finalized UI design
-* Proper storage of client data and management of credentials
-* Infinity bug fixes 
+* Infinity bug fixes!!!
 
 ## Contributing
 Anyone is welcome to contribute to the project.
