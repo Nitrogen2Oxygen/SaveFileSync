@@ -4,13 +4,17 @@ import com.github.sardine.DavResource;
 import com.github.sardine.Sardine;
 import com.github.sardine.SardineFactory;
 import com.google.gson.Gson;
+import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
+import java.util.zip.ZipInputStream;
 
 public class WebDavServer extends Server {
 
@@ -88,12 +92,22 @@ public class WebDavServer extends Server {
 
     @Override
     public byte[] getSaveData(String name) {
-        return new byte[0];
+        try {
+            URL baseURL = new URL(uri);
+            String url = new URL(baseURL, baseURL.getPath() + "/saves/" + name + ".zip").toString();
+            InputStream stream = sardine().get(url);
+            return IOUtils.toByteArray(stream);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
-    public void uploadSaveData(byte[] data) {
-
+    public void uploadSaveData(String name, byte[] data) throws Exception {
+        URL baseURL = new URL(uri);
+        String url = new URL(baseURL, baseURL.getPath() + "/saves/" + name + ".zip").toString();
+        sardine().put(url, data);
     }
 
     @Override

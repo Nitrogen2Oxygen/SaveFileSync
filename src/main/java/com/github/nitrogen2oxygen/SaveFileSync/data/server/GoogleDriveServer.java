@@ -1,5 +1,7 @@
 package com.github.nitrogen2oxygen.SaveFileSync.data.server;
 
+import com.github.nitrogen2oxygen.SaveFileSync.data.client.Save;
+
 import java.util.HashMap;
 
 public class GoogleDriveServer extends Server {
@@ -38,7 +40,7 @@ public class GoogleDriveServer extends Server {
     }
 
     @Override
-    public void uploadSaveData(byte[] data) {
+    public void uploadSaveData(String name, byte[] data) {
 
     }
 

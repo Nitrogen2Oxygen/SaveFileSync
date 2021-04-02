@@ -1,7 +1,5 @@
 package com.github.nitrogen2oxygen.SaveFileSync.data.server;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 
 public abstract class Server {
@@ -26,7 +24,7 @@ public abstract class Server {
     public abstract byte[] getSaveData(String name);
 
     /* Uploads a zip file with the save file contents */
-    public abstract void uploadSaveData(byte[] data);
+    public abstract void uploadSaveData(String name, byte[] data) throws Exception;
 
     /* Gets the data.json file as a string */
     public abstract String getServerData();
