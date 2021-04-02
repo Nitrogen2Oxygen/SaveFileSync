@@ -9,10 +9,12 @@ import com.intellij.uiDesigner.core.Spacer;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import javax.swing.plaf.FontUIResource;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Locale;
 
 public class SaveFileSyncUI {
     private JPanel rootPanel;
@@ -21,6 +23,8 @@ public class SaveFileSyncUI {
     private JButton exportButton;
     private JTable saveList;
     private JButton manageServerButton;
+    private JLabel label11;
+    private JLabel serverStatus;
 
     private final ClientData data;
     private final String[] header = new String[]{
@@ -59,6 +63,8 @@ public class SaveFileSyncUI {
             DataManager.save(data);
             reloadUI();
         });
+
+        reloadUI();
     }
 
     public JPanel getRootPanel() {
@@ -68,6 +74,19 @@ public class SaveFileSyncUI {
     public void reloadUI() {
         // Reload the saves table
         setTable(data.saves);
+
+        // Set server status
+        Boolean status = data.server.verifyServer();
+        if (status == null) {
+            serverStatus.setText("None");
+            serverStatus.setForeground(Color.white);
+        } else if (status) {
+            serverStatus.setText("Online");
+            serverStatus.setForeground(Color.green);
+        } else {
+            serverStatus.setText("Offline");
+            serverStatus.setForeground(Color.red);
+        }
     }
 
     private void setTable(HashMap<String, Save> saves) {
@@ -129,8 +148,26 @@ public class SaveFileSyncUI {
         manageServerButton.setText("Manage Server");
         manageServerButton.setToolTipText("Manages the status and location of the data server");
         panel3.add(manageServerButton, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JPanel panel4 = new JPanel();
+        panel4.setLayout(new GridLayoutManager(3, 2, new Insets(0, 0, 0, 0), -1, -1));
+        panel3.add(panel4, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         final Spacer spacer1 = new Spacer();
-        panel3.add(spacer1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        panel4.add(spacer1, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        final JLabel label1 = new JLabel();
+        Font label1Font = this.$$$getFont$$$(null, -1, 16, label1.getFont());
+        if (label1Font != null) label1.setFont(label1Font);
+        label1.setText("Status");
+        panel4.add(label1, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        serverStatus = new JLabel();
+        Font serverStatusFont = this.$$$getFont$$$(null, -1, 16, serverStatus.getFont());
+        if (serverStatusFont != null) serverStatus.setFont(serverStatusFont);
+        serverStatus.setText("None");
+        panel4.add(serverStatus, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        label11 = new JLabel();
+        Font label11Font = this.$$$getFont$$$(null, -1, 24, label11.getFont());
+        if (label11Font != null) label11.setFont(label11Font);
+        label11.setText("Data Server");
+        panel4.add(label11, new GridConstraints(0, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JScrollPane scrollPane1 = new JScrollPane();
         rootPanel.add(scrollPane1, new GridConstraints(0, 1, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         saveList = new JTable();
@@ -141,7 +178,30 @@ public class SaveFileSyncUI {
     /**
      * @noinspection ALL
      */
+    private Font $$$getFont$$$(String fontName, int style, int size, Font currentFont) {
+        if (currentFont == null) return null;
+        String resultName;
+        if (fontName == null) {
+            resultName = currentFont.getName();
+        } else {
+            Font testFont = new Font(fontName, Font.PLAIN, 10);
+            if (testFont.canDisplay('a') && testFont.canDisplay('1')) {
+                resultName = fontName;
+            } else {
+                resultName = currentFont.getName();
+            }
+        }
+        Font font = new Font(resultName, style >= 0 ? style : currentFont.getStyle(), size >= 0 ? size : currentFont.getSize());
+        boolean isMac = System.getProperty("os.name", "").toLowerCase(Locale.ENGLISH).startsWith("mac");
+        Font fontWithFallback = isMac ? new Font(font.getFamily(), font.getStyle(), font.getSize()) : new StyleContext().getFont(font.getFamily(), font.getStyle(), font.getSize());
+        return fontWithFallback instanceof FontUIResource ? fontWithFallback : new FontUIResource(fontWithFallback);
+    }
+
+    /**
+     * @noinspection ALL
+     */
     public JComponent $$$getRootComponent$$$() {
         return rootPanel;
     }
+
 }
