@@ -13,6 +13,7 @@ import javax.swing.plaf.FontUIResource;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.StyleContext;
 import java.awt.*;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -88,10 +89,27 @@ public class SaveFileSyncUI {
         dtm.setColumnIdentifiers(header);
         for (String saveName : saves.keySet()) {
             Save save = saves.get(saveName);
+            String status = null;
+            if (data.server != null) {
+                try {
+                    byte[] remoteSave = data.server.getSaveData(save.name);
+                    byte[] localSave = save.toZipFile();
+                    if (Arrays.equals(localSave, remoteSave)) {
+                        status = "Synced";
+                    } else {
+                        status = "Not Synced";
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    status = "Error";
+                }
+            } else {
+                status = "No Server";
+            }
             dtm.addRow(new Object[]{
                     save.name,
                     save.file,
-                    "Something"
+                    status
             });
         }
         saveList.setModel(dtm);
