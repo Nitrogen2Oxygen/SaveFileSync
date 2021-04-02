@@ -1,21 +1,15 @@
 package com.github.nitrogen2oxygen.SaveFileSync.data.server;
 
-import com.github.sardine.DavResource;
 import com.github.sardine.Sardine;
 import com.github.sardine.SardineFactory;
-import com.google.gson.Gson;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
-import java.util.List;
-import java.util.zip.ZipInputStream;
 
 public class WebDavServer extends Server {
 
