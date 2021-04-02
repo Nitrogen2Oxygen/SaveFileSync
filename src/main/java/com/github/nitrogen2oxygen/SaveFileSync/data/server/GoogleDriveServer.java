@@ -25,11 +25,6 @@ public class GoogleDriveServer extends Server {
     }
 
     @Override
-    public void initialize() {
-
-    }
-
-    @Override
     public String[] getSaveNames() {
         return new String[0];
     }
@@ -41,16 +36,6 @@ public class GoogleDriveServer extends Server {
 
     @Override
     public void uploadSaveData(String name, byte[] data) {
-
-    }
-
-    @Override
-    public String getServerData() {
-        return null;
-    }
-
-    @Override
-    public void setServerData() {
 
     }
 

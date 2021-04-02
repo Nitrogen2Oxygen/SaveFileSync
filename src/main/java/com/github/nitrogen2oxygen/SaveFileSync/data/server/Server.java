@@ -14,9 +14,6 @@ public abstract class Server {
     /* Gets the data in the same form its able to be set in */
     public abstract HashMap<String, String> getData();
 
-    /* Initialize the server OR if its already initialized, just return */
-    public abstract void initialize() throws Exception;
-
     /* Lists the names of all saves on the server */
     public abstract String[] getSaveNames();
 
@@ -25,12 +22,6 @@ public abstract class Server {
 
     /* Uploads a zip file with the save file contents */
     public abstract void uploadSaveData(String name, byte[] data) throws Exception;
-
-    /* Gets the data.json file as a string */
-    public abstract String getServerData();
-
-    /* Upload new server data.json file */
-    public abstract void setServerData();
 
     /* Verifies if the server is working properly */
     public abstract Boolean verifyServer();
