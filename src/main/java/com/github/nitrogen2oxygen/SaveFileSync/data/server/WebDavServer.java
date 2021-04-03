@@ -2,6 +2,7 @@ package com.github.nitrogen2oxygen.SaveFileSync.data.server;
 
 import com.github.sardine.Sardine;
 import com.github.sardine.SardineFactory;
+import com.github.sardine.impl.SardineException;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
@@ -64,6 +65,9 @@ public class WebDavServer extends Server {
             String url = new URL(baseURL, baseURL.getPath() + "/" + name + ".zip").toString();
             InputStream stream = sardine().get(url);
             return IOUtils.toByteArray(stream);
+        } catch (SardineException e) {
+            System.out.println(e.getMessage());
+            return new byte[0];
         } catch (IOException e) {
             e.printStackTrace();
             return null;

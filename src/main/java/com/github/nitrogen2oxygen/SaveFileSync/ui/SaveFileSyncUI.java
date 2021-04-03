@@ -71,7 +71,7 @@ public class SaveFileSyncUI {
                 String name = (String) saveList.getValueAt(i, 0);
                 Save save = data.saves.get(name);
                 try {
-                    data.server.uploadSaveData(save.name, save.toZipFile());
+                    data.server.uploadSaveData(save.name, save.toRawFile());
                 } catch (Exception ee) {
                     ee.printStackTrace();
                     JOptionPane.showMessageDialog(null, "There was en error uploading a file! Aborting export!", "Export Error!", JOptionPane.ERROR_MESSAGE);
@@ -139,7 +139,7 @@ public class SaveFileSyncUI {
             if (data.server != null) {
                 try {
                     byte[] remoteSave = data.server.getSaveData(save.name);
-                    byte[] localSave = save.toZipFile();
+                    byte[] localSave = save.toRawFile();
                     if (Arrays.equals(localSave, remoteSave)) {
                         status = "Synced";
                     } else {
