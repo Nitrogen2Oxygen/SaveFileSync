@@ -65,6 +65,7 @@ public class SaveFileSyncUI {
         exportButton.addActionListener(e -> {
             if (data.server == null || !data.server.verifyServer()) {
                 JOptionPane.showMessageDialog(null, "Cannot export files without a working data server!", "Export Error!", JOptionPane.ERROR_MESSAGE);
+                return;
             }
             int[] rows = saveList.getSelectedRows();
             for (int i : rows) {
@@ -90,6 +91,7 @@ public class SaveFileSyncUI {
         importButton.addActionListener(e -> {
             if (data.server == null || !data.server.verifyServer()) {
                 JOptionPane.showMessageDialog(null, "Cannot import files without a working data server!", "Import Error!", JOptionPane.ERROR_MESSAGE);
+                return;
             }
             int[] rows = saveList.getSelectedRows();
             for (int i : rows) {
