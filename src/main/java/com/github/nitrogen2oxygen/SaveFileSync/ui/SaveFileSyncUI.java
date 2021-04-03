@@ -71,10 +71,16 @@ public class SaveFileSyncUI {
                 String name = (String) saveList.getValueAt(i, 0);
                 Save save = data.saves.get(name);
                 try {
-                    data.server.uploadSaveData(save.name, save.toRawFile());
+                    byte[] rawData = save.toRawFile();
+                    if (!Arrays.equals(rawData, new byte[0])) {
+                        data.server.uploadSaveData(save.name, rawData);
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Cannot export an empty save file!", name + " Export Error!", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
                 } catch (Exception ee) {
                     ee.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "There was en error uploading a file! Aborting export!", "Export Error!", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "There was en error uploading a file! Aborting export!", name + " Export Error!", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
             }
@@ -94,7 +100,7 @@ public class SaveFileSyncUI {
                     save.overwriteData(remoteSaveData);
                 } catch (Exception ee) {
                     ee.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "There was en error importing a file! Aborting import!", "import Error!", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "There was en error importing a file! Aborting import!", name + " Import Error!", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
             }
