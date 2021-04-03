@@ -8,6 +8,8 @@ import com.github.nitrogen2oxygen.SaveFileSync.ui.SaveFileSyncUI;
 import com.github.nitrogen2oxygen.SaveFileSync.ui.ShowError;
 
 import javax.swing.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 
 public class App {
@@ -27,7 +29,14 @@ public class App {
         FlatDarkLaf.install();
         JFrame frame = new JFrame("Save File Sync");
         frame.setContentPane(new SaveFileSyncUI(data).getRootPanel()); // The UI required a ClientData object to update the lists and such
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // TODO: Change this to something more useful
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                DataManager.save(data);
+                System.exit(0);
+            }
+        });
         frame.setSize(800, 600);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
