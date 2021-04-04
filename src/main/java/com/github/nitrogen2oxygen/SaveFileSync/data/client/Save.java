@@ -31,6 +31,7 @@ public class Save {
         }
         // Write to a temporary directory
         File tmpdir = Files.createTempDirectory("SaveFileSync").toFile();
+        tmpdir.deleteOnExit();
         File tmpFile = new File(tmpdir, name + ".zip");
         byte[] buffer = new byte[1024];
         FileOutputStream fos = new FileOutputStream(tmpFile);
@@ -117,7 +118,7 @@ public class Save {
                 FileUtils.extractFile(zin, filePath);
             } else {
                 File dir = new File(filePath);
-                dir.mkdir(); // TODO: Handle this mkdir
+                dir.mkdir();
             }
             zin.closeEntry();
             entry = zin.getNextEntry();
