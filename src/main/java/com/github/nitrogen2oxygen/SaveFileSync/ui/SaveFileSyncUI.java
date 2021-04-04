@@ -9,17 +9,11 @@ import com.intellij.uiDesigner.core.Spacer;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.StyleContext;
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Locale;
+import java.util.*;
 
 public class SaveFileSyncUI {
     private JPanel rootPanel;
@@ -30,6 +24,7 @@ public class SaveFileSyncUI {
     private JButton manageServerButton;
     private JLabel label11;
     private JLabel serverStatus;
+    private JButton importFromServerButton;
 
     private final ClientData data;
     private final String[] header = new String[]{
@@ -116,6 +111,18 @@ public class SaveFileSyncUI {
             // Enable/disable buttons
             importButton.setEnabled(saveList.getSelectedRows().length != 0);
             exportButton.setEnabled(saveList.getSelectedRows().length != 0);
+        });
+        importFromServerButton.addActionListener(e -> {
+            ArrayList<Save> newSaves = new ArrayList<>();
+            String[] serverSaveNames = data.server.getSaveNames();
+            ArrayList<Save> localSaves = new ArrayList<>();
+            Set<String> localKeys = data.saves.keySet();
+            for (String key : localKeys) {
+                localSaves.add(data.saves.get(key));
+            }
+            String[] localSaveNames = (String[]) localSaves.stream().map(s -> s.name).toArray();
+
+            // TODO: I don't feel like finishing this today
         });
     }
 
@@ -218,10 +225,10 @@ public class SaveFileSyncUI {
         manageServerButton.setToolTipText("Manages the status and location of the data server");
         panel3.add(manageServerButton, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JPanel panel4 = new JPanel();
-        panel4.setLayout(new GridLayoutManager(3, 2, new Insets(0, 0, 0, 0), -1, -1));
+        panel4.setLayout(new GridLayoutManager(4, 2, new Insets(0, 0, 0, 0), -1, -1));
         panel3.add(panel4, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         final Spacer spacer1 = new Spacer();
-        panel4.add(spacer1, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        panel4.add(spacer1, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         final JLabel label1 = new JLabel();
         Font label1Font = this.$$$getFont$$$(null, -1, 16, label1.getFont());
         if (label1Font != null) label1.setFont(label1Font);
@@ -237,6 +244,9 @@ public class SaveFileSyncUI {
         if (label11Font != null) label11.setFont(label11Font);
         label11.setText("Data Server");
         panel4.add(label11, new GridConstraints(0, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        importFromServerButton = new JButton();
+        importFromServerButton.setText("Import Save From Server");
+        panel4.add(importFromServerButton, new GridConstraints(2, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JScrollPane scrollPane1 = new JScrollPane();
         rootPanel.add(scrollPane1, new GridConstraints(0, 1, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         saveList = new JTable();

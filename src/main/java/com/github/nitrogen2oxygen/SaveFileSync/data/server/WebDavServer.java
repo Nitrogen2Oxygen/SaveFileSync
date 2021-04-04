@@ -1,5 +1,6 @@
 package com.github.nitrogen2oxygen.SaveFileSync.data.server;
 
+import com.github.sardine.DavResource;
 import com.github.sardine.Sardine;
 import com.github.sardine.SardineFactory;
 import com.github.sardine.impl.SardineException;
@@ -8,6 +9,7 @@ import org.apache.commons.io.IOUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.HashMap;
 
 public class WebDavServer extends Server {
@@ -49,7 +51,12 @@ public class WebDavServer extends Server {
 
     @Override
     public String[] getSaveNames() {
-        return new String[0];
+        try {
+            return (String[]) sardine().list(uri).stream().map(DavResource::getName).toArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
