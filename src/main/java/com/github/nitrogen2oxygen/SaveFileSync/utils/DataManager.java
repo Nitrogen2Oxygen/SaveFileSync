@@ -11,13 +11,12 @@ import com.google.gson.GsonBuilder;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 
 public class DataManager {
 
     /* Saves data to the SaveFileSync/data.json. This function should be called anytime there's change in data */
     public static void save(ClientData data) {
-        File file = new File(Paths.get(Constants.dataDirectory(), "data.json").toString());
+        File file = new File(Constants.dataFile());
         try {
             Gson gson = dataGson();
             String json = gson.toJson(data);
@@ -31,7 +30,7 @@ public class DataManager {
 
     /* Loads data from the SaveFileSync/data.json */
     public static ClientData load() {
-        File file = new File(Paths.get(Constants.dataDirectory(), "data.json").toString());
+        File file = new File(Constants.dataFile());
         if (!file.exists()) return new ClientData();
         try {
             Gson gson = dataGson();
@@ -39,7 +38,7 @@ public class DataManager {
             return gson.fromJson(reader, ClientData.class);
         } catch (Exception e) {
             e.printStackTrace();
-            ShowError.main("An error has occurred when loading data from " + file.toString()); // TODO: Finish handling the error by actually fixing the error
+            ShowError.main("An error has occurred when loading data from " + file.toString());
             return null;
         }
     }

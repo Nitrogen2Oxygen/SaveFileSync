@@ -13,8 +13,6 @@ import javax.swing.plaf.FontUIResource;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.StyleContext;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
@@ -64,7 +62,7 @@ public class SaveFileSyncUI {
         reloadUI();
         exportButton.addActionListener(e -> {
             if (data.server == null || !data.server.verifyServer()) {
-                JOptionPane.showMessageDialog(null, "Cannot export files without a working data server!", "Export Error!", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(SwingUtilities.getRoot((Component) e.getSource()), "Cannot export files without a working data server!", "Export Error!", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             int[] rows = saveList.getSelectedRows();
@@ -76,21 +74,21 @@ public class SaveFileSyncUI {
                     if (!Arrays.equals(rawData, new byte[0])) {
                         data.server.uploadSaveData(save.name, rawData);
                     } else {
-                        JOptionPane.showMessageDialog(null, "Cannot export an empty save file!", name + " Export Error!", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(SwingUtilities.getRoot((Component) e.getSource()), "Cannot export an empty save file!", name + " Export Error!", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
                 } catch (Exception ee) {
                     ee.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "There was en error uploading a file! Aborting export!", name + " Export Error!", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(SwingUtilities.getRoot((Component) e.getSource()), "There was en error uploading a file! Aborting export!", name + " Export Error!", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
             }
             reloadUI();
-            JOptionPane.showMessageDialog(null, "Successfully uploaded files(s)!", "Success!", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(SwingUtilities.getRoot((Component) e.getSource()), "Successfully uploaded files(s)!", "Success!", JOptionPane.INFORMATION_MESSAGE);
         });
         importButton.addActionListener(e -> {
             if (data.server == null || !data.server.verifyServer()) {
-                JOptionPane.showMessageDialog(null, "Cannot import files without a working data server!", "Import Error!", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(SwingUtilities.getRoot((Component) e.getSource()), "Cannot import files without a working data server!", "Import Error!", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             int[] rows = saveList.getSelectedRows();
@@ -102,12 +100,12 @@ public class SaveFileSyncUI {
                     save.overwriteData(remoteSaveData);
                 } catch (Exception ee) {
                     ee.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "There was en error importing a file! Aborting import!", name + " Import Error!", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(SwingUtilities.getRoot((Component) e.getSource()), "There was en error importing a file! Aborting import!", name + " Import Error!", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
             }
             reloadUI();
-            JOptionPane.showMessageDialog(null, "Successfully downloaded files(s)!", "Success!", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(SwingUtilities.getRoot((Component) e.getSource()), "Successfully downloaded files(s)!", "Success!", JOptionPane.INFORMATION_MESSAGE);
         });
     }
 
@@ -190,20 +188,15 @@ public class SaveFileSyncUI {
         rootPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         newSaveFile = new JButton();
         newSaveFile.setText("New Save File");
-        rootPanel.add(newSaveFile, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        rootPanel.add(newSaveFile, new GridConstraints(1, 1, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JPanel panel1 = new JPanel();
-        panel1.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
+        panel1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         rootPanel.add(panel1, new GridConstraints(2, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        exportButton = new JButton();
-        exportButton.setEnabled(true);
-        exportButton.setText("Export");
-        exportButton.setToolTipText("Backs up selected file(s) to the server");
-        panel1.add(exportButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         importButton = new JButton();
         importButton.setEnabled(true);
         importButton.setText("Import");
         importButton.setToolTipText("Imports selected files from the server");
-        panel1.add(importButton, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel1.add(importButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JPanel panel2 = new JPanel();
         panel2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         rootPanel.add(panel2, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
@@ -239,6 +232,11 @@ public class SaveFileSyncUI {
         saveList = new JTable();
         saveList.setSelectionBackground(new Color(-13487566));
         scrollPane1.setViewportView(saveList);
+        exportButton = new JButton();
+        exportButton.setEnabled(true);
+        exportButton.setText("Export");
+        exportButton.setToolTipText("Backs up selected file(s) to the server");
+        rootPanel.add(exportButton, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     /**
