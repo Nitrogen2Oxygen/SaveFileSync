@@ -113,16 +113,30 @@ public class SaveFileSyncUI {
             exportButton.setEnabled(saveList.getSelectedRows().length != 0);
         });
         importFromServerButton.addActionListener(e -> {
-            ArrayList<Save> newSaves = new ArrayList<>();
-            String[] serverSaveNames = data.server.getSaveNames();
-            ArrayList<Save> localSaves = new ArrayList<>();
+            ArrayList<String> newSaves = new ArrayList<>();
+            ArrayList<String> serverSaveNames = data.server.getSaveNames();
+            ArrayList<String> localSaveNames = new ArrayList<>();
             Set<String> localKeys = data.saves.keySet();
             for (String key : localKeys) {
-                localSaves.add(data.saves.get(key));
+                localSaveNames.add(data.saves.get(key).name);
             }
-            String[] localSaveNames = (String[]) localSaves.stream().map(s -> s.name).toArray();
-
-            // TODO: I don't feel like finishing this today
+            /* Check for any new saves on the server that aren't in the local file system */
+            for (String serverName : serverSaveNames) {
+                if (!localSaveNames.contains(serverName)) {
+                    newSaves.add(serverName);
+                }
+            }
+            try {
+                Save save = ServerImport.main(data.server, newSaves);
+                if (save != null) {
+                    data.addSave(save);
+                }
+            } catch (Exception ee) {
+                JOptionPane.showMessageDialog(SwingUtilities.getRoot((Component) e.getSource()),
+                        "Cannot import save data! If this continues, please submit an issue on the GitHub!",
+                        "Error!",
+                        JOptionPane.ERROR_MESSAGE);
+                }
         });
     }
 

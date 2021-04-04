@@ -1,5 +1,6 @@
 package com.github.nitrogen2oxygen.SaveFileSync.data.server;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public abstract class Server {
@@ -15,7 +16,7 @@ public abstract class Server {
     public abstract HashMap<String, String> getData();
 
     /* Lists the names of all saves on the server */
-    public abstract String[] getSaveNames();
+    public abstract ArrayList<String> getSaveNames();
 
     /* Gets the raw data of the ZIP file from a given name */
     public abstract byte[] getSaveData(String name);

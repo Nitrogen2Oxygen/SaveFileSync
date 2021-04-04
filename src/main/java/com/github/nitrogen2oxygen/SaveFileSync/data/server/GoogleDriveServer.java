@@ -1,5 +1,6 @@
 package com.github.nitrogen2oxygen.SaveFileSync.data.server;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class GoogleDriveServer extends Server {
@@ -23,8 +24,8 @@ public class GoogleDriveServer extends Server {
     }
 
     @Override
-    public String[] getSaveNames() {
-        return new String[0];
+    public ArrayList<String> getSaveNames() {
+        return new ArrayList<>();
     }
 
     @Override

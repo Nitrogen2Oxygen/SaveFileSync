@@ -10,7 +10,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class WebDavServer extends Server {
 
@@ -50,9 +52,14 @@ public class WebDavServer extends Server {
     }
 
     @Override
-    public String[] getSaveNames() {
+    public ArrayList<String> getSaveNames() {
         try {
-            return (String[]) sardine().list(uri).stream().map(DavResource::getName).toArray();
+            List<DavResource> resources = sardine().list(uri);
+            ArrayList<String> names = new ArrayList<>();
+            for (DavResource res : resources) {
+                names.add(res.getName());
+            }
+            return names;
         } catch (IOException e) {
             e.printStackTrace();
             return null;
