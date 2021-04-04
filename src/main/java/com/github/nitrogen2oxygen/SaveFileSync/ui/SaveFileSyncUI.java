@@ -9,10 +9,14 @@ import com.intellij.uiDesigner.core.Spacer;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.StyleContext;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
@@ -108,6 +112,11 @@ public class SaveFileSyncUI {
             reloadUI();
             JOptionPane.showMessageDialog(SwingUtilities.getRoot((Component) e.getSource()), "Successfully downloaded files(s)!", "Success!", JOptionPane.INFORMATION_MESSAGE);
         });
+        saveList.getSelectionModel().addListSelectionListener(e -> {
+            // Enable/disable buttons
+            importButton.setEnabled(saveList.getSelectedRows().length != 0);
+            exportButton.setEnabled(saveList.getSelectedRows().length != 0);
+        });
     }
 
     public JPanel getRootPanel() {
@@ -194,7 +203,7 @@ public class SaveFileSyncUI {
         panel1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         rootPanel.add(panel1, new GridConstraints(2, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         importButton = new JButton();
-        importButton.setEnabled(true);
+        importButton.setEnabled(false);
         importButton.setText("Import");
         importButton.setToolTipText("Imports selected files from the server");
         panel1.add(importButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -234,7 +243,7 @@ public class SaveFileSyncUI {
         saveList.setSelectionBackground(new Color(-13487566));
         scrollPane1.setViewportView(saveList);
         exportButton = new JButton();
-        exportButton.setEnabled(true);
+        exportButton.setEnabled(false);
         exportButton.setText("Export");
         exportButton.setToolTipText("Backs up selected file(s) to the server");
         rootPanel.add(exportButton, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
