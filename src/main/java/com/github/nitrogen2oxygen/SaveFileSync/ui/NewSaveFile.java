@@ -31,6 +31,11 @@ public class NewSaveFile extends JDialog {
 
         buttonCancel.addActionListener(e -> onCancel());
         buttonOK.addActionListener(e -> {
+            if (locationTextField.getText().length() == 0 || nameTextField.getText().length() == 0) {
+                JOptionPane.showMessageDialog(SwingUtilities.getRoot((Component) e.getSource()),
+                        "All data fields are required!", "Error!", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             File file = new File(locationTextField.getText());
             String name = nameTextField.getText();
             save = new Save(name, file);

@@ -22,9 +22,20 @@ public class DataManager {
             String json = gson.toJson(data);
             FileOutputStream outputStream = new FileOutputStream(file);
             outputStream.write(json.getBytes(StandardCharsets.UTF_8));
-        } catch (Exception e) {
+        } catch (FileNotFoundException e) { // If the file isn't found, try again but create a new file.
+            try {
+                file.createNewFile();
+                Gson gson = dataGson();
+                String json = gson.toJson(data);
+                FileOutputStream outputStream = new FileOutputStream(file);
+                outputStream.write(json.getBytes(StandardCharsets.UTF_8));
+            } catch (IOException ee) {
+                ee.printStackTrace();
+                ShowError.main("An error has occurred when saving data to " + Constants.dataFile());
+            }
+        } catch (IOException e) {
             e.printStackTrace();
-            ShowError.main("An error has occurred when loading data from " + file.toString());
+            ShowError.main("An error has occurred when saving data to " + Constants.dataFile());
         }
     }
 
@@ -36,9 +47,9 @@ public class DataManager {
             Gson gson = dataGson();
             Reader reader = Files.newBufferedReader(file.toPath());
             return gson.fromJson(reader, ClientData.class);
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
-            ShowError.main("An error has occurred when loading data from " + file.toString());
+            ShowError.main("An error has occurred when loading data from " + Constants.dataFile());
             return null;
         }
     }

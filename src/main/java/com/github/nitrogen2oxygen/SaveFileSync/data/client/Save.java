@@ -12,6 +12,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+/* TODO: Handle the many errors in this file!! */
 public class Save {
     public File file;
     public Boolean isDir;
@@ -23,7 +24,7 @@ public class Save {
         this.isDir = file.isDirectory();
     }
 
-    public byte[] toRawFile() throws Exception { // TODO: Possible bug - won't delete temp dir if there's an error
+    public byte[] toRawFile() throws Exception {
         if (isDir == null) this.isDir = file.isDirectory();
         if (!isDir) {
             if (!file.exists()) return new byte[0];

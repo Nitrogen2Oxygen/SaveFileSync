@@ -8,8 +8,6 @@ import org.apache.commons.io.IOUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.HashMap;
 
 public class WebDavServer extends Server {
@@ -25,10 +23,6 @@ public class WebDavServer extends Server {
     /* Private functions for the class to use */
     private Sardine sardine() {
         return (username != null) ? SardineFactory.begin(username, password) : SardineFactory.begin();
-    }
-
-    private String authToken() {
-        return Base64.getEncoder().encodeToString((username + ":" + password).getBytes(StandardCharsets.UTF_8));
     }
 
     /* Abstract function overrides */
@@ -65,9 +59,6 @@ public class WebDavServer extends Server {
             String url = new URL(baseURL, baseURL.getPath() + "/" + name + ".zip").toString();
             InputStream stream = sardine().get(url);
             return IOUtils.toByteArray(stream);
-        } catch (SardineException e) {
-            System.out.println(e.getMessage());
-            return new byte[0];
         } catch (IOException e) {
             e.printStackTrace();
             return null;

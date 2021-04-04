@@ -36,7 +36,6 @@ public class SaveFileSyncUI {
 
     public SaveFileSyncUI(ClientData userData) {
         data = userData;
-        setTable(data.saves);
 
         // User input to backend
         newSaveFile.addActionListener(e -> {
@@ -66,6 +65,7 @@ public class SaveFileSyncUI {
                 return;
             }
             int[] rows = saveList.getSelectedRows();
+            if (rows.length == 0) return;
             for (int i : rows) {
                 String name = (String) saveList.getValueAt(i, 0);
                 Save save = data.saves.get(name);
@@ -92,6 +92,7 @@ public class SaveFileSyncUI {
                 return;
             }
             int[] rows = saveList.getSelectedRows();
+            if (rows.length == 0) return;
             for (int i : rows) {
                 String name = (String) saveList.getValueAt(i, 0);
                 Save save = data.saves.get(name);
