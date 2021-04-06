@@ -5,7 +5,6 @@ import com.github.nitrogen2oxygen.SaveFileSync.data.client.ClientData;
 import com.github.nitrogen2oxygen.SaveFileSync.utils.Constants;
 import com.github.nitrogen2oxygen.SaveFileSync.utils.DataManager;
 import com.github.nitrogen2oxygen.SaveFileSync.ui.SaveFileSyncUI;
-import com.github.nitrogen2oxygen.SaveFileSync.ui.ShowError;
 
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
@@ -19,7 +18,8 @@ public class App {
         File clientDataFolder = new File(Constants.dataDirectory());
         if (!clientDataFolder.isDirectory() || !clientDataFolder.exists()) {
             boolean mkdir = clientDataFolder.mkdir();
-               if (!mkdir) ShowError.main("Cannot create data directory " + clientDataFolder); // In case the directory can't be made for some reason, throw an error to the user
+               if (!mkdir) JOptionPane.showMessageDialog(null,
+                       "Cannot create data folder!", "Error!", JOptionPane.ERROR_MESSAGE); // In case the directory can't be made for some reason, throw an error to the user
         }
 
         /* Create the data object. This object stores any kind of persistent data on the client */
@@ -27,7 +27,7 @@ public class App {
 
         /* Finally, creating the actual UI frame. Communication between front and backend is iffy but we make do */
         FlatDarkLaf.install();
-        JFrame frame = new JFrame("Save File Sync - " + Constants.version());
+        JFrame frame = new JFrame("Save File Sync - " + Constants.VERSION);
         frame.setContentPane(new SaveFileSyncUI(data).getRootPanel()); // The UI required a ClientData object to update the lists and such
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {

@@ -58,8 +58,8 @@ public class ServerManagerUI extends JDialog {
         buttonCancel.addActionListener(e -> onCancel());
         serverTypeSelector.addActionListener(e -> {
             if (server != null) {
-                boolean cont = ShowWarning.main("Changing this option will RESET your server config. Please only do this if you're actually changing data servers!");
-                if (!cont) {
+                int opt = JOptionPane.showConfirmDialog(null, "Changing this option will reset your server config. Continue?", "Warning!", JOptionPane.YES_NO_OPTION);
+                if (opt == 1) {
                     serverTypeSelector.setSelectedItem(server == null ? "None" : server.serverDisplayName());
                     return;
                 }
@@ -135,7 +135,7 @@ public class ServerManagerUI extends JDialog {
                                 newData.put("username", webdavUsernameTextField.getText());
                                 newData.put("password", new String(webdavPasswordField.getPassword()));
                             } else {
-                                ShowWarning.main("A username AND password is required if you're using WebDav authentication!");
+                                JOptionPane.showMessageDialog(null, "A username AND password is required if you're using WebDav authentication!", "Error!", JOptionPane.ERROR_MESSAGE);
                                 return;
                             }
                         }
