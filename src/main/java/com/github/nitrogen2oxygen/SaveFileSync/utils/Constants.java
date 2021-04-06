@@ -16,5 +16,5 @@ public class Constants {
         return "SaveFileSync";
     }
 
-    public static String version() { return "v0.1.1-alpha"; }
+    public static String version() { return "v0.1.2-alpha"; }
 }
