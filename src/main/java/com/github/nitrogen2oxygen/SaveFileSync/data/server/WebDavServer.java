@@ -54,8 +54,6 @@ public class WebDavServer extends Server {
         try {
             HttpURLConnection connection = (HttpURLConnection) getSaveURL(name + ".zip").openConnection();
             connection.setRequestMethod("GET");
-            connection.setConnectTimeout(5000);
-            connection.setReadTimeout(5000);
             /* Get authentication */
             String auth = username + ":" + password;
             byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.UTF_8));
@@ -73,8 +71,6 @@ public class WebDavServer extends Server {
     public void uploadSaveData(String name, byte[] data) throws Exception {
             HttpURLConnection connection = (HttpURLConnection) getSaveURL(name + ".zip").openConnection();
             connection.setRequestMethod("PUT");
-            connection.setConnectTimeout(5000);
-            connection.setReadTimeout(5000);
             connection.setDoOutput(true);
             /* Get authentication */
             String auth = username + ":" + password;
@@ -93,8 +89,6 @@ public class WebDavServer extends Server {
         try {
             HttpURLConnection connection = (HttpURLConnection) new URL(uri).openConnection();
             connection.setRequestMethod("HEAD");
-            connection.setConnectTimeout(5000);
-            connection.setReadTimeout(5000);
             /* Get authentication */
             String auth = username + ":" + password;
             byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.UTF_8));
