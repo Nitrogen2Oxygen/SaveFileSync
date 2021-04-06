@@ -21,7 +21,7 @@ public class App {
         JFrame loadingFrame = new JFrame("Loading Application...");
         JProgressBar pb = new JProgressBar();
         pb.setMinimum(0);
-        pb.setMaximum(3);
+        pb.setMaximum(4);
         pb.setStringPainted(true);
         loadingFrame.setLayout(new FlowLayout());
         loadingFrame.getContentPane().add(pb);
@@ -60,8 +60,8 @@ public class App {
         frame.setLocationRelativeTo(null);
         pb.setValue(3);
 
-        /* Remove the progress bar and set the main frame to visible */
-        loadingFrame.dispose();
+        /* Set the frame visible and load the UI */
         frame.setVisible(true);
+        loadingFrame.dispose();
     }
 }

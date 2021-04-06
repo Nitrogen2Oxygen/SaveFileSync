@@ -15,6 +15,7 @@ import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.util.*;
 
+/* TODO: Create delete save file button */
 public class SaveFileSyncUI {
     private JPanel rootPanel;
     private JButton newSaveFile;
@@ -26,6 +27,7 @@ public class SaveFileSyncUI {
     private JLabel serverStatus;
     private JButton importFromServerButton;
 
+    public Thread reloadThread;
     private final ClientData data;
     private final String[] header = new String[]{
             "Name",
@@ -39,7 +41,6 @@ public class SaveFileSyncUI {
         // User input to backend
         newSaveFile.addActionListener(e -> {
             Save save = NewSaveFile.main();
-            // TODO: Fix messaging when input is empty
             if (save == null) return;
             try {
                 data.addSave(save);
@@ -51,13 +52,14 @@ public class SaveFileSyncUI {
             }
             reloadUI();
         });
+
+        /* Action listeners */
         manageServerButton.addActionListener(e -> {
             data.server = ServerManagerUI.main(data);
             DataManager.save(data);
             reloadUI();
         });
 
-        reloadUI();
         exportButton.addActionListener(e -> {
             if (data.server == null || !data.server.verifyServer()) {
                 JOptionPane.showMessageDialog(SwingUtilities.getRoot((Component) e.getSource()), "Cannot export files without a working data server!", "Export Error!", JOptionPane.ERROR_MESSAGE);
@@ -144,27 +146,38 @@ public class SaveFileSyncUI {
         return rootPanel;
     }
 
+    /* We reload the UI on a separate thread to prevent any kind of freezing */
     public void reloadUI() {
-        // Reload the saves table
-        setTable(data.saves);
+        if (reloadThread != null && reloadThread.isAlive())
+            reloadThread.interrupt();
 
-        // Set server status
-        if (data.server != null) {
-            Boolean status = data.server.verifyServer();
-            if (status == null) {
+        reloadThread = new Thread(() -> {
+            serverStatus.setText("Connecting...");
+            serverStatus.setForeground(Color.white);
+
+            // Reload the saves table
+            setTable(data.saves);
+
+            // Set server status
+            if (data.server != null) {
+                Boolean status = data.server.verifyServer();
+                if (status == null) {
+                    serverStatus.setText("None");
+                    serverStatus.setForeground(Color.white);
+                } else if (status) {
+                    serverStatus.setText("Online");
+                    serverStatus.setForeground(Color.green);
+                } else {
+                    serverStatus.setText("Offline");
+                    serverStatus.setForeground(Color.red);
+                }
+            } else {
                 serverStatus.setText("None");
                 serverStatus.setForeground(Color.white);
-            } else if (status) {
-                serverStatus.setText("Online");
-                serverStatus.setForeground(Color.green);
-            } else {
-                serverStatus.setText("Offline");
-                serverStatus.setForeground(Color.red);
             }
-        } else {
-            serverStatus.setText("None");
-            serverStatus.setForeground(Color.white);
-        }
+        });
+
+        reloadThread.start();
     }
 
     private void setTable(HashMap<String, Save> saves) {

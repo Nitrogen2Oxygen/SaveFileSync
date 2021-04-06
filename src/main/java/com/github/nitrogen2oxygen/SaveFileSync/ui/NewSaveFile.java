@@ -37,6 +37,7 @@ public class NewSaveFile extends JDialog {
                 return;
             }
             File file = new File(locationTextField.getText());
+            if (!file.exists()) return;
             String name = nameTextField.getText();
             save = new Save(name, file);
             dispose();
