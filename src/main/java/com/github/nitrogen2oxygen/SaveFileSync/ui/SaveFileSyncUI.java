@@ -198,13 +198,28 @@ public class SaveFileSyncUI {
         reloadThread.start();
     }
 
-    private void setTable(HashMap<String, Save> saves) {
+    private void setTable(HashMap<String, Save> dataSaves) {
         DefaultTableModel dtm = new DefaultTableModel();
         dtm.setColumnIdentifiers(header);
-        for (String saveName : saves.keySet()) {
-            Save save = saves.get(saveName);
+        saveList.setModel(dtm);
+
+        ArrayList<Save> saves = new ArrayList<>();
+        for (String saveName : dataSaves.keySet()) {
+            Save save = dataSaves.get(saveName);
+            saves.add(save);
+            dtm.addRow(new Object[]{
+                    save.name,
+                    save.file,
+                    "Checking..."
+            });
+        }
+
+        for (Save save : saves) {
+            /* Get the server status */
             String status;
-            if (data.server != null) {
+            if (data.server == null) {
+                status = "No Server";
+            } else {
                 try {
                     byte[] remoteSave = data.server.getSaveData(save.name);
                     byte[] localSave = save.toZipFile();
@@ -217,16 +232,16 @@ public class SaveFileSyncUI {
                     e.printStackTrace();
                     status = "Error";
                 }
-            } else {
-                status = "No Server";
             }
-            dtm.addRow(new Object[]{
-                    save.name,
-                    save.file,
-                    status
-            });
+            /* Set the status on the table */
+            for (int i = 0; i < dtm.getRowCount(); i++) {
+                if (dtm.getValueAt(i, 0).equals(save.name)) {
+                    // Set the status
+                    dtm.setValueAt(status, i, 2);
+                    break;
+                }
+            }
         }
-        saveList.setModel(dtm);
     }
 
 
