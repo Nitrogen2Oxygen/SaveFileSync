@@ -1,19 +1,15 @@
 package com.github.nitrogen2oxygen.SaveFileSync.data.server;
 
-import com.github.sardine.DavResource;
-import com.github.sardine.Sardine;
-import com.github.sardine.SardineFactory;
-import com.github.sardine.impl.SardineException;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
-import java.util.List;
 
 public class WebDavServer extends Server {
 
@@ -25,10 +21,11 @@ public class WebDavServer extends Server {
         super();
     }
 
-    /* Private functions for the class to use */
-    private Sardine sardine() {
-        return (username != null) ? SardineFactory.begin(username, password) : SardineFactory.begin();
+
+    private ArrayList<String> list() {
+        return null;
     }
+
 
     /* Abstract function overrides */
     @Override
@@ -54,26 +51,24 @@ public class WebDavServer extends Server {
 
     @Override
     public ArrayList<String> getSaveNames() {
-        try {
-            List<DavResource> resources = sardine().list(uri);
-            ArrayList<String> names = new ArrayList<>();
-            for (DavResource res : resources) {
-                names.add(res.getName());
-            }
-            return names;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+        ArrayList<String> resources = list();
+        return resources;
     }
 
     @Override
     public byte[] getSaveData(String name) {
         try {
-            URI uri = getSaveURI(name + ".zip");
-            InputStream stream = sardine().get(uri.toString());
+            HttpURLConnection connection = (HttpURLConnection) getSaveURL(name + ".zip").openConnection();
+            connection.setRequestMethod("GET");
+            connection.setConnectTimeout(5000);
+            /* Get authentication */
+            String auth = username + ":" + password;
+            byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.UTF_8));
+            String authHeaderValue = "Basic " + new String(encodedAuth);
+            connection.setRequestProperty("Authorization", authHeaderValue);
+            InputStream stream = connection.getInputStream();
             return IOUtils.toByteArray(stream);
-        } catch (IOException | URISyntaxException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -81,24 +76,45 @@ public class WebDavServer extends Server {
 
     @Override
     public void uploadSaveData(String name, byte[] data) throws Exception {
-        URI uri = getSaveURI(name + ".zip");
-        sardine().put(uri.toString(), data);
+            HttpURLConnection connection = (HttpURLConnection) getSaveURL(name + ".zip").openConnection();
+            connection.setRequestMethod("PUT");
+            connection.setConnectTimeout(20000);
+            connection.setDoOutput(true);
+            /* Get authentication */
+            String auth = username + ":" + password;
+            byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.UTF_8));
+            String authHeaderValue = "Basic " + new String(encodedAuth);
+            connection.setRequestProperty("Authorization", authHeaderValue);
+            /* Handle request */
+            OutputStream stream = connection.getOutputStream();
+            stream.write(data);
+            stream.close();
+            connection.getInputStream();
     }
 
     @Override
     public Boolean verifyServer() {
-        Sardine sardine = sardine();
         try {
-            return sardine.exists(uri);
+            HttpURLConnection connection = (HttpURLConnection) new URL(uri).openConnection();
+            connection.setRequestMethod("HEAD");
+            connection.setConnectTimeout(5000);
+            /* Get authentication */
+            String auth = username + ":" + password;
+            byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.UTF_8));
+            String authHeaderValue = "Basic " + new String(encodedAuth);
+            connection.setRequestProperty("Authorization", authHeaderValue);
+            int code = connection.getResponseCode();
+            // TODO: handle code
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
     }
 
-    private URI getSaveURI(String fileName) throws URISyntaxException {
-        URI base = new URI(this.uri);
+    private URL getSaveURL(String fileName) throws IOException, URISyntaxException {
+        URI base = new URL(this.uri).toURI();
         String path = base.getPath() + "/" + URLEncoder.encode(fileName, StandardCharsets.UTF_8);
-        return base.resolve(path);
+        return base.resolve(path).toURL();
     }
 }

@@ -15,4 +15,6 @@ public class Constants {
     public static String appName() {
         return "SaveFileSync";
     }
+
+    public static String version() { return "v0.1.1-alpha"; }
 }

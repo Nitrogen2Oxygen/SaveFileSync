@@ -95,8 +95,8 @@ public class SaveFileSyncUI {
             for (int i : rows) {
                 String name = (String) saveList.getValueAt(i, 0);
                 Save save = data.saves.get(name);
-                byte[] remoteSaveData = data.server.getSaveData(save.name);
                 try {
+                    byte[] remoteSaveData = data.server.getSaveData(save.name);
                     save.overwriteData(remoteSaveData);
                 } catch (Exception ee) {
                     ee.printStackTrace();

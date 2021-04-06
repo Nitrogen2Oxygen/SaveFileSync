@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.nitrogen2oxygen</groupId>
     <artifactId>SaveFileSync</artifactId>
-    <version>0.1.1</version>
+    <version>v0.1.1-alpha</version>
     <name>SaveFileSync</name>
     <packaging>jar</packaging>
     <description>An application for syncing game data/save files between computers.</description>
@@ -57,11 +57,6 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.6</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.lookfirst</groupId>
-            <artifactId>sardine</artifactId>
-            <version>5.10</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>

@@ -1,6 +1,9 @@
 package com.github.nitrogen2oxygen.SaveFileSync.data.client;
 
-import com.github.nitrogen2oxygen.SaveFileSync.utils.FileUtils;
+import com.github.nitrogen2oxygen.SaveFileSync.utils.FileUtilities;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -26,23 +29,23 @@ public class Save {
 
         /* Create a temporary zip file */
         File tmpFile = Files.createTempFile("SaveFileSync", ".zip").toFile();
-        org.apache.commons.io.FileUtils.forceDeleteOnExit(tmpFile); // It never likes deleting itself so we force it to
+        FileUtils.forceDeleteOnExit(tmpFile); // It never likes deleting itself so we force it to
 
         /* Write to the file */
         ZipOutputStream out = new ZipOutputStream(new FileOutputStream(tmpFile));
         if (!file.isDirectory()) {
             ZipEntry entry = new ZipEntry(file.getName());
             out.putNextEntry(entry);
-            byte[] data = org.apache.commons.io.FileUtils.readFileToByteArray(file);
+            byte[] data = FileUtils.readFileToByteArray(file);
             out.write(data);
             out.closeEntry();
         } else {
-            List<String> fileList = FileUtils.generateFileList(this.file);
+            List<String> fileList = FileUtilities.generateFileList(this.file);
             for (String saveFile : fileList) {
                 String subDir = saveFile.substring(file.getPath().length() + 1);
                 ZipEntry entry = new ZipEntry(name + File.separator + subDir);
                 out.putNextEntry(entry);
-                byte[] data = org.apache.commons.io.FileUtils.readFileToByteArray(new File(saveFile));
+                byte[] data = FileUtils.readFileToByteArray(new File(saveFile));
                 out.write(data);
                 out.closeEntry();
             }
@@ -71,28 +74,35 @@ public class Save {
 
         /* Create temporary file to download the zip file from */
         File tmpFile = Files.createTempFile("SaveFileSync", ".zip").toFile();
-        org.apache.commons.io.FileUtils.forceDeleteOnExit(tmpFile); // It never likes deleting itself so we force it to
-        org.apache.commons.io.FileUtils.writeByteArrayToFile(tmpFile, data);
+        FileUtils.forceDeleteOnExit(tmpFile); // It never likes deleting itself so we force it to
+        FileUtils.writeByteArrayToFile(tmpFile, data);
 
         /* Extract zip to original folder */
         ZipInputStream in = new ZipInputStream(new FileInputStream(tmpFile));
         ZipEntry entry = in.getNextEntry();
-        while (entry != null) {
-            String filePath = file.getPath() + File.separator + entry.getName().substring(name.length() + 1);
-            File testFile = new File(filePath);
-            if (!testFile.toPath().normalize().startsWith(file.getPath())) // Test if the file name is valid due to bug
+        if (file.isFile()) {
+            String filePath = file.getPath();
+            File saveFile = new File(filePath);
+            if (!saveFile.toPath().normalize().startsWith(file.getPath())) // Test if the file name is valid due to bug
                 throw new Exception("Bad Zip Entry! Aborting!");
-            if (entry.isDirectory()) {
-                FileUtils.extractFile(in, filePath);
-            } else {
-                File dir = new File(filePath);
-                dir.mkdir();
+            IOUtils.copy(in, new FileOutputStream(saveFile));
+        } else {
+            while (entry != null) {
+                String filePath = file.getPath() + File.separator + entry.getName().substring(name.length() + 1);;
+                File saveFile = new File(filePath);
+                if (!saveFile.toPath().normalize().startsWith(file.getPath())) // Test if the file name is valid due to bug
+                    throw new Exception("Bad Zip Entry! Aborting!");
+                if (!entry.isDirectory()) {
+                    IOUtils.copy(in, new FileOutputStream(saveFile));
+                } else {
+                    File dir = new File(filePath);
+                    dir.mkdir();
+                }
+
+                in.closeEntry();
+                entry = in.getNextEntry();
             }
-
-            in.closeEntry();
-            entry = in.getNextEntry();
         }
-
         in.close();
     }
 }

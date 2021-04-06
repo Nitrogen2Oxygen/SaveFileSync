@@ -27,7 +27,7 @@ public class App {
 
         /* Finally, creating the actual UI frame. Communication between front and backend is iffy but we make do */
         FlatDarkLaf.install();
-        JFrame frame = new JFrame("Save File Sync - v0.1.1-alpha");
+        JFrame frame = new JFrame("Save File Sync - " + Constants.version());
         frame.setContentPane(new SaveFileSyncUI(data).getRootPanel()); // The UI required a ClientData object to update the lists and such
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
