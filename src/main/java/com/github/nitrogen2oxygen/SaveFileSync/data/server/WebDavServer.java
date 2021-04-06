@@ -8,7 +8,8 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
+import java.net.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,11 +70,10 @@ public class WebDavServer extends Server {
     @Override
     public byte[] getSaveData(String name) {
         try {
-            URL baseURL = new URL(uri);
-            String url = new URL(baseURL, baseURL.getPath() + "/" + name + ".zip").toString();
-            InputStream stream = sardine().get(url);
+            URI uri = getSaveURI(name + ".zip");
+            InputStream stream = sardine().get(uri.toString());
             return IOUtils.toByteArray(stream);
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
             return null;
         }
@@ -81,9 +81,8 @@ public class WebDavServer extends Server {
 
     @Override
     public void uploadSaveData(String name, byte[] data) throws Exception {
-        URL baseURL = new URL(uri);
-        String url = new URL(baseURL, baseURL.getPath() + "/" + name + ".zip").toString();
-        sardine().put(url, data);
+        URI uri = getSaveURI(name + ".zip");
+        sardine().put(uri.toString(), data);
     }
 
     @Override
@@ -95,5 +94,11 @@ public class WebDavServer extends Server {
             e.printStackTrace();
             return false;
         }
+    }
+
+    private URI getSaveURI(String fileName) throws URISyntaxException {
+        URI base = new URI(this.uri);
+        String path = base.getPath() + "/" + URLEncoder.encode(fileName, StandardCharsets.UTF_8);
+        return base.resolve(path);
     }
 }

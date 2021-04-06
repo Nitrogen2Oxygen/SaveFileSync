@@ -69,7 +69,7 @@ public class SaveFileSyncUI {
                 String name = (String) saveList.getValueAt(i, 0);
                 Save save = data.saves.get(name);
                 try {
-                    byte[] rawData = save.toRawFile();
+                    byte[] rawData = save.toZipFile();
                     if (!Arrays.equals(rawData, new byte[0])) {
                         data.server.uploadSaveData(save.name, rawData);
                     } else {
@@ -136,7 +136,7 @@ public class SaveFileSyncUI {
                         "Cannot import save data! If this continues, please submit an issue on the GitHub!",
                         "Error!",
                         JOptionPane.ERROR_MESSAGE);
-                }
+            }
         });
     }
 
@@ -176,7 +176,7 @@ public class SaveFileSyncUI {
             if (data.server != null) {
                 try {
                     byte[] remoteSave = data.server.getSaveData(save.name);
-                    byte[] localSave = save.toRawFile();
+                    byte[] localSave = save.toZipFile();
                     if (Arrays.equals(localSave, remoteSave)) {
                         status = "Synced";
                     } else {
@@ -259,6 +259,7 @@ public class SaveFileSyncUI {
         label11.setText("Data Server");
         panel4.add(label11, new GridConstraints(0, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         importFromServerButton = new JButton();
+        importFromServerButton.setEnabled(false);
         importFromServerButton.setText("Import Save From Server");
         panel4.add(importFromServerButton, new GridConstraints(2, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JScrollPane scrollPane1 = new JScrollPane();
