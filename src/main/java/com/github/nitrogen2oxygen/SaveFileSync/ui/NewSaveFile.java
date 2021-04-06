@@ -24,10 +24,16 @@ public class NewSaveFile extends JDialog {
     public Boolean saveChanges = true;
 
     public NewSaveFile() {
+        this("", "");
+    }
+
+    public NewSaveFile(String name, String path) {
         setContentPane(contentPane);
         setLocationRelativeTo(null);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
+        nameTextField.setText(name);
+        locationTextField.setText(path);
 
         buttonCancel.addActionListener(e -> onCancel());
         buttonOK.addActionListener(e -> {
@@ -38,8 +44,8 @@ public class NewSaveFile extends JDialog {
             }
             File file = new File(locationTextField.getText());
             if (!file.exists()) return;
-            String name = nameTextField.getText();
-            save = new Save(name, file);
+            String inputName = nameTextField.getText();
+            save = new Save(inputName, file);
             dispose();
         });
 
@@ -68,6 +74,14 @@ public class NewSaveFile extends JDialog {
 
     public static Save main() {
         NewSaveFile dialog = new NewSaveFile();
+        if (!dialog.saveChanges) return null;
+        dialog.pack();
+        dialog.setVisible(true);
+        return dialog.save;
+    }
+
+    public static Save edit(String name, String path) {
+        NewSaveFile dialog = new NewSaveFile(name, path);
         if (!dialog.saveChanges) return null;
         dialog.pack();
         dialog.setVisible(true);

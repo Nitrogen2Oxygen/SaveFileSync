@@ -11,7 +11,9 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import javax.swing.text.StyleContext;
+import javax.xml.crypto.Data;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -43,11 +45,19 @@ public class SaveFileSyncUI {
         data = userData;
 
         /* Create blank data table */
-        DefaultTableModel dtm = new DefaultTableModel();
+        DefaultTableModel dtm = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         dtm.setColumnIdentifiers(header);
         saveList.setModel(dtm);
 
-        // User input to backend
+        /* Load the UI */
+        reloadUI();
+
+        /* Action listeners */
         newSaveFile.addActionListener(e -> {
             Save save = NewSaveFile.main();
             if (save == null) return;
@@ -55,20 +65,17 @@ public class SaveFileSyncUI {
                 data.addSave(save);
             } catch (Exception ee) {
                 JOptionPane.showMessageDialog(SwingUtilities.getRoot((Component) e.getSource()),
-                        ee.getMessage(),
-                        "Error Creating New Save File",
+                        "Error creating new save file!",
+                        "Error!",
                         JOptionPane.ERROR_MESSAGE);
             }
             reloadUI();
         });
-
-        /* Action listeners */
         manageServerButton.addActionListener(e -> {
             data.server = ServerManagerUI.main(data);
             DataManager.save(data);
             reloadUI();
         });
-
         exportButton.addActionListener(e -> {
             if (data.server == null || !data.server.verifyServer()) {
                 JOptionPane.showMessageDialog(SwingUtilities.getRoot((Component) e.getSource()), "Cannot export files without a working data server!", "Export Error!", JOptionPane.ERROR_MESSAGE);
@@ -155,7 +162,35 @@ public class SaveFileSyncUI {
             int selected = saveList.getSelectedRow();
             String name = (String) saveList.getValueAt(selected, 0);
             /* Remove save file */
-            Save save = data.saves.remove(name);
+            data.saves.remove(name);
+
+            /* Save and reload */
+            DataManager.save(data);
+            reloadUI();
+        });
+        editButton.addActionListener(e -> {
+            int selected = saveList.getSelectedRow();
+            String name = (String) saveList.getValueAt(selected, 0);
+            Save save = data.saves.get(name);
+            String oldName = save.name;
+            Save newSave = NewSaveFile.edit(save.name, save.file.getPath());
+            if (newSave == null) return;
+            try {
+                data.saves.remove(oldName);
+                data.addSave(newSave);
+            } catch (Exception ee) {
+                JOptionPane.showMessageDialog(SwingUtilities.getRoot((Component) e.getSource()),
+                        "Error editing save file",
+                        "Error!",
+                        JOptionPane.ERROR_MESSAGE);
+                try {
+                    data.addSave(save);
+                } catch (Exception ignored) {
+                }
+            }
+
+            /* Save and reload */
+            DataManager.save(data);
             reloadUI();
         });
     }
@@ -199,7 +234,12 @@ public class SaveFileSyncUI {
     }
 
     private void setTable(HashMap<String, Save> dataSaves) {
-        DefaultTableModel dtm = new DefaultTableModel();
+        DefaultTableModel dtm = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         dtm.setColumnIdentifiers(header);
         saveList.setModel(dtm);
 
