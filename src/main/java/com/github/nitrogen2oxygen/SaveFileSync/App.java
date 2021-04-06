@@ -26,7 +26,7 @@ public class App {
         loadingFrame.setLayout(new FlowLayout());
         loadingFrame.getContentPane().add(pb);
         loadingFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        loadingFrame.setSize(300, 200);
+        loadingFrame.pack();
         loadingFrame.setLocationRelativeTo(null);
         loadingFrame.setVisible(true);
        /* Obtain the client data from <USER_HOME>/SaveFileSync */
