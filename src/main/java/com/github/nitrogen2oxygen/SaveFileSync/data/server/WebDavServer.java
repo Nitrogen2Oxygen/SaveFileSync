@@ -50,9 +50,8 @@ public class WebDavServer extends Server {
     }
 
     @Override
-    public ArrayList<String> getSaveNames() {
-        ArrayList<String> resources = list();
-        return resources;
+    public ArrayList<String> getSaveNames()  {
+        return new ArrayList<>();
     }
 
     @Override
@@ -104,8 +103,7 @@ public class WebDavServer extends Server {
             String authHeaderValue = "Basic " + new String(encodedAuth);
             connection.setRequestProperty("Authorization", authHeaderValue);
             int code = connection.getResponseCode();
-            // TODO: handle code
-            return true;
+            return code < 300;
         } catch (IOException e) {
             e.printStackTrace();
             return false;

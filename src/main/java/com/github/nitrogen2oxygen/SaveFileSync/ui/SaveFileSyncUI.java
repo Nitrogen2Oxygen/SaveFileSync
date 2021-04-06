@@ -259,7 +259,7 @@ public class SaveFileSyncUI {
         label11.setText("Data Server");
         panel4.add(label11, new GridConstraints(0, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         importFromServerButton = new JButton();
-        importFromServerButton.setEnabled(false);
+        importFromServerButton.setEnabled(true);
         importFromServerButton.setText("Import Save From Server");
         panel4.add(importFromServerButton, new GridConstraints(2, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JScrollPane scrollPane1 = new JScrollPane();
