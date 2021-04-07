@@ -51,6 +51,7 @@ public class SaveFileSync {
         };
         dtm.setColumnIdentifiers(header);
         saveList.setModel(dtm);
+        saveList.getTableHeader().setReorderingAllowed(false);
 
         /* Load the UI */
         reloadUI();
@@ -242,6 +243,7 @@ public class SaveFileSync {
         };
         dtm.setColumnIdentifiers(header);
         saveList.setModel(dtm);
+        saveList.getTableHeader().setReorderingAllowed(false);
 
         ArrayList<Save> saves = new ArrayList<>();
         for (String saveName : dataSaves.keySet()) {
