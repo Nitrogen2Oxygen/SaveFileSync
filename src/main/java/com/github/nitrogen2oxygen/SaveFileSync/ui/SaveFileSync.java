@@ -15,7 +15,6 @@ import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.util.*;
 
-/* TODO: Create delete save file button */
 public class SaveFileSync {
     private JPanel rootPanel;
     private JButton newSaveFile;

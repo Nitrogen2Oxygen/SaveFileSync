@@ -26,7 +26,6 @@ public class ServerOptions extends JDialog {
     private JCheckBox webdavUseAuthenticationBox;
     private JPasswordField webdavPasswordField;
 
-    private ClientData clientData;
     private Server server;
     private final Server serverOld; // In case the user cancels, we want to return the exact same server we started with
     public Boolean cancelled = false;
@@ -158,12 +157,16 @@ public class ServerOptions extends JDialog {
         dispose();
     }
 
+    public Server getServer() {
+        return server;
+    }
+
     public static Server main(ClientData data) {
         ServerOptions dialog = new ServerOptions(data.server);
         dialog.pack();
         dialog.setVisible(true);
         if (dialog.cancelled) return dialog.serverOld;
-        return dialog.server;
+        return dialog.getServer();
     }
 
     {

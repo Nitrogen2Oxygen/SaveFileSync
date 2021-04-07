@@ -24,8 +24,8 @@ public class ServerImport extends JDialog {
     private JTextField saveLocationTextField;
 
     private final Server server;
-    public Boolean cancelled;
-    public Save save;
+    private Boolean cancelled;
+    private Save save;
 
     public ServerImport(Server server, ArrayList<String> names) {
         this.server = server;
@@ -87,12 +87,16 @@ public class ServerImport extends JDialog {
         dispose();
     }
 
+    public Save getSave() {
+        return save;
+    }
+
     public static Save main(Server server, ArrayList<String> names) {
         if (names.size() == 0) return null;
         ServerImport dialog = new ServerImport(server, names);
         dialog.pack();
         dialog.setVisible(true);
-        return dialog.save;
+        return dialog.getSave();
     }
 
     {
