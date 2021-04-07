@@ -29,6 +29,7 @@ public class NewSaveFile extends JDialog {
 
     public NewSaveFile(String name, String path) {
         setContentPane(contentPane);
+        setTitle("New Save File");
         setLocationRelativeTo(null);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);

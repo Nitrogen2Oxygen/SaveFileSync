@@ -1,6 +1,8 @@
 package com.github.nitrogen2oxygen.SaveFileSync;
 
 import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDarkerContrastIJTheme;
+import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDarkerIJTheme;
 import com.github.nitrogen2oxygen.SaveFileSync.data.client.ClientData;
 import com.github.nitrogen2oxygen.SaveFileSync.utils.Constants;
 import com.github.nitrogen2oxygen.SaveFileSync.utils.DataManager;
@@ -15,7 +17,7 @@ import java.io.File;
 public class App {
 
     public static void main(String[] args) {
-        FlatDarkLaf.install();
+        FlatMaterialDarkerContrastIJTheme.install();
 
         /* Create a progress bar */
         JFrame loadingFrame = new JFrame("Loading Application...");

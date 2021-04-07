@@ -31,6 +31,7 @@ public class ServerImport extends JDialog {
         this.server = server;
         setContentPane(contentPane);
         setModal(true);
+        setTitle("Import Save From Server");
         getRootPane().setDefaultButton(buttonOK);
         setLocationRelativeTo(null);
         buttonCancel.addActionListener(e -> onCancel());
