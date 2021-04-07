@@ -16,6 +16,11 @@ public class GoogleDriveServer extends Server {
     }
 
     @Override
+    public String getHostName() {
+        return "google.com";
+    }
+
+    @Override
     public void setData(HashMap<String, String> args) {
 
     }

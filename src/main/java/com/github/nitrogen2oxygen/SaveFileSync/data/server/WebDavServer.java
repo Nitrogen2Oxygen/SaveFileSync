@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
 
-/* TODO: Prevent boot time from crippling due to invalid connection */
 public class WebDavServer extends Server {
 
     private static final long serialVersionUID = -2218215115068183298L;
@@ -26,7 +25,17 @@ public class WebDavServer extends Server {
     /* Abstract function overrides */
     @Override
     public String serverDisplayName() {
-        return "WebDav";
+        return "WebDAV";
+    }
+
+    @Override
+    public String getHostName() {
+        try {
+            if (uri.length() == 0) return null;
+            return new URL(uri).getHost();
+        } catch (MalformedURLException e) {
+            return null;
+        }
     }
 
     @Override

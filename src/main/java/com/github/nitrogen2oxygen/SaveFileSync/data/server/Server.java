@@ -11,6 +11,9 @@ public abstract class Server implements java.io.Serializable {
     /* Used to identify the type in most cases */
     public abstract String serverDisplayName();
 
+    /* Gets the name of the host server */
+    public abstract String getHostName();
+
     /* Sets all the data necessary for the server */
     public abstract void setData(HashMap<String, String> args);
 

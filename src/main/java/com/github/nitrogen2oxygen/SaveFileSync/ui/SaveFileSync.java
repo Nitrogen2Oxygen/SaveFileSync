@@ -28,6 +28,8 @@ public class SaveFileSync {
     private JButton importFromServerButton;
     private JButton removeButton;
     private JButton editButton;
+    private JLabel hostNameField;
+    private JLabel serverTypeField;
 
     public Thread reloadThread;
     private final ClientData data;
@@ -203,6 +205,8 @@ public class SaveFileSync {
         reloadThread = new Thread(() -> {
             serverStatus.setText("Connecting...");
             serverStatus.setForeground(Color.white);
+            hostNameField.setText(data.server != null ? data.server.getHostName() : "None");
+            serverTypeField.setText(data.server != null ? data.server.serverDisplayName() : "None");
 
             // Reload the saves table
             setTable(data.saves);
@@ -309,20 +313,20 @@ public class SaveFileSync {
         panel2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         panel1.add(panel2, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         final JPanel panel3 = new JPanel();
-        panel3.setLayout(new GridLayoutManager(5, 2, new Insets(0, 0, 0, 0), -1, -1));
+        panel3.setLayout(new GridLayoutManager(7, 2, new Insets(0, 0, 0, 0), -1, -1));
         panel2.add(panel3, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         final Spacer spacer1 = new Spacer();
-        panel3.add(spacer1, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        panel3.add(spacer1, new GridConstraints(6, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         final JLabel label1 = new JLabel();
         Font label1Font = this.$$$getFont$$$(null, -1, 16, label1.getFont());
         if (label1Font != null) label1.setFont(label1Font);
         label1.setText("Status");
-        panel3.add(label1, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel3.add(label1, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         serverStatus = new JLabel();
         Font serverStatusFont = this.$$$getFont$$$(null, -1, 16, serverStatus.getFont());
         if (serverStatusFont != null) serverStatus.setFont(serverStatusFont);
         serverStatus.setText("None");
-        panel3.add(serverStatus, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel3.add(serverStatus, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         label11 = new JLabel();
         Font label11Font = this.$$$getFont$$$(null, -1, 24, label11.getFont());
         if (label11Font != null) label11.setFont(label11Font);
@@ -331,11 +335,31 @@ public class SaveFileSync {
         importFromServerButton = new JButton();
         importFromServerButton.setEnabled(true);
         importFromServerButton.setText("Import Save From Server");
-        panel3.add(importFromServerButton, new GridConstraints(3, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel3.add(importFromServerButton, new GridConstraints(5, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         manageServerButton = new JButton();
         manageServerButton.setText("Manage Server");
         manageServerButton.setToolTipText("Manages the status and location of the data server");
-        panel3.add(manageServerButton, new GridConstraints(2, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel3.add(manageServerButton, new GridConstraints(4, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label2 = new JLabel();
+        Font label2Font = this.$$$getFont$$$(null, -1, 16, label2.getFont());
+        if (label2Font != null) label2.setFont(label2Font);
+        label2.setText("Host");
+        panel3.add(label2, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        hostNameField = new JLabel();
+        Font hostNameFieldFont = this.$$$getFont$$$(null, -1, 16, hostNameField.getFont());
+        if (hostNameFieldFont != null) hostNameField.setFont(hostNameFieldFont);
+        hostNameField.setText("None");
+        panel3.add(hostNameField, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label3 = new JLabel();
+        Font label3Font = this.$$$getFont$$$(null, -1, 16, label3.getFont());
+        if (label3Font != null) label3.setFont(label3Font);
+        label3.setText("Type");
+        panel3.add(label3, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        serverTypeField = new JLabel();
+        Font serverTypeFieldFont = this.$$$getFont$$$(null, -1, 16, serverTypeField.getFont());
+        if (serverTypeFieldFont != null) serverTypeField.setFont(serverTypeFieldFont);
+        serverTypeField.setText("None");
+        panel3.add(serverTypeField, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JScrollPane scrollPane1 = new JScrollPane();
         rootPanel.add(scrollPane1, new GridConstraints(0, 1, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         saveList = new JTable();

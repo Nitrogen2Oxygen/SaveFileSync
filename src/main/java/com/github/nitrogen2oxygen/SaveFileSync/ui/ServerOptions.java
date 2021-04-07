@@ -94,7 +94,7 @@ public class ServerOptions extends JDialog {
         } else {
             HashMap<String, String> serverData = server.getData();
             switch (server.serverDisplayName()) {
-                case "WebDav":
+                case "WebDAV":
                     cl.show(optionsPanel, "1");
                     webdavUriTextField.setText(serverData.get("uri"));
                     if (serverData.get("username") != null) {
@@ -125,7 +125,7 @@ public class ServerOptions extends JDialog {
         /* Take any front end data and send it to the server object before returning */
         if (server != null) {
                 switch (server.serverDisplayName()) {
-                    case "WebDav":
+                    case "WebDAV":
                         HashMap<String, String> newData = new HashMap<>();
                         newData.put("uri", webdavUriTextField.getText());
                         if (webdavUseAuthenticationBox.isSelected()) {
