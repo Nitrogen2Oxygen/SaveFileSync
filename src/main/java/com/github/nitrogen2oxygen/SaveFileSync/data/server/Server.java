@@ -3,7 +3,7 @@ package com.github.nitrogen2oxygen.SaveFileSync.data.server;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public abstract class Server {
+public abstract class Server implements java.io.Serializable {
     public Server() {}
 
     /* Used to identify the type in most cases */
@@ -26,4 +26,16 @@ public abstract class Server {
 
     /* Verifies if the server is working properly */
     public abstract Boolean verifyServer();
+
+    /* Create a server object */
+    public static Server ServerFactory(String name) {
+        switch (name) {
+            case "WebDav":
+                return new WebDavServer();
+            case "Google Drive":
+                return new GoogleDriveServer();
+            default:
+                return null;
+        }
+    }
 }

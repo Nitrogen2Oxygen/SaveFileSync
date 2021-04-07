@@ -6,7 +6,7 @@ public class Constants {
     public static String VERSION = "v0.1.2-alpha";
 
     public static String dataFile() {
-        return Paths.get(dataDirectory(), "data.json").toString();
+        return Paths.get(dataDirectory(), "data.ser").toString();
     }
 
     public static String dataDirectory() {

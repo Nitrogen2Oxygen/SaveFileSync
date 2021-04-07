@@ -13,7 +13,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-public class Save {
+public class Save implements java.io.Serializable {
     public File file;
     public String name;
 

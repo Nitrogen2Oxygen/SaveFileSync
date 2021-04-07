@@ -5,7 +5,7 @@ import com.github.nitrogen2oxygen.SaveFileSync.utils.DataManager;
 
 import java.util.HashMap;
 
-public class ClientData {
+public class ClientData implements java.io.Serializable {
 
     public Server server = null; // Everything we need server wise is located here
     public HashMap<String, Save> saves = new HashMap<>(); // Saves can either be retrieved from the server OR created locally.
