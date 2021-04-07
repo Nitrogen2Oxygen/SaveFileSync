@@ -14,6 +14,7 @@ import java.util.HashMap;
 /* TODO: Prevent boot time from crippling due to invalid connection */
 public class WebDavServer extends Server {
 
+    private static final long serialVersionUID = -2218215115068183298L;
     private String username;
     private String password;
     private String uri;

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class GoogleDriveServer extends Server {
+    private static final long serialVersionUID = -5783086008172637458L;
+
     public GoogleDriveServer() {
         super();
     }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public abstract class Server implements java.io.Serializable {
+    private static final long serialVersionUID = 5800662342970946726L;
+
     public Server() {}
 
     /* Used to identify the type in most cases */
