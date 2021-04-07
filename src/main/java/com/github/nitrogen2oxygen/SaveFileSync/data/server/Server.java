@@ -26,4 +26,16 @@ public abstract class Server implements java.io.Serializable {
 
     /* Verifies if the server is working properly */
     public abstract Boolean verifyServer();
+
+    /* Create a server object */
+    public static Server ServerFactory(String name) {
+        switch (name) {
+            case "WebDav":
+                return new WebDavServer();
+            case "Google Drive":
+                return new GoogleDriveServer();
+            default:
+                return null;
+        }
+    }
 }

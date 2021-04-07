@@ -2,7 +2,6 @@ package com.github.nitrogen2oxygen.SaveFileSync.ui;
 
 import com.github.nitrogen2oxygen.SaveFileSync.data.client.ClientData;
 import com.github.nitrogen2oxygen.SaveFileSync.data.server.Server;
-import com.github.nitrogen2oxygen.SaveFileSync.utils.ServerManager;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
@@ -67,7 +66,7 @@ public class ServerOptions extends JDialog {
             if (option == null || option.equals("None")) {
                 server = null; // Removes any kind of server aspect if the server is "none"
             } else {
-                server = ServerManager.ServerFactory(option); // Creates a new empty server object when changing the type
+                server = Server.ServerFactory(option); // Creates a new empty server object when changing the type
             }
             reloadUI();
         });
