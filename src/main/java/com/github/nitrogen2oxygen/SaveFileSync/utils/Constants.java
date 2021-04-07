@@ -3,7 +3,6 @@ package com.github.nitrogen2oxygen.SaveFileSync.utils;
 import java.nio.file.Paths;
 
 public class Constants {
-    public static String APP_NAME = "Save File Sync";
     public static String VERSION = "v0.1.2-alpha";
 
     public static String dataFile() {

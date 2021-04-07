@@ -4,7 +4,7 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import com.github.nitrogen2oxygen.SaveFileSync.data.client.ClientData;
 import com.github.nitrogen2oxygen.SaveFileSync.utils.Constants;
 import com.github.nitrogen2oxygen.SaveFileSync.utils.DataManager;
-import com.github.nitrogen2oxygen.SaveFileSync.ui.SaveFileSyncUI;
+import com.github.nitrogen2oxygen.SaveFileSync.ui.SaveFileSync;
 
 import javax.swing.*;
 import java.awt.*;
@@ -47,7 +47,7 @@ public class App {
 
         /* Finally, creating the actual UI frame. Communication between front and backend is iffy but we make do */
         JFrame frame = new JFrame("Save File Sync - " + Constants.VERSION);
-        frame.setContentPane(new SaveFileSyncUI(data).getRootPanel()); // The UI required a ClientData object to update the lists and such
+        frame.setContentPane(new SaveFileSync(data).getRootPanel()); // The UI required a ClientData object to update the lists and such
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
             @Override

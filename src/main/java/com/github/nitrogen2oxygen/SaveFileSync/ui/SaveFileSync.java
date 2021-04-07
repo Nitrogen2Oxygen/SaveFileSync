@@ -11,16 +11,12 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 import javax.swing.text.StyleContext;
-import javax.xml.crypto.Data;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.*;
 
 /* TODO: Create delete save file button */
-public class SaveFileSyncUI {
+public class SaveFileSync {
     private JPanel rootPanel;
     private JButton newSaveFile;
     private JButton importButton;
@@ -41,7 +37,7 @@ public class SaveFileSyncUI {
             "Status"
     };
 
-    public SaveFileSyncUI(ClientData userData) {
+    public SaveFileSync(ClientData userData) {
         data = userData;
 
         /* Create blank data table */
@@ -72,7 +68,7 @@ public class SaveFileSyncUI {
             reloadUI();
         });
         manageServerButton.addActionListener(e -> {
-            data.server = ServerManagerUI.main(data);
+            data.server = ServerOptions.main(data);
             DataManager.save(data);
             reloadUI();
         });

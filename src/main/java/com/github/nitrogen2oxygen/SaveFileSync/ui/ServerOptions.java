@@ -9,10 +9,9 @@ import com.intellij.uiDesigner.core.Spacer;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Arrays;
 import java.util.HashMap;
 
-public class ServerManagerUI extends JDialog {
+public class ServerOptions extends JDialog {
     private JPanel contentPane;
     private JButton saveButton;
     private JButton buttonCancel;
@@ -33,7 +32,7 @@ public class ServerManagerUI extends JDialog {
     private final Server serverOld; // In case the user cancels, we want to return the exact same server we started with
     public Boolean cancelled = false;
 
-    public ServerManagerUI(Server currentServer) {
+    public ServerOptions(Server currentServer) {
         this.server = currentServer;
         this.serverOld = currentServer;
 
@@ -161,7 +160,7 @@ public class ServerManagerUI extends JDialog {
     }
 
     public static Server main(ClientData data) {
-        ServerManagerUI dialog = new ServerManagerUI(data.server);
+        ServerOptions dialog = new ServerOptions(data.server);
         dialog.pack();
         dialog.setVisible(true);
         if (dialog.cancelled) return dialog.serverOld;
