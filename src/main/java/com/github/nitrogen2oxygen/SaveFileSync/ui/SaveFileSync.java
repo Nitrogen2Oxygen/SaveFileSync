@@ -14,6 +14,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.util.*;
+import java.util.zip.ZipFile;
 
 public class SaveFileSync {
     private JPanel rootPanel;
@@ -262,6 +263,7 @@ public class SaveFileSync {
                 status = "No Server";
             } else {
                 try {
+                    /* TODO: Gonna cry until this gets fixed */
                     byte[] remoteSave = data.server.getSaveData(save.name);
                     byte[] localSave = save.toZipFile();
                     if (Arrays.equals(localSave, remoteSave)) {
