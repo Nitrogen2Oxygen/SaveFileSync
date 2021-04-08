@@ -4,6 +4,7 @@ import com.github.nitrogen2oxygen.SaveFileSync.data.client.ClientData;
 
 import javax.swing.*;
 import java.io.*;
+import java.util.Objects;
 
 public class DataManager {
 
@@ -20,7 +21,7 @@ public class DataManager {
             JOptionPane.showMessageDialog(null, "An error has occurred when saving data to " + Constants.dataFile(), "Save Error!", JOptionPane.ERROR_MESSAGE);
         } finally {
             try {
-                objectOutputStream.close();
+                Objects.requireNonNull(objectOutputStream).close();
             } catch (IOException ignored) {}
         }
     }

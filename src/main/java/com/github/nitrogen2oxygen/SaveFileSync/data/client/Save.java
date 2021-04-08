@@ -15,8 +15,8 @@ import java.util.zip.ZipOutputStream;
 
 public class Save implements java.io.Serializable {
     private static final long serialVersionUID = -3053800939549922372L;
-    public File file;
-    public String name;
+    public final File file;
+    public final String name;
 
     public Save(String name, File file) {
         this.name = name;
@@ -89,7 +89,7 @@ public class Save implements java.io.Serializable {
             IOUtils.copy(in, new FileOutputStream(saveFile));
         } else {
             while (entry != null) {
-                String filePath = file.getPath() + File.separator + entry.getName().substring(name.length() + 1);;
+                String filePath = file.getPath() + File.separator + entry.getName().substring(name.length() + 1);
                 File saveFile = new File(filePath);
                 if (!saveFile.toPath().normalize().startsWith(file.getPath())) // Test if the file name is valid due to bug
                     throw new Exception("Bad Zip Entry! Aborting!");

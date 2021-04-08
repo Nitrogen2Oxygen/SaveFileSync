@@ -4,8 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class ProgressBar {
-    public JFrame frame;
-    public JProgressBar progressBar;
+    public final JFrame frame;
+    public final JProgressBar progressBar;
 
     public ProgressBar(String title) {
         frame = new JFrame(title);

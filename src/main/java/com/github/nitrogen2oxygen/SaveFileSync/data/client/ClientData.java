@@ -9,7 +9,7 @@ public class ClientData implements java.io.Serializable {
 
     private static final long serialVersionUID = 7470750048460931688L;
     public Server server = null; // Everything we need server wise is located here
-    public HashMap<String, Save> saves = new HashMap<>(); // Saves can either be retrieved from the server OR created locally.
+    public final HashMap<String, Save> saves = new HashMap<>(); // Saves can either be retrieved from the server OR created locally.
 
     public ClientData() {}
 
