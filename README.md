@@ -10,26 +10,30 @@ Here is a link to the [latest release](https://github.com/Nitrogen2Oxygen/SaveFi
 
 ### Development
 #### Requirements
-* The latest version IntelliJ IDEA (unfortunately, we need to use this for compiling the UI)
-* JDK version 11 (doesn't matter what repository)
-* Your own clone of the repository (for pull requests)
+* The latest version IntelliJ IDEA (Used for IntelliJ's UI designer)
+* JDK version 11
 
 #### Instructions
 1. Clone the repository: `git clone https://github.com/<Name>/SaveFileSync.git`
 2. Open the containing `SaveFileSync` folder as an IntelliJ project.
    The settings from the `.idea` folder should load the environment properly.
 3. Make your changes if necessary
-4. To build, simply run IntelliJ's **Build** command and run `mvn install` from the sidebar or terminal.
+4. To build, simply run `mvn install` from the terminal or sidebar
 This will package all dependencies inside the `/target/SaveFileSync.jar` file.
    For guidelines for contributing, see [Contributing](#Contributing)
 
 
 ## Usage
-**A fully functional program has yet to be complete.**
+The goal is to have a full GUI where many save files can be managed.
+The 3 target servers are WebDAV, Dropbox and Google Drive.
+A fully functional program has yet to be complete, but v0.2.0-alpha is working well with WebDAV.
+
+TL;DR I'll work on this part later
 
 ## Roadmap
 Currently, the first release is in development. The following major features need to be completed:
 * Server functionality with Google Drive
+* Server functionality with Dropbox
 * Automatic sync logic
 * Finalized UI design
 * Infinity bug fixes!!!
