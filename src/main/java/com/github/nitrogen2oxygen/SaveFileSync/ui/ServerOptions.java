@@ -27,12 +27,10 @@ public class ServerOptions extends JDialog {
     private JPasswordField webdavPasswordField;
 
     private Server server;
-    private final Server serverOld; // In case the user cancels, we want to return the exact same server we started with
     public Boolean cancelled = false;
 
     public ServerOptions(Server currentServer) {
         this.server = currentServer;
-        this.serverOld = currentServer;
 
         /* Create logic for the UI */
         DefaultComboBoxModel<String> defaultComboBoxModel = new DefaultComboBoxModel<>();
@@ -165,7 +163,7 @@ public class ServerOptions extends JDialog {
         ServerOptions dialog = new ServerOptions(data.server);
         dialog.pack();
         dialog.setVisible(true);
-        if (dialog.cancelled) return dialog.serverOld;
+        if (dialog.cancelled) return null;
         return dialog.getServer();
     }
 

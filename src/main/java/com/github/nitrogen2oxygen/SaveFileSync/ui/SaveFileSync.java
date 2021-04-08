@@ -1,6 +1,7 @@
 package com.github.nitrogen2oxygen.SaveFileSync.ui;
 
 import com.github.nitrogen2oxygen.SaveFileSync.data.client.ClientData;
+import com.github.nitrogen2oxygen.SaveFileSync.data.server.Server;
 import com.github.nitrogen2oxygen.SaveFileSync.utils.DataManager;
 import com.github.nitrogen2oxygen.SaveFileSync.data.client.Save;
 import com.intellij.uiDesigner.core.GridConstraints;
@@ -14,7 +15,6 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.util.*;
-import java.util.zip.ZipFile;
 
 public class SaveFileSync {
     private JPanel rootPanel;
@@ -68,10 +68,15 @@ public class SaveFileSync {
                         "Error!",
                         JOptionPane.ERROR_MESSAGE);
             }
+            DataManager.save(data);
             reloadUI();
         });
         manageServerButton.addActionListener(e -> {
-            data.server = ServerOptions.main(data);
+            Server newServer = ServerOptions.main(data);
+            if (newServer == null) return;
+            data.server = newServer;
+
+            /* Save and reload */
             DataManager.save(data);
             reloadUI();
         });
@@ -200,8 +205,9 @@ public class SaveFileSync {
 
     /* We reload the UI on a separate thread to prevent any kind of freezing */
     public void reloadUI() {
-        if (reloadThread != null && reloadThread.isAlive())
+        if (reloadThread != null && reloadThread.isAlive()) {
             reloadThread.interrupt();
+        }
 
         reloadThread = new Thread(() -> {
             serverStatus.setText("Connecting...");
