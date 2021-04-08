@@ -4,6 +4,7 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDarkerContrastIJTheme;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDarkerIJTheme;
 import com.github.nitrogen2oxygen.SaveFileSync.data.client.ClientData;
+import com.github.nitrogen2oxygen.SaveFileSync.ui.ProgressBar;
 import com.github.nitrogen2oxygen.SaveFileSync.utils.Constants;
 import com.github.nitrogen2oxygen.SaveFileSync.utils.DataManager;
 import com.github.nitrogen2oxygen.SaveFileSync.ui.SaveFileSync;
@@ -20,17 +21,8 @@ public class App {
         FlatMaterialDarkerContrastIJTheme.install();
 
         /* Create a progress bar */
-        JFrame loadingFrame = new JFrame("Loading Application...");
-        JProgressBar pb = new JProgressBar();
-        pb.setMinimum(0);
-        pb.setMaximum(4);
-        pb.setStringPainted(true);
-        loadingFrame.setLayout(new FlowLayout());
-        loadingFrame.getContentPane().add(pb);
-        loadingFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        loadingFrame.pack();
-        loadingFrame.setLocationRelativeTo(null);
-        loadingFrame.setVisible(true);
+        ProgressBar pb = new ProgressBar("Loading Application...");
+        pb.start();
        /* Obtain the client data from <USER_HOME>/SaveFileSync */
         File clientDataFolder = new File(Constants.dataDirectory());
         if (!clientDataFolder.isDirectory() || !clientDataFolder.exists()) {
@@ -41,11 +33,11 @@ public class App {
                    System.exit(1);
                }
         }
-        pb.setValue(1);
+        pb.setPercent(25);
 
         /* Create the data object. This object stores any kind of persistent data on the client */
         ClientData data = DataManager.load();
-        pb.setValue(2);
+        pb.setPercent(50);
 
         /* Finally, creating the actual UI frame. Communication between front and backend is iffy but we make do */
         JFrame frame = new JFrame("Save File Sync - " + Constants.VERSION);
@@ -60,10 +52,11 @@ public class App {
         });
         frame.setSize(800, 600);
         frame.setLocationRelativeTo(null);
-        pb.setValue(3);
+        pb.setPercent(75);
 
         /* Set the frame visible and load the UI */
         frame.setVisible(true);
-        loadingFrame.dispose();
+        pb.setPercent(100);
+        pb.finish();
     }
 }
