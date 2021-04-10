@@ -86,6 +86,7 @@ public class WebDavServer extends Server {
             OutputStream stream = connection.getOutputStream();
             stream.write(data);
             stream.close();
+            connection.getInputStream();
     }
 
     @Override
