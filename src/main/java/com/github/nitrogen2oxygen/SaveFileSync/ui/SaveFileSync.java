@@ -4,9 +4,11 @@ import com.github.nitrogen2oxygen.SaveFileSync.data.client.ClientData;
 import com.github.nitrogen2oxygen.SaveFileSync.data.server.Server;
 import com.github.nitrogen2oxygen.SaveFileSync.utils.DataManager;
 import com.github.nitrogen2oxygen.SaveFileSync.data.client.Save;
+import com.github.nitrogen2oxygen.SaveFileSync.utils.FileUtilities;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
+import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -14,7 +16,10 @@ import javax.swing.plaf.FontUIResource;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.StyleContext;
 import java.awt.*;
+import java.io.File;
+import java.nio.file.Files;
 import java.util.*;
+import java.util.zip.ZipFile;
 
 public class SaveFileSync {
     private JPanel rootPanel;
@@ -44,6 +49,8 @@ public class SaveFileSync {
 
         /* Create blank data table */
         DefaultTableModel dtm = new DefaultTableModel() {
+            private static final long serialVersionUID = -579065583265560521L;
+
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -242,6 +249,8 @@ public class SaveFileSync {
 
     private void setTable(HashMap<String, Save> dataSaves) {
         DefaultTableModel dtm = new DefaultTableModel() {
+            private static final long serialVersionUID = 6327117785602099879L;
+
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -261,7 +270,6 @@ public class SaveFileSync {
                     "Checking..."
             });
         }
-
         for (Save save : saves) {
             /* Get the server status */
             String status;
@@ -269,13 +277,28 @@ public class SaveFileSync {
                 status = "No Server";
             } else {
                 try {
-                    /* TODO: Gonna cry until this gets fixed */
+                    /* Create remote and local temp files */
+                    File remoteSaveFile = Files.createTempFile("SaveFileSync", ".zip").toFile();
+                    FileUtils.forceDeleteOnExit(remoteSaveFile);
+                    File localSaveFile = Files.createTempFile("SaveFileSync", ".zip").toFile();
+                    FileUtils.forceDeleteOnExit(localSaveFile);
+
+                    /* Get the file data from server and save file */
                     byte[] remoteSave = data.server.getSaveData(save.name);
                     byte[] localSave = save.toZipFile();
-                    if (Arrays.equals(localSave, remoteSave)) {
-                        status = "Synced";
-                    } else {
+                    if (remoteSave == null || Arrays.equals(remoteSave, new byte[0])) {
                         status = "Not Synced";
+                    } else if (localSave == null || Arrays.equals(localSave, new byte[0])) {
+                        status = "Not Synced";
+                    } else {
+                        /* Write to zip files */
+                        FileUtils.writeByteArrayToFile(remoteSaveFile, remoteSave);
+                        ZipFile remoteZipFile = new ZipFile(remoteSaveFile);
+                        FileUtils.writeByteArrayToFile(localSaveFile, localSave);
+                        ZipFile localZipFile = new ZipFile(localSaveFile);
+
+                        /* Compare the 2 using external script */
+                        status = FileUtilities.ZipCompare(remoteZipFile, localZipFile) ? "Synced" : "Not Synced";
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
