@@ -37,6 +37,7 @@ public class ServerOptions extends JDialog {
         defaultComboBoxModel.addElement("None");
         defaultComboBoxModel.addElement("WebDav");
         defaultComboBoxModel.addElement("Google Drive");
+        defaultComboBoxModel.addElement("Dropbox");
         defaultComboBoxModel.setSelectedItem(currentServer != null ? currentServer.serverDisplayName() : "None");
         serverTypeSelector.setModel(defaultComboBoxModel);
 
@@ -108,6 +109,9 @@ public class ServerOptions extends JDialog {
                     break;
                 case "Google Drive":
                     cl.show(optionsPanel, "2");
+                    break;
+                case "Dropbox":
+                    cl.show(optionsPanel, "3");
                     break;
             }
         }

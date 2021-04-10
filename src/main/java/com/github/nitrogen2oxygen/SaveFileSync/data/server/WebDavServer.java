@@ -64,11 +64,9 @@ public class WebDavServer extends Server {
         try {
             HttpURLConnection connection = (HttpURLConnection) getSaveURL(name + ".zip").openConnection();
             connection.setRequestMethod("GET");
-            /* Get authentication */
-            String auth = username + ":" + password;
-            byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.UTF_8));
-            String authHeaderValue = "Basic " + new String(encodedAuth);
-            connection.setRequestProperty("Authorization", authHeaderValue);
+            if (username != null) connection.setRequestProperty("Authorization", getAuthorization());
+
+            /* Handle request */
             InputStream stream = connection.getInputStream();
             return IOUtils.toByteArray(stream);
         } catch (Exception e) {
@@ -82,16 +80,12 @@ public class WebDavServer extends Server {
             HttpURLConnection connection = (HttpURLConnection) getSaveURL(name + ".zip").openConnection();
             connection.setRequestMethod("PUT");
             connection.setDoOutput(true);
-            /* Get authentication */
-            String auth = username + ":" + password;
-            byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.UTF_8));
-            String authHeaderValue = "Basic " + new String(encodedAuth);
-            connection.setRequestProperty("Authorization", authHeaderValue);
+            if (username != null) connection.setRequestProperty("Authorization", getAuthorization());
+
             /* Handle request */
             OutputStream stream = connection.getOutputStream();
             stream.write(data);
             stream.close();
-            connection.getInputStream();
     }
 
     @Override
@@ -99,11 +93,9 @@ public class WebDavServer extends Server {
         try {
             HttpURLConnection connection = (HttpURLConnection) new URL(uri).openConnection();
             connection.setRequestMethod("HEAD");
-            /* Get authentication */
-            String auth = username + ":" + password;
-            byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.UTF_8));
-            String authHeaderValue = "Basic " + new String(encodedAuth);
-            connection.setRequestProperty("Authorization", authHeaderValue);
+            if (username != null) connection.setRequestProperty("Authorization", getAuthorization());
+
+            /* Handle response code */
             int code = connection.getResponseCode();
             return code < 300;
         } catch (IOException e) {
@@ -114,7 +106,13 @@ public class WebDavServer extends Server {
 
     private URL getSaveURL(String fileName) throws IOException, URISyntaxException {
         URI base = new URL(this.uri).toURI();
-        String path = base.getPath() + "/" + URLEncoder.encode(fileName, StandardCharsets.UTF_8);
+        String path = base.getPath() + "/" + fileName.replace(" ", "%20"); // Replace the space first to bypass stupid java using a +
         return base.resolve(path).toURL();
+    }
+
+    private String getAuthorization() {
+        String auth = username + ":" + password;
+        byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.UTF_8));
+        return "Basic " + new String(encodedAuth);
     }
 }

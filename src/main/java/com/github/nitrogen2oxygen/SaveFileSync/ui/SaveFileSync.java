@@ -33,7 +33,7 @@ public class SaveFileSync {
 
     public Thread reloadThread;
     private final ClientData data;
-    private final String[] header = new String[]{
+    private static final String[] header = new String[]{
             "Name",
             "Location",
             "Status"
