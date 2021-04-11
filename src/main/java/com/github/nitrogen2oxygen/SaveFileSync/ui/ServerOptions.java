@@ -8,6 +8,8 @@ import com.intellij.uiDesigner.core.Spacer;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.HashMap;
 
 public class ServerOptions extends JDialog {
@@ -47,7 +49,12 @@ public class ServerOptions extends JDialog {
         setLocationRelativeTo(null);
         setModal(true);
         getRootPane().setDefaultButton(saveButton);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                onCancel();
+            }
+        });
 
         /* Actions ig */
         saveButton.addActionListener(e -> onOK());
