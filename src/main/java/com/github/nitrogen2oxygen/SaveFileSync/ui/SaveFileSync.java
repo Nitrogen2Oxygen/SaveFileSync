@@ -58,6 +58,7 @@ public class SaveFileSync {
         };
         dtm.setColumnIdentifiers(header);
         saveList.setModel(dtm);
+        saveList.getColumnModel().getColumn(2).setCellRenderer(new SaveDataCellRenderer());
         saveList.getTableHeader().setReorderingAllowed(false);
 
         /* Load the UI */
@@ -263,6 +264,7 @@ public class SaveFileSync {
         };
         dtm.setColumnIdentifiers(header);
         saveList.setModel(dtm);
+        saveList.getColumnModel().getColumn(2).setCellRenderer(new SaveDataCellRenderer());
         saveList.getTableHeader().setReorderingAllowed(false);
 
         ArrayList<Save> saves = new ArrayList<>();
