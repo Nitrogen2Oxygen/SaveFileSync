@@ -102,7 +102,7 @@ public class ServerOptions extends JDialog {
         dropboxLinkButton.addActionListener(e -> {
             try {
                 if (dropboxVerifier == null) dropboxVerifier = DropboxServer.getVerifier();
-                String url = "https://www.dropbox.com/oauth2/authorize?response_type=code&client_id=i136jjbqxg4aaci&code_challenge=" + DropboxServer.getChallenge(dropboxVerifier) + "&code_challenge_method=S256";
+                String url = "https://www.dropbox.com/oauth2/authorize?response_type=code&token_access_type=offline&client_id=i136jjbqxg4aaci&code_challenge=" + DropboxServer.getChallenge(dropboxVerifier) + "&code_challenge_method=S256";
                 Desktop.getDesktop().browse(new URI(url));
             } catch (IOException | URISyntaxException | NoSuchAlgorithmException ee) {
                 ee.printStackTrace();

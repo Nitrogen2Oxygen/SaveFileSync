@@ -13,14 +13,17 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.security.Timestamp;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Date;
 import java.util.HashMap;
 
 public class DropboxServer extends Server {
     private static final long serialVersionUID = 8175793937439456805L;
-    private static String bearerKey;
-    private static String challenge;
+    private String bearerKey;
+    private String refreshKey;
+    private Date expires;
     private String verifier;
     private String apiKey;
 
@@ -86,27 +89,58 @@ public class DropboxServer extends Server {
     }
 
     private String getBearerKey() {
-        if (bearerKey != null) return bearerKey;
         try {
-            HttpURLConnection connection = (HttpURLConnection) new URL("https://api.dropboxapi.com/oauth2/token").openConnection();
-            connection.setDoOutput(true);
-            connection.setRequestMethod("POST");
-            connection.setInstanceFollowRedirects(false);
-            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            connection.setRequestProperty("charset", "utf-8");
-            byte[] postData = ("code=" + apiKey + "&grant_type=authorization_code&client_id=i136jjbqxg4aaci&code_verifier=" + verifier).getBytes(StandardCharsets.UTF_8);
-            connection.setRequestProperty("Content-Length", Integer.toString(postData.length));
-            connection.setUseCaches(false);
-            OutputStream outputStream = connection.getOutputStream();
-            outputStream.write(postData);
-            outputStream.close();
+            if (bearerKey == null || refreshKey == null) {
+                HttpURLConnection connection = (HttpURLConnection) new URL("https://api.dropboxapi.com/oauth2/token").openConnection();
+                connection.setDoOutput(true);
+                connection.setRequestMethod("POST");
+                connection.setInstanceFollowRedirects(false);
+                connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                connection.setRequestProperty("charset", "utf-8");
+                byte[] postData = ("code=" + apiKey + "&grant_type=authorization_code&client_id=i136jjbqxg4aaci&code_verifier=" + verifier).getBytes(StandardCharsets.UTF_8);
+                connection.setRequestProperty("Content-Length", Integer.toString(postData.length));
+                connection.setUseCaches(false);
+                OutputStream outputStream = connection.getOutputStream();
+                outputStream.write(postData);
+                outputStream.close();
 
-            InputStream stream = connection.getInputStream();
-            String json = IOUtils.toString(stream, StandardCharsets.UTF_8);
-            JSONObject object = new JSONObject(json);
-            String token = object.getString("access_token");
-            bearerKey = token;
-            return token;
+                InputStream stream = connection.getInputStream();
+                String json = IOUtils.toString(stream, StandardCharsets.UTF_8);
+                JSONObject object = new JSONObject(json);
+                String token = object.getString("access_token");
+                String refresh = object.getString("refresh_token");
+                String expiresTime = object.getString("expires_in");
+                expires = new Date(System.currentTimeMillis() + Integer.parseInt(expiresTime));
+                refreshKey = refresh;
+                bearerKey = token;
+                return token;
+            } else if (expires.before(new Date())) {
+                /* Regenerate the bearer token when it expires */
+                HttpURLConnection connection = (HttpURLConnection) new URL("https://api.dropboxapi.com/oauth2/token").openConnection();
+                connection.setDoOutput(true);
+                connection.setRequestMethod("POST");
+                connection.setInstanceFollowRedirects(false);
+                connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                connection.setRequestProperty("charset", "utf-8");
+                byte[] postData = ("grant_type=refresh_token&client_id=i136jjbqxg4aaci&refresh_token=" + refreshKey + "&code_verifier=" + verifier).getBytes(StandardCharsets.UTF_8);
+                connection.setRequestProperty("Content-Length", Integer.toString(postData.length));
+                connection.setUseCaches(false);
+                OutputStream outputStream = connection.getOutputStream();
+                outputStream.write(postData);
+                outputStream.close();
+
+                InputStream stream = connection.getInputStream();
+                String json = IOUtils.toString(stream, StandardCharsets.UTF_8);
+                JSONObject object = new JSONObject(json);
+                String token = object.getString("access_token");
+                String expiresTime = object.getString("expires_in");
+                expires = new Date(System.currentTimeMillis() + Integer.parseInt(expiresTime));
+                bearerKey = token;
+                return token;
+            } else {
+                /* Return the current bearer token if its not expired */
+                return bearerKey;
+            }
         } catch (IOException | JSONException e) {
             e.printStackTrace();
             return "";
