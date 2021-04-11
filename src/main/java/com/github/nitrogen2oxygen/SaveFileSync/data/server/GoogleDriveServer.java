@@ -17,7 +17,7 @@ public class GoogleDriveServer extends Server {
 
     @Override
     public String getHostName() {
-        return "google.com";
+        return "drive.google.com";
     }
 
     @Override

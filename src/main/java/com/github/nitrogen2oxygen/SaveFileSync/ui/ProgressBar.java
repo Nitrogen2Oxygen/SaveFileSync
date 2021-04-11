@@ -15,7 +15,7 @@ public class ProgressBar {
         progressBar.setStringPainted(true);
         frame.setLayout(new FlowLayout());
         frame.getContentPane().add(progressBar);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // TODO: Customize this
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setLocationRelativeTo(null);
     }

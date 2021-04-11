@@ -34,13 +34,16 @@ public class ServerOptions extends JDialog {
     private JPasswordField webdavPasswordField;
     private JTextField dropboxCodeField;
     private JButton dropboxLinkButton;
+    private JPanel emptyPanel;
 
     private Server server;
+    private Server oldServer;
     public Boolean cancelled = false;
     private String dropboxVerifier;
 
     public ServerOptions(Server currentServer) {
         this.server = currentServer;
+        this.oldServer = currentServer;
 
         /* Create logic for the UI */
         DefaultComboBoxModel<String> defaultComboBoxModel = new DefaultComboBoxModel<>();
@@ -184,9 +187,11 @@ public class ServerOptions extends JDialog {
 
                     server.setData(dropboxData);
                     break;
+                default:
+                    server = null;
             }
-            Boolean isValid = server.verifyServer();
-            if (isValid == null || !isValid) {
+            boolean isValid = server != null ? server.verifyServer() : true;
+            if (!isValid) {
                 JOptionPane.showMessageDialog(this,
                         "Something is wrong with your config. Check to make sure that all the credentials are correct.",
                         "Error",
@@ -206,11 +211,15 @@ public class ServerOptions extends JDialog {
         return server;
     }
 
+    public Server getOldServer() {
+        return oldServer;
+    }
+
     public static Server main(ClientData data) {
         ServerOptions dialog = new ServerOptions(data.getServer());
         dialog.pack();
         dialog.setVisible(true);
-        if (dialog.cancelled) return null;
+        if (dialog.cancelled) return dialog.getOldServer();
         return dialog.getServer();
     }
 
@@ -303,6 +312,9 @@ public class ServerOptions extends JDialog {
         dropboxLinkButton = new JButton();
         dropboxLinkButton.setText("Login with Dropbox");
         dropboxPanel.add(dropboxLinkButton, new GridConstraints(1, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        emptyPanel = new JPanel();
+        emptyPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        optionsPanel.add(emptyPanel, "0");
     }
 
     /**
@@ -311,4 +323,5 @@ public class ServerOptions extends JDialog {
     public JComponent $$$getRootComponent$$$() {
         return contentPane;
     }
+
 }

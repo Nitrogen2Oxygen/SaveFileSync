@@ -80,7 +80,6 @@ public class SaveFileSync {
         });
         manageServerButton.addActionListener(e -> {
             Server newServer = ServerOptions.main(data);
-            if (newServer == null) return;
             data.setServer(newServer);
 
             /* Save and reload */
