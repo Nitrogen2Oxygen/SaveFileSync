@@ -18,7 +18,7 @@ public class App {
         FlatMaterialDarkerContrastIJTheme.install();
 
         /* Create a progress bar */
-        ProgressBar pb = new ProgressBar("Loading Application...");
+        ProgressBar pb = new ProgressBar("Loading " + Constants.APP_NAME + "...");
         pb.start();
        /* Obtain the client data from <USER_HOME>/SaveFileSync */
         File clientDataFolder = new File(Constants.dataDirectory());
@@ -37,7 +37,7 @@ public class App {
         pb.setPercent(50);
 
         /* Finally, creating the actual UI frame. Communication between front and backend is iffy but we make do */
-        JFrame frame = new JFrame("Save File Sync - " + Constants.VERSION);
+        JFrame frame = new JFrame(Constants.APP_NAME + " - " + Constants.VERSION);
         frame.setContentPane(new SaveFileSync(data).getRootPanel()); // The UI required a ClientData object to update the lists and such
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
