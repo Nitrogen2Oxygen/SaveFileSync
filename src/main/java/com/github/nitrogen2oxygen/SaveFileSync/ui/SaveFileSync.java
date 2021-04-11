@@ -161,6 +161,7 @@ public class SaveFileSync {
                 Save save = ServerImport.main(data.server, newSaves);
                 if (save != null) {
                     data.addSave(save);
+                    reloadUI();
                 }
             } catch (Exception ee) {
                 JOptionPane.showMessageDialog(SwingUtilities.getRoot((Component) e.getSource()),

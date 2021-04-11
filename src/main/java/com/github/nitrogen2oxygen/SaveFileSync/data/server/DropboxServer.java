@@ -1,6 +1,7 @@
 package com.github.nitrogen2oxygen.SaveFileSync.data.server;
 
 import org.apache.commons.io.IOUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -55,7 +56,35 @@ public class DropboxServer extends Server {
 
     @Override
     public ArrayList<String> getSaveNames() {
-        return null;
+        try {
+            JSONObject json = new JSONObject();
+            json.put("path", "");
+            json.put("include_non_downloadable_files", false);
+            HttpURLConnection connection = (HttpURLConnection) new URL("https://api.dropboxapi.com/2/files/list_folder").openConnection();
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Authorization", "Bearer " + getBearerKey());
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setDoOutput(true);
+            OutputStream outputStream = connection.getOutputStream();
+            outputStream.write(json.toString().getBytes(StandardCharsets.UTF_8));
+            outputStream.close();
+
+            InputStream stream = connection.getInputStream();
+            JSONObject response = new JSONObject(IOUtils.toString(stream, StandardCharsets.UTF_8));
+            JSONArray entries = response.getJSONArray("entries");
+            ArrayList<String> names = new ArrayList<>();
+            for (int i = 0; i < entries.length(); i++) {
+                JSONObject entry = entries.getJSONObject(i);
+                String name = entry.getString("name");
+                if (!name.endsWith(".zip")) continue;
+                names.add(name.substring(0, name.length() - 4));
+            }
+            return names;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
     }
 
     @Override
@@ -167,7 +196,7 @@ public class DropboxServer extends Server {
                 JSONObject object = new JSONObject(json);
                 String token = object.getString("access_token");
                 String expiresTime = object.getString("expires_in");
-                expires = new Date(System.currentTimeMillis() + Integer.parseInt(expiresTime));
+                expires = new Date(System.currentTimeMillis() + (Integer.parseInt(expiresTime) * 1000L));
                 bearerKey = token;
                 return token;
             } else {

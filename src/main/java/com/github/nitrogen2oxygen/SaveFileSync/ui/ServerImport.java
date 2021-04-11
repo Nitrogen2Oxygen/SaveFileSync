@@ -5,20 +5,27 @@ import com.github.nitrogen2oxygen.SaveFileSync.data.server.Server;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
+import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class ServerImport extends JDialog {
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
     private JList<String> importList;
-    private JCheckBox isZipFileCheckBox;
     private JButton browseButton;
     private JTextField saveLocationTextField;
+    private JLabel descriptionTextField;
 
     private final Server server;
     private Boolean cancelled;
@@ -49,19 +56,10 @@ public class ServerImport extends JDialog {
         }
         importList.setModel(model);
         importList.addListSelectionListener(e -> {
-            String selected = importList.getSelectedValue();
-            isZipFileCheckBox.setSelected(false);
             saveLocationTextField.setText("");
-            if (selected.endsWith(".zip")) {
-                // Is zip file, should ask if its a directory
-                isZipFileCheckBox.setEnabled(true);
-                browseButton.setEnabled(true);
-                saveLocationTextField.setEnabled(true);
-            } else {
-                // Normal file, don't bother asking
-                browseButton.setEnabled(true);
-                saveLocationTextField.setEnabled(true);
-            }
+            descriptionTextField.setText("");
+            browseButton.setEnabled(true);
+            saveLocationTextField.setEnabled(true);
         });
         browseButton.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
@@ -69,6 +67,8 @@ public class ServerImport extends JDialog {
             int chooseFile = fileChooser.showOpenDialog(this);
             if (chooseFile == JFileChooser.APPROVE_OPTION) {
                 saveLocationTextField.setText(fileChooser.getSelectedFile().toString());
+                descriptionTextField.setText("The file/directory inside of the zip will be saved inside: " + fileChooser.getSelectedFile().toString());
+                pack();
             }
         });
     }
@@ -79,9 +79,37 @@ public class ServerImport extends JDialog {
     }
 
     private void onOK() {
-        // Grab the data
         cancelled = false;
-        dispose();
+        // Get the save file
+        try {
+            String name = importList.getSelectedValue();
+            File savePath = new File(saveLocationTextField.getText());
+            File saveFile;
+            File tempSave = Files.createTempFile("SaveFileSync", ".zip").toFile();
+            FileUtils.forceDeleteOnExit(tempSave);
+            byte[] saveData = server.getSaveData(name);
+            FileUtils.writeByteArrayToFile(tempSave, saveData);
+            ZipFile zipFile = new ZipFile(tempSave);
+            // Check if directory or file, then get the name
+            Enumeration<? extends ZipEntry> e = zipFile.entries();
+            String firstEntry = e.nextElement().getName();
+            saveFile = new File(Paths.get(savePath.getPath(), firstEntry).toString());
+            if (firstEntry.contains(File.separator) || firstEntry.contains("/")) {
+                saveFile.mkdirs();
+            } else {
+                saveFile.getParentFile().mkdirs();
+                saveFile.createNewFile();
+            }
+            save = new Save(name, saveFile);
+            dispose();
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "Cannot import save data! If this continues, please submit an issue on the GitHub!",
+                    "Error!",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+
     }
 
     public Save getSave() {
@@ -140,21 +168,17 @@ public class ServerImport extends JDialog {
         panel3.add(panel4, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         final JLabel label1 = new JLabel();
         label1.setText("Save Location");
-        panel4.add(label1, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label2 = new JLabel();
-        label2.setText("Is directory (zipped)?");
-        panel4.add(label2, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        isZipFileCheckBox = new JCheckBox();
-        isZipFileCheckBox.setEnabled(false);
-        isZipFileCheckBox.setText("");
-        panel4.add(isZipFileCheckBox, new GridConstraints(0, 1, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel4.add(label1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         browseButton = new JButton();
         browseButton.setEnabled(false);
         browseButton.setText("Browse...");
-        panel4.add(browseButton, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel4.add(browseButton, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         saveLocationTextField = new JTextField();
         saveLocationTextField.setEnabled(false);
-        panel4.add(saveLocationTextField, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        panel4.add(saveLocationTextField, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        descriptionTextField = new JLabel();
+        descriptionTextField.setText("");
+        panel4.add(descriptionTextField, new GridConstraints(1, 0, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     /**

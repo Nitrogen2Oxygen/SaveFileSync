@@ -94,10 +94,12 @@ public class Save implements java.io.Serializable {
                 if (!saveFile.toPath().normalize().startsWith(file.getPath())) // Test if the file name is valid due to bug
                     throw new Exception("Bad Zip Entry! Aborting!");
                 if (!entry.isDirectory()) {
+                    saveFile.getParentFile().mkdirs();
+                    saveFile.createNewFile();
                     IOUtils.copy(in, new FileOutputStream(saveFile));
                 } else {
                     File dir = new File(filePath);
-                    dir.mkdir();
+                    dir.mkdirs();
                 }
 
                 in.closeEntry();
