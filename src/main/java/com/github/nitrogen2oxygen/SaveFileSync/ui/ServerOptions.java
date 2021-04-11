@@ -208,7 +208,7 @@ public class ServerOptions extends JDialog {
     }
 
     public static Server main(ClientData data) {
-        ServerOptions dialog = new ServerOptions(data.server);
+        ServerOptions dialog = new ServerOptions(data.getServer());
         dialog.pack();
         dialog.setVisible(true);
         if (dialog.cancelled) return null;
@@ -312,5 +312,4 @@ public class ServerOptions extends JDialog {
     public JComponent $$$getRootComponent$$$() {
         return contentPane;
     }
-
 }

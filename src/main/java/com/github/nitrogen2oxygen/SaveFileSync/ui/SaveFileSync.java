@@ -81,14 +81,14 @@ public class SaveFileSync {
         manageServerButton.addActionListener(e -> {
             Server newServer = ServerOptions.main(data);
             if (newServer == null) return;
-            data.server = newServer;
+            data.setServer(newServer);
 
             /* Save and reload */
             DataManager.save(data);
             reloadUI();
         });
         exportButton.addActionListener(e -> {
-            if (data.server == null || !data.server.verifyServer()) {
+            if (data.getServer() == null || !data.getServer().verifyServer()) {
                 JOptionPane.showMessageDialog(SwingUtilities.getRoot((Component) e.getSource()), "Cannot export files without a working data server!", "Export Error!", JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -96,11 +96,11 @@ public class SaveFileSync {
             if (rows.length == 0) return;
             for (int i : rows) {
                 String name = (String) saveList.getValueAt(i, 0);
-                Save save = data.saves.get(name);
+                Save save = data.getSaves().get(name);
                 try {
                     byte[] rawData = save.toZipFile();
                     if (!Arrays.equals(rawData, new byte[0])) {
-                        data.server.uploadSaveData(save.name, rawData);
+                        data.getServer().uploadSaveData(save.name, rawData);
                     } else {
                         JOptionPane.showMessageDialog(SwingUtilities.getRoot((Component) e.getSource()), "Cannot export an empty save file!", name + " Export Error!", JOptionPane.ERROR_MESSAGE);
                         return;
@@ -115,7 +115,7 @@ public class SaveFileSync {
             JOptionPane.showMessageDialog(SwingUtilities.getRoot((Component) e.getSource()), "Successfully uploaded files(s)!", "Success!", JOptionPane.INFORMATION_MESSAGE);
         });
         importButton.addActionListener(e -> {
-            if (data.server == null || !data.server.verifyServer()) {
+            if (data.getServer() == null || !data.getServer().verifyServer()) {
                 JOptionPane.showMessageDialog(SwingUtilities.getRoot((Component) e.getSource()), "Cannot import files without a working data server!", "Import Error!", JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -123,9 +123,9 @@ public class SaveFileSync {
             if (rows.length == 0) return;
             for (int i : rows) {
                 String name = (String) saveList.getValueAt(i, 0);
-                Save save = data.saves.get(name);
+                Save save = data.getSaves().get(name);
                 try {
-                    byte[] remoteSaveData = data.server.getSaveData(save.name);
+                    byte[] remoteSaveData = data.getServer().getSaveData(save.name);
                     save.overwriteData(remoteSaveData);
                 } catch (Exception ee) {
                     ee.printStackTrace();
@@ -145,11 +145,11 @@ public class SaveFileSync {
         });
         importFromServerButton.addActionListener(e -> {
             ArrayList<String> newSaves = new ArrayList<>();
-            ArrayList<String> serverSaveNames = data.server.getSaveNames();
+            ArrayList<String> serverSaveNames = data.getServer().getSaveNames();
             ArrayList<String> localSaveNames = new ArrayList<>();
-            Set<String> localKeys = data.saves.keySet();
+            Set<String> localKeys = data.getSaves().keySet();
             for (String key : localKeys) {
-                localSaveNames.add(data.saves.get(key).name);
+                localSaveNames.add(data.getSaves().get(key).name);
             }
             /* Check for any new saves on the server that aren't in the local file system */
             for (String serverName : serverSaveNames) {
@@ -158,7 +158,7 @@ public class SaveFileSync {
                 }
             }
             try {
-                Save save = ServerImport.main(data.server, newSaves);
+                Save save = ServerImport.main(data.getServer(), newSaves);
                 if (save != null) {
                     data.addSave(save);
                     reloadUI();
@@ -174,7 +174,7 @@ public class SaveFileSync {
             int selected = saveList.getSelectedRow();
             String name = (String) saveList.getValueAt(selected, 0);
             /* Remove save file */
-            data.saves.remove(name);
+            data.getSaves().remove(name);
 
             /* Save and reload */
             DataManager.save(data);
@@ -183,12 +183,12 @@ public class SaveFileSync {
         editButton.addActionListener(e -> {
             int selected = saveList.getSelectedRow();
             String name = (String) saveList.getValueAt(selected, 0);
-            Save save = data.saves.get(name);
+            Save save = data.getSaves().get(name);
             String oldName = save.name;
             Save newSave = NewSaveFile.edit(save.name, save.file.getPath());
             if (newSave == null) return;
             try {
-                data.saves.remove(oldName);
+                data.getSaves().remove(oldName);
                 data.addSave(newSave);
             } catch (Exception ee) {
                 JOptionPane.showMessageDialog(SwingUtilities.getRoot((Component) e.getSource()),
@@ -220,13 +220,13 @@ public class SaveFileSync {
         reloadThread = new Thread(() -> {
             serverStatus.setText("Connecting...");
             serverStatus.setForeground(Color.white);
-            hostNameField.setText(data.server != null ? data.server.getHostName() : "None");
-            serverTypeField.setText(data.server != null ? data.server.serverDisplayName() : "None");
+            hostNameField.setText(data.getServer() != null ? data.getServer().getHostName() : "None");
+            serverTypeField.setText(data.getServer() != null ? data.getServer().serverDisplayName() : "None");
 
             // Set server status
             Boolean serverOnline;
-            if (data.server != null) {
-                Boolean status = data.server.verifyServer();
+            if (data.getServer() != null) {
+                Boolean status = data.getServer().verifyServer();
                 if (status == null) {
                     serverStatus.setText("None");
                     serverOnline = null;
@@ -247,7 +247,7 @@ public class SaveFileSync {
             }
 
             // Reload the saves table
-            setTable(data.saves, serverOnline);
+            setTable(data.getSaves(), serverOnline);
         });
 
         reloadThread.start();
@@ -288,7 +288,7 @@ public class SaveFileSync {
                     FileUtils.forceDeleteOnExit(localSaveFile);
 
                     /* Get the file data from server and save file */
-                    byte[] remoteSave = data.server.getSaveData(save.name);
+                    byte[] remoteSave = data.getServer().getSaveData(save.name);
                     byte[] localSave = save.toZipFile();
                     if (remoteSave == null || Arrays.equals(remoteSave, new byte[0])) {
                         status = "Not Synced";
@@ -449,5 +449,4 @@ public class SaveFileSync {
     public JComponent $$$getRootComponent$$$() {
         return rootPanel;
     }
-
 }

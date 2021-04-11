@@ -8,10 +8,22 @@ import java.util.HashMap;
 public class ClientData implements java.io.Serializable {
 
     private static final long serialVersionUID = 7470750048460931688L;
-    public Server server = null; // Everything we need server wise is located here
-    public final HashMap<String, Save> saves = new HashMap<>(); // Saves can either be retrieved from the server OR created locally.
+    private Server server = null; // Everything we need server wise is located here
+    private final HashMap<String, Save> saves = new HashMap<>(); // Saves can either be retrieved from the server OR created locally.
 
     public ClientData() {}
+
+    public Server getServer() {
+        return server;
+    }
+
+    public void setServer(Server server) {
+        this.server = server;
+    }
+
+    public HashMap<String, Save> getSaves() {
+        return saves;
+    }
 
     public void addSave(Save save) throws Exception {
         // Check for duplicates FIRST
