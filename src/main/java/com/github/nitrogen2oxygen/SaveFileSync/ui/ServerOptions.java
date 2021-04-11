@@ -34,7 +34,6 @@ public class ServerOptions extends JDialog {
     private JPasswordField webdavPasswordField;
     private JTextField dropboxCodeField;
     private JButton dropboxLinkButton;
-    private JLabel dropboxLink;
 
     private Server server;
     public Boolean cancelled = false;

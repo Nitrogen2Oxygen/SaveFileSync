@@ -121,6 +121,7 @@ public class ServerImport extends JDialog {
         ServerImport dialog = new ServerImport(server, names);
         dialog.pack();
         dialog.setVisible(true);
+        if (dialog.cancelled) return null;
         return dialog.getSave();
     }
 
