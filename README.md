@@ -3,10 +3,11 @@ A Java application for syncing files between different computers through a mutua
 
 ## Installation
 ### Production
-On the first major release, a JAR file will be uploaded to GitHub.
-Downloading and running with an instance of Java will work.
+**WARNING: This project is currently in an early alpha stage.
+It's not recommended to use pre-release versions due to limited bug testing.**
 
-Here is a link to the [latest release](https://github.com/Nitrogen2Oxygen/SaveFileSync/releases/latest)
+1. Download the [latest jar release](https://github.com/Nitrogen2Oxygen/SaveFileSync/releases/latest) (SaveFileSync.jar)
+2. Run the .jar file using the latest version of Java
 
 ### Development
 #### Requirements
@@ -24,23 +25,22 @@ This will package all dependencies inside the `/target/SaveFileSync.jar` file.
 
 
 ## Usage
-The goal is to have a full GUI where many save files can be managed.
-The 3 target servers are WebDAV, Dropbox and Google Drive.
-A fully functional program has yet to be complete, but v0.2.0-alpha is working well with WebDAV.
+The UI allows for you to set directories or individual files as save-files.
+The files can be exported or imported manually to a data server. 
+Other computers can import saves from the data server using the app and store them in the necessary locations.
 
-TL;DR I'll work on this part later
 
 ## Roadmap
 Currently, the first release is in development. The following major features need to be completed:
 * Server functionality with Google Drive
-* Server functionality with Dropbox
-* Automatic sync logic
+* Theming and other custom settings
 * Finalized UI design
 * Infinity bug fixes!!!
 
 ## Contributing
 Anyone is welcome to contribute to the project.
 At the project's current state, there are no guidelines for contributions.
+Just submit a pull request, and I'll work with you.
 
 ## License
 [MIT](https://github.com/Nitrogen2Oxygen/SaveFileSync/blob/main/LICENSE)
