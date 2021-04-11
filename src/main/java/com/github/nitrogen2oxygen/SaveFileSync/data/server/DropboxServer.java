@@ -13,7 +13,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.security.Timestamp;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
@@ -40,13 +39,15 @@ public class DropboxServer extends Server {
     @Override
     public void setData(HashMap<String, String> args) {
         apiKey = args.get("apiKey");
+        bearerKey = null;
+        refreshKey = null;
+        expires = null;
         verifier = args.get("verifier");
     }
 
     @Override
     public HashMap<String, String> getData() {
         HashMap<String, String> data = new HashMap<>();
-        /* We need to convert our api token from oauth1 to oauth2 */
         data.put("apiKey", apiKey);
         data.put("verifier", verifier);
         return data;
@@ -59,7 +60,21 @@ public class DropboxServer extends Server {
 
     @Override
     public byte[] getSaveData(String name) {
-        return new byte[0];
+        String path = "/" + name + ".zip";
+        try {
+            JSONObject json = new JSONObject();
+            json.put("path", path);
+            HttpURLConnection connection = (HttpURLConnection) new URL("https://content.dropboxapi.com/2/files/download").openConnection();
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Authorization", "Bearer " + getBearerKey());
+            connection.setRequestProperty("Dropbox-API-Arg", json.toString());
+
+            InputStream response = connection.getInputStream();
+            return IOUtils.toByteArray(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
@@ -122,7 +137,7 @@ public class DropboxServer extends Server {
                 connection.setInstanceFollowRedirects(false);
                 connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 connection.setRequestProperty("charset", "utf-8");
-                byte[] postData = ("grant_type=refresh_token&client_id=i136jjbqxg4aaci&refresh_token=" + refreshKey + "&code_verifier=" + verifier).getBytes(StandardCharsets.UTF_8);
+                byte[] postData = ("grant_type=refresh_token&client_id=i136jjbqxg4aaci&refresh_token=" + refreshKey).getBytes(StandardCharsets.UTF_8);
                 connection.setRequestProperty("Content-Length", Integer.toString(postData.length));
                 connection.setUseCaches(false);
                 OutputStream outputStream = connection.getOutputStream();
