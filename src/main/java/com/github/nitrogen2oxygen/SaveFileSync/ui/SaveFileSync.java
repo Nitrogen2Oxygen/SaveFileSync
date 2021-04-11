@@ -222,32 +222,37 @@ public class SaveFileSync {
             hostNameField.setText(data.server != null ? data.server.getHostName() : "None");
             serverTypeField.setText(data.server != null ? data.server.serverDisplayName() : "None");
 
-            // Reload the saves table
-            setTable(data.saves);
-
             // Set server status
+            Boolean serverOnline;
             if (data.server != null) {
                 Boolean status = data.server.verifyServer();
                 if (status == null) {
                     serverStatus.setText("None");
+                    serverOnline = null;
                     serverStatus.setForeground(Color.white);
                 } else if (status) {
+                    serverOnline = true;
                     serverStatus.setText("Online");
                     serverStatus.setForeground(Color.green);
                 } else {
+                    serverOnline = false;
                     serverStatus.setText("Offline");
                     serverStatus.setForeground(Color.red);
                 }
             } else {
+                serverOnline = null;
                 serverStatus.setText("None");
                 serverStatus.setForeground(Color.white);
             }
+
+            // Reload the saves table
+            setTable(data.saves, serverOnline);
         });
 
         reloadThread.start();
     }
 
-    private void setTable(HashMap<String, Save> dataSaves) {
+    private void setTable(HashMap<String, Save> dataSaves, Boolean serverOnline) {
         DefaultTableModel dtm = new DefaultTableModel() {
             private static final long serialVersionUID = 6327117785602099879L;
 
@@ -267,15 +272,13 @@ public class SaveFileSync {
             dtm.addRow(new Object[]{
                     save.name,
                     save.file,
-                    "Checking..."
+                    serverOnline == null ? "No Server" : (serverOnline ? "Checking..." : "Offline")
             });
         }
-        for (Save save : saves) {
-            /* Get the server status */
-            String status;
-            if (data.server == null) {
-                status = "No Server";
-            } else {
+        if (serverOnline != null && serverOnline) {
+            for (Save save : saves) {
+                /* Get the server status */
+                String status;
                 try {
                     /* Create remote and local temp files */
                     File remoteSaveFile = Files.createTempFile("SaveFileSync", ".zip").toFile();
@@ -304,13 +307,13 @@ public class SaveFileSync {
                     e.printStackTrace();
                     status = "Error";
                 }
-            }
-            /* Set the status on the table */
-            for (int i = 0; i < dtm.getRowCount(); i++) {
-                if (dtm.getValueAt(i, 0).equals(save.name)) {
-                    // Set the status
-                    dtm.setValueAt(status, i, 2);
-                    break;
+                /* Set the status on the table */
+                for (int i = 0; i < dtm.getRowCount(); i++) {
+                    if (dtm.getValueAt(i, 0).equals(save.name)) {
+                        // Set the status
+                        dtm.setValueAt(status, i, 2);
+                        break;
+                    }
                 }
             }
         }
