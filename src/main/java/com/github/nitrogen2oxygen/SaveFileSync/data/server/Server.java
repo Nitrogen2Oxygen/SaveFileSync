@@ -39,6 +39,8 @@ public abstract class Server implements java.io.Serializable {
                 return new WebDavServer();
             case "Google Drive":
                 return new GoogleDriveServer();
+            case "Dropbox":
+                return new DropboxServer();
             default:
                 return null;
         }

@@ -1,6 +1,7 @@
 package com.github.nitrogen2oxygen.SaveFileSync.ui;
 
 import com.github.nitrogen2oxygen.SaveFileSync.data.client.ClientData;
+import com.github.nitrogen2oxygen.SaveFileSync.data.server.DropboxServer;
 import com.github.nitrogen2oxygen.SaveFileSync.data.server.Server;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
@@ -10,6 +11,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 public class ServerOptions extends JDialog {
@@ -20,16 +25,20 @@ public class ServerOptions extends JDialog {
     private JPanel optionsPanel;
     private JPanel webdavPanel;
     private JPanel googleDrivePanel;
-    private JPanel emptyPanel;
+    private JPanel dropboxPanel;
     private JLabel webdavLabel;
     private JLabel googleDriveLabel;
     private JTextField webdavUsernameTextField;
     private JTextField webdavUriTextField;
     private JCheckBox webdavUseAuthenticationBox;
     private JPasswordField webdavPasswordField;
+    private JTextField dropboxCodeField;
+    private JButton dropboxLinkButton;
+    private JLabel dropboxLink;
 
     private Server server;
     public Boolean cancelled = false;
+    private String dropboxVerifier;
 
     public ServerOptions(Server currentServer) {
         this.server = currentServer;
@@ -90,6 +99,15 @@ public class ServerOptions extends JDialog {
                 webdavPasswordField.setText("");
             }
         });
+        dropboxLinkButton.addActionListener(e -> {
+            try {
+                if (dropboxVerifier == null) dropboxVerifier = DropboxServer.getVerifier();
+                String url = "https://www.dropbox.com/oauth2/authorize?response_type=code&client_id=i136jjbqxg4aaci&code_challenge=" + DropboxServer.getChallenge(dropboxVerifier) + "&code_challenge_method=S256";
+                Desktop.getDesktop().browse(new URI(url));
+            } catch (IOException | URISyntaxException | NoSuchAlgorithmException ee) {
+                ee.printStackTrace();
+            }
+        });
     }
 
     private void reloadUI() {
@@ -119,6 +137,12 @@ public class ServerOptions extends JDialog {
                     break;
                 case "Dropbox":
                     cl.show(optionsPanel, "3");
+                    if (serverData.get("apiKey") != null) {
+                        dropboxCodeField.setText(serverData.get("apiKey"));
+                    }
+                    if (serverData.get("verifier") != null) {
+                        dropboxVerifier = serverData.get("verifier");
+                    }
                     break;
             }
         }
@@ -132,22 +156,35 @@ public class ServerOptions extends JDialog {
 
         /* Take any front end data and send it to the server object before returning */
         if (server != null) {
-                switch (server.serverDisplayName()) {
-                    case "WebDAV":
-                        HashMap<String, String> newData = new HashMap<>();
-                        newData.put("uri", webdavUriTextField.getText());
-                        if (webdavUseAuthenticationBox.isSelected()) {
-                            if (webdavUsernameTextField.getText().length() > 0 && webdavPasswordField.getPassword().length > 0) {
-                                newData.put("username", webdavUsernameTextField.getText());
-                                newData.put("password", new String(webdavPasswordField.getPassword()));
-                            } else {
-                                JOptionPane.showMessageDialog(null, "A username AND password is required if you're using WebDav authentication!", "Error!", JOptionPane.ERROR_MESSAGE);
-                                return;
-                            }
+            switch (server.serverDisplayName()) {
+                case "WebDAV":
+                    HashMap<String, String> newData = new HashMap<>();
+                    newData.put("uri", webdavUriTextField.getText());
+                    if (webdavUseAuthenticationBox.isSelected()) {
+                        if (webdavUsernameTextField.getText().length() > 0 && webdavPasswordField.getPassword().length > 0) {
+                            newData.put("username", webdavUsernameTextField.getText());
+                            newData.put("password", new String(webdavPasswordField.getPassword()));
+                        } else {
+                            JOptionPane.showMessageDialog(null, "A username AND password is required if you're using WebDav authentication!", "Error!", JOptionPane.ERROR_MESSAGE);
+                            return;
                         }
-                        server.setData(newData);
-                    case "Google Drive":
-                        break;
+                    }
+                    server.setData(newData);
+                    break;
+                case "Google Drive":
+                    break;
+                case "Dropbox":
+                    HashMap<String, String> dropboxData = new HashMap<>();
+                    if (dropboxCodeField.getText().length() == 0) {
+                        JOptionPane.showMessageDialog(null, "A valid key is required to continue", "Error!", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    } else {
+                        dropboxData.put("apiKey", dropboxCodeField.getText());
+                        dropboxData.put("verifier", dropboxVerifier);
+                    }
+
+                    server.setData(dropboxData);
+                    break;
             }
             Boolean isValid = server.verifyServer();
             if (isValid == null || !isValid) {
@@ -253,9 +290,22 @@ public class ServerOptions extends JDialog {
         googleDrivePanel.add(googleDriveLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer2 = new Spacer();
         googleDrivePanel.add(spacer2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        emptyPanel = new JPanel();
-        emptyPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        optionsPanel.add(emptyPanel, "0");
+        dropboxPanel = new JPanel();
+        dropboxPanel.setLayout(new GridLayoutManager(5, 1, new Insets(0, 0, 0, 0), -1, -1));
+        optionsPanel.add(dropboxPanel, "3");
+        final JLabel label5 = new JLabel();
+        label5.setText("Click here and login with dropbox:");
+        dropboxPanel.add(label5, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final Spacer spacer3 = new Spacer();
+        dropboxPanel.add(spacer3, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        final JLabel label6 = new JLabel();
+        label6.setText("Paste the code recieved here:");
+        dropboxPanel.add(label6, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        dropboxCodeField = new JTextField();
+        dropboxPanel.add(dropboxCodeField, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        dropboxLinkButton = new JButton();
+        dropboxLinkButton.setText("Login with Dropbox");
+        dropboxPanel.add(dropboxLinkButton, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     /**
