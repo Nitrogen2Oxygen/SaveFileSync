@@ -79,7 +79,25 @@ public class DropboxServer extends Server {
 
     @Override
     public void uploadSaveData(String name, byte[] data) throws Exception {
+        String path = "/" + name + ".zip";
+        JSONObject json = new JSONObject();
+        json.put("path", path);
+        json.put("mode", "overwrite");
+        json.put("autorename", false);
+        json.put("mute", false);
+        json.put("strict_conflict", false);
 
+        HttpURLConnection connection = (HttpURLConnection) new URL("https://content.dropboxapi.com/2/files/upload").openConnection();
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Authorization", "Bearer " + getBearerKey());
+        connection.setRequestProperty("Dropbox-API-Arg", json.toString());
+        connection.setRequestProperty("Content-Type", "application/octet-stream");
+        connection.setDoOutput(true);
+        OutputStream outputStream = connection.getOutputStream();
+        outputStream.write(data);
+        outputStream.close();
+
+        connection.getInputStream();
     }
 
     @Override
