@@ -66,7 +66,7 @@ public class SaveFileSync {
 
         /* Action listeners */
         newSaveFile.addActionListener(e -> {
-            Save save = NewSaveFile.main();
+            Save save = SaveFileManager.main();
             if (save == null) return;
             try {
                 data.addSave(save);
@@ -185,7 +185,7 @@ public class SaveFileSync {
             String name = (String) saveList.getValueAt(selected, 0);
             Save save = data.getSaves().get(name);
             String oldName = save.name;
-            Save newSave = NewSaveFile.edit(save.name, save.file.getPath());
+            Save newSave = SaveFileManager.edit(save.name, save.file.getPath());
             if (newSave == null) return;
             try {
                 data.getSaves().remove(oldName);

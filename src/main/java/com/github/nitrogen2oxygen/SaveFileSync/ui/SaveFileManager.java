@@ -12,7 +12,7 @@ import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class NewSaveFile extends JDialog {
+public class SaveFileManager extends JDialog {
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
@@ -23,13 +23,13 @@ public class NewSaveFile extends JDialog {
     private JLabel locationLabel;
 
     private Save save;
-    public Boolean saveChanges = true;
+    public Boolean saveChanges;
 
-    public NewSaveFile() {
+    public SaveFileManager() {
         this("", "");
     }
 
-    public NewSaveFile(String name, String path) {
+    public SaveFileManager(String name, String path) {
         setContentPane(contentPane);
         setTitle("New Save File");
         setLocationRelativeTo(null);
@@ -45,6 +45,7 @@ public class NewSaveFile extends JDialog {
                         "All data fields are required!", "Error!", JOptionPane.ERROR_MESSAGE);
                 return;
             }
+            /* We only want letters, numbers and spaces. This prevents chaos */
             Pattern pattern = Pattern.compile("^[A-Za-z0-9 ]*$");
             Matcher matcher = pattern.matcher(nameTextField.getText());
             if (!matcher.matches()) {
@@ -83,7 +84,7 @@ public class NewSaveFile extends JDialog {
     }
 
     public static Save main() {
-        NewSaveFile dialog = new NewSaveFile();
+        SaveFileManager dialog = new SaveFileManager();
         if (!dialog.saveChanges) return null;
         dialog.pack();
         dialog.setVisible(true);
@@ -91,7 +92,7 @@ public class NewSaveFile extends JDialog {
     }
 
     public static Save edit(String name, String path) {
-        NewSaveFile dialog = new NewSaveFile(name, path);
+        SaveFileManager dialog = new SaveFileManager(name, path);
         if (!dialog.saveChanges) return null;
         dialog.pack();
         dialog.setVisible(true);

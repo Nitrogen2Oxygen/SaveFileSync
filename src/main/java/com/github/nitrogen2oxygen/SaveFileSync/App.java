@@ -21,7 +21,7 @@ public class App {
         ProgressBar pb = new ProgressBar("Loading " + Constants.APP_NAME + "...");
         pb.start();
        /* Obtain the client data from <USER_HOME>/SaveFileSync */
-        File clientDataFolder = new File(Constants.dataDirectory());
+        File clientDataFolder = new File(Constants.getDataDirectory());
         if (!clientDataFolder.isDirectory() || !clientDataFolder.exists()) {
             boolean mkdir = clientDataFolder.mkdir();
                if (!mkdir) {

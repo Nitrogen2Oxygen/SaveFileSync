@@ -3,6 +3,7 @@ package com.github.nitrogen2oxygen.SaveFileSync.ui;
 import com.github.nitrogen2oxygen.SaveFileSync.data.client.ClientData;
 import com.github.nitrogen2oxygen.SaveFileSync.data.server.DropboxServer;
 import com.github.nitrogen2oxygen.SaveFileSync.data.server.Server;
+import com.github.nitrogen2oxygen.SaveFileSync.utils.Constants;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
@@ -104,7 +105,11 @@ public class ServerOptions extends JDialog {
         dropboxLinkButton.addActionListener(e -> {
             try {
                 if (dropboxVerifier == null) dropboxVerifier = DropboxServer.getVerifier();
-                String url = "https://www.dropbox.com/oauth2/authorize?response_type=code&token_access_type=offline&client_id=i136jjbqxg4aaci&code_challenge=" + DropboxServer.getChallenge(dropboxVerifier) + "&code_challenge_method=S256";
+                String url = "https://www.dropbox.com/oauth2/authorize" +
+                        "?response_type=code&token_access_type=offline" +
+                        "&client_id=" + Constants.DROPBOX_APP_ID +
+                        "&code_challenge=" + DropboxServer.getChallenge(dropboxVerifier) +
+                        "&code_challenge_method=S256";
                 Desktop.getDesktop().browse(new URI(url));
             } catch (IOException | URISyntaxException | NoSuchAlgorithmException ee) {
                 ee.printStackTrace();
