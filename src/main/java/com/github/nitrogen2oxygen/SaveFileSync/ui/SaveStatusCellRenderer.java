@@ -5,7 +5,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
-public class SaveDataCellRenderer extends DefaultTableCellRenderer {
+public class SaveStatusCellRenderer extends DefaultTableCellRenderer {
     private static final long serialVersionUID = 6933813177684306960L; // So my IDE stops yelling
 
     @Override

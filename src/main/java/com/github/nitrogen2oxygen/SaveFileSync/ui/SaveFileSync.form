@@ -81,6 +81,7 @@
                     <properties>
                       <enabled value="true"/>
                       <text value="Import Save From Server"/>
+                      <toolTipText value="Imports a save file from the data server"/>
                     </properties>
                   </component>
                   <component id="a3c5d" class="javax.swing.JButton" binding="manageServerButton" default-binding="true">
@@ -156,6 +157,7 @@
         <properties>
           <enabled value="false"/>
           <text value="Remove"/>
+          <toolTipText value="Removes a save file from the local list of saves"/>
         </properties>
       </component>
       <component id="a230" class="javax.swing.JButton" binding="editButton">
@@ -165,6 +167,7 @@
         <properties>
           <enabled value="false"/>
           <text value="Edit"/>
+          <toolTipText value="Edits a save file's name and location (changing the name can cause desyncing)"/>
         </properties>
       </component>
       <component id="5cb41" class="javax.swing.JButton" binding="exportButton" default-binding="true">

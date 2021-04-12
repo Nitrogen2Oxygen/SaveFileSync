@@ -9,6 +9,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class NewSaveFile extends JDialog {
     private JPanel contentPane;
@@ -41,6 +43,13 @@ public class NewSaveFile extends JDialog {
             if (locationTextField.getText().length() == 0 || nameTextField.getText().length() == 0) {
                 JOptionPane.showMessageDialog(SwingUtilities.getRoot((Component) e.getSource()),
                         "All data fields are required!", "Error!", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            Pattern pattern = Pattern.compile("^[A-Za-z0-9 ]*$");
+            Matcher matcher = pattern.matcher(nameTextField.getText());
+            if (!matcher.matches()) {
+                JOptionPane.showMessageDialog(SwingUtilities.getRoot((Component) e.getSource()),
+                        "Name cannot contain any special characters!", "Error!", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             File file = new File(locationTextField.getText());

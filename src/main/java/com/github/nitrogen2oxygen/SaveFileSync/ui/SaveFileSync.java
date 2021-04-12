@@ -36,7 +36,7 @@ public class SaveFileSync {
     private JLabel hostNameField;
     private JLabel serverTypeField;
 
-    public Thread reloadThread;
+    private static Thread reloadThread;
     private final ClientData data;
     private static final String[] header = new String[]{
             "Name",
@@ -58,7 +58,7 @@ public class SaveFileSync {
         };
         dtm.setColumnIdentifiers(header);
         saveList.setModel(dtm);
-        saveList.getColumnModel().getColumn(2).setCellRenderer(new SaveDataCellRenderer());
+        saveList.getColumnModel().getColumn(2).setCellRenderer(new SaveStatusCellRenderer());
         saveList.getTableHeader().setReorderingAllowed(false);
 
         /* Load the UI */
@@ -264,7 +264,7 @@ public class SaveFileSync {
         };
         dtm.setColumnIdentifiers(header);
         saveList.setModel(dtm);
-        saveList.getColumnModel().getColumn(2).setCellRenderer(new SaveDataCellRenderer());
+        saveList.getColumnModel().getColumn(2).setCellRenderer(new SaveStatusCellRenderer());
         saveList.getTableHeader().setReorderingAllowed(false);
 
         ArrayList<Save> saves = new ArrayList<>();
@@ -372,6 +372,7 @@ public class SaveFileSync {
         importFromServerButton = new JButton();
         importFromServerButton.setEnabled(true);
         importFromServerButton.setText("Import Save From Server");
+        importFromServerButton.setToolTipText("Imports a save file from the data server");
         panel3.add(importFromServerButton, new GridConstraints(5, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         manageServerButton = new JButton();
         manageServerButton.setText("Manage Server");
@@ -405,10 +406,12 @@ public class SaveFileSync {
         removeButton = new JButton();
         removeButton.setEnabled(false);
         removeButton.setText("Remove");
+        removeButton.setToolTipText("Removes a save file from the local list of saves");
         rootPanel.add(removeButton, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         editButton = new JButton();
         editButton.setEnabled(false);
         editButton.setText("Edit");
+        editButton.setToolTipText("Edits a save file's name and location (changing the name can cause desyncing)");
         rootPanel.add(editButton, new GridConstraints(3, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         exportButton = new JButton();
         exportButton.setEnabled(false);
@@ -450,4 +453,5 @@ public class SaveFileSync {
     public JComponent $$$getRootComponent$$$() {
         return rootPanel;
     }
+
 }
