@@ -72,7 +72,7 @@ public class SaveFileSync {
                 data.addSave(save);
             } catch (Exception ee) {
                 JOptionPane.showMessageDialog(SwingUtilities.getRoot((Component) e.getSource()),
-                        "Error creating new save file!",
+                        ee.getMessage(),
                         "Error!",
                         JOptionPane.ERROR_MESSAGE);
             }

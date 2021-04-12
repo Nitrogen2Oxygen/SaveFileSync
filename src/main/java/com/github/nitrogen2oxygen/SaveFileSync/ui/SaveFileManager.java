@@ -39,26 +39,7 @@ public class SaveFileManager extends JDialog {
         locationTextField.setText(path);
 
         buttonCancel.addActionListener(e -> onCancel());
-        buttonOK.addActionListener(e -> {
-            if (locationTextField.getText().length() == 0 || nameTextField.getText().length() == 0) {
-                JOptionPane.showMessageDialog(SwingUtilities.getRoot((Component) e.getSource()),
-                        "All data fields are required!", "Error!", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            /* We only want letters, numbers and spaces. This prevents chaos */
-            Pattern pattern = Pattern.compile("^[A-Za-z0-9 ]*$");
-            Matcher matcher = pattern.matcher(nameTextField.getText());
-            if (!matcher.matches()) {
-                JOptionPane.showMessageDialog(SwingUtilities.getRoot((Component) e.getSource()),
-                        "Name cannot contain any special characters!", "Error!", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            File file = new File(locationTextField.getText());
-            if (!file.exists()) return;
-            String inputName = nameTextField.getText();
-            save = new Save(inputName, file);
-            dispose();
-        });
+        buttonOK.addActionListener(e -> onOK());
 
         // call onCancel() when cross is clicked
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -83,19 +64,41 @@ public class SaveFileManager extends JDialog {
         dispose();
     }
 
+    private void onOK() {
+        saveChanges = true;
+        if (locationTextField.getText().length() == 0 || nameTextField.getText().length() == 0) {
+            JOptionPane.showMessageDialog(this,
+                    "All data fields are required!", "Error!", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        /* We only want letters, numbers and spaces. This prevents chaos */
+        Pattern pattern = Pattern.compile("^[A-Za-z0-9 ]*$");
+        Matcher matcher = pattern.matcher(nameTextField.getText());
+        if (!matcher.matches()) {
+            JOptionPane.showMessageDialog(this,
+                    "Name cannot contain any special characters!", "Error!", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        File file = new File(locationTextField.getText());
+        if (!file.exists()) return;
+        String inputName = nameTextField.getText();
+        save = new Save(inputName, file);
+        dispose();
+    }
+
     public static Save main() {
         SaveFileManager dialog = new SaveFileManager();
-        if (!dialog.saveChanges) return null;
         dialog.pack();
         dialog.setVisible(true);
+        if (!dialog.saveChanges) return null;
         return dialog.save;
     }
 
     public static Save edit(String name, String path) {
         SaveFileManager dialog = new SaveFileManager(name, path);
-        if (!dialog.saveChanges) return null;
         dialog.pack();
         dialog.setVisible(true);
+        if (!dialog.saveChanges) return null;
         return dialog.save;
     }
 
