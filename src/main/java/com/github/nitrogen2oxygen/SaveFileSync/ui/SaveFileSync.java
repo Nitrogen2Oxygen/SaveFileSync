@@ -17,6 +17,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.zip.ZipFile;
@@ -281,12 +282,16 @@ public class SaveFileSync {
             for (Save save : saves) {
                 /* Get the server status */
                 String status;
+                File remoteSaveFile = null;
+                File localSaveFile = null;
+                ZipFile remoteZipFile = null;
+                ZipFile localZipFile = null;
                 try {
                     /* Create remote and local temp files */
-                    File remoteSaveFile = Files.createTempFile("SaveFileSync", ".zip").toFile();
-                    FileUtils.forceDeleteOnExit(remoteSaveFile);
-                    File localSaveFile = Files.createTempFile("SaveFileSync", ".zip").toFile();
-                    FileUtils.forceDeleteOnExit(localSaveFile);
+                    remoteSaveFile = Files.createTempFile("SaveFileSync", ".zip").toFile();
+                    remoteSaveFile.deleteOnExit();
+                    localSaveFile = Files.createTempFile("SaveFileSync", ".zip").toFile();
+                    localSaveFile.deleteOnExit();
 
                     /* Get the file data from server and save file */
                     byte[] remoteSave = data.getServer().getSaveData(save.name);
@@ -298,16 +303,31 @@ public class SaveFileSync {
                     } else {
                         /* Write to zip files */
                         FileUtils.writeByteArrayToFile(remoteSaveFile, remoteSave);
-                        ZipFile remoteZipFile = new ZipFile(remoteSaveFile);
+                        remoteZipFile = new ZipFile(remoteSaveFile);
                         FileUtils.writeByteArrayToFile(localSaveFile, localSave);
-                        ZipFile localZipFile = new ZipFile(localSaveFile);
+                        localZipFile = new ZipFile(localSaveFile);
 
                         /* Compare the 2 using external script */
                         status = FileUtilities.ZipCompare(remoteZipFile, localZipFile) ? "Synced" : "Not Synced";
+
+                        /* Cleanup */
+                        remoteZipFile.close();
+                        remoteSaveFile.delete();
+                        localZipFile.close();
+                        localSaveFile.delete();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    status = "Error";
+                    try {
+                        if (remoteZipFile != null) remoteZipFile.close();
+                        if (localZipFile != null) localZipFile.close();
+                    } catch (IOException ee) {
+                        ee.printStackTrace();
+                    } finally {
+                        if (localSaveFile != null) localSaveFile.delete();
+                        if (remoteSaveFile != null) remoteSaveFile.delete();
+                        status = "Error";
+                    }
                 }
                 /* Set the status on the table */
                 for (int i = 0; i < dtm.getRowCount(); i++) {

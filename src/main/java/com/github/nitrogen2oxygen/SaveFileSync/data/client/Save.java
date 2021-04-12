@@ -30,7 +30,7 @@ public class Save implements java.io.Serializable {
 
         /* Create a temporary zip file */
         File tmpFile = Files.createTempFile("SaveFileSync", ".zip").toFile();
-        FileUtils.forceDeleteOnExit(tmpFile); // It never likes deleting itself so we force it to
+        tmpFile.deleteOnExit();
 
         /* Write to the file */
         ZipOutputStream out = new ZipOutputStream(new FileOutputStream(tmpFile));
@@ -51,10 +51,14 @@ public class Save implements java.io.Serializable {
                 out.closeEntry();
             }
         }
+
+        /* Cleanup */
         out.close();
+        byte[] data = Files.readAllBytes(tmpFile.toPath());
+        tmpFile.delete();
 
         /* Return the result */
-        return Files.readAllBytes(tmpFile.toPath());
+        return data;
     }
 
     public void overwriteData(byte[] data) throws Exception {
@@ -75,7 +79,7 @@ public class Save implements java.io.Serializable {
 
         /* Create temporary file to download the zip file from */
         File tmpFile = Files.createTempFile("SaveFileSync", ".zip").toFile();
-        FileUtils.forceDeleteOnExit(tmpFile); // It never likes deleting itself so we force it to
+        tmpFile.deleteOnExit();
         FileUtils.writeByteArrayToFile(tmpFile, data);
 
         /* Extract zip to original folder */
@@ -106,6 +110,9 @@ public class Save implements java.io.Serializable {
                 entry = in.getNextEntry();
             }
         }
+
+        /* Cleanup */
         in.close();
+        tmpFile.delete();
     }
 }
