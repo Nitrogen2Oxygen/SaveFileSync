@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.nitrogen2oxygen</groupId>
     <artifactId>SaveFileSync</artifactId>
-    <version>v0.3.0-alpha</version>
+    <version>v0.3.1-alpha</version>
     <name>SaveFileSync</name>
     <packaging>jar</packaging>
     <description>An application for syncing game data/save files between computers.</description>
