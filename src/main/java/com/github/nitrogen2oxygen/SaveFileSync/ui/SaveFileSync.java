@@ -101,7 +101,7 @@ public class SaveFileSync {
                 try {
                     byte[] rawData = save.toZipFile();
                     if (!Arrays.equals(rawData, new byte[0])) {
-                        data.getServer().uploadSaveData(save.name, rawData);
+                        data.getServer().uploadSaveData(save.getName(), rawData);
                     } else {
                         JOptionPane.showMessageDialog(SwingUtilities.getRoot((Component) e.getSource()), "Cannot export an empty save file!", name + " Export Error!", JOptionPane.ERROR_MESSAGE);
                         return;
@@ -126,7 +126,7 @@ public class SaveFileSync {
                 String name = (String) saveList.getValueAt(i, 0);
                 Save save = data.getSaves().get(name);
                 try {
-                    byte[] remoteSaveData = data.getServer().getSaveData(save.name);
+                    byte[] remoteSaveData = data.getServer().getSaveData(save.getName());
                     save.overwriteData(remoteSaveData);
                 } catch (Exception ee) {
                     ee.printStackTrace();
@@ -150,7 +150,7 @@ public class SaveFileSync {
             ArrayList<String> localSaveNames = new ArrayList<>();
             Set<String> localKeys = data.getSaves().keySet();
             for (String key : localKeys) {
-                localSaveNames.add(data.getSaves().get(key).name);
+                localSaveNames.add(data.getSaves().get(key).getName());
             }
             /* Check for any new saves on the server that aren't in the local file system */
             for (String serverName : serverSaveNames) {
@@ -185,8 +185,8 @@ public class SaveFileSync {
             int selected = saveList.getSelectedRow();
             String name = (String) saveList.getValueAt(selected, 0);
             Save save = data.getSaves().get(name);
-            String oldName = save.name;
-            Save newSave = SaveFileManager.edit(save.name, save.file.getPath());
+            String oldName = save.getName();
+            Save newSave = SaveFileManager.edit(save.getName(), save.getFile().getPath());
             if (newSave == null) return;
             try {
                 data.getSaves().remove(oldName);
@@ -273,8 +273,8 @@ public class SaveFileSync {
             Save save = dataSaves.get(saveName);
             saves.add(save);
             dtm.addRow(new Object[]{
-                    save.name,
-                    save.file,
+                    save.getName(),
+                    save.getFile(),
                     serverOnline == null ? "No Server" : (serverOnline ? "Checking..." : "Offline")
             });
         }
@@ -294,7 +294,7 @@ public class SaveFileSync {
                     localSaveFile.deleteOnExit();
 
                     /* Get the file data from server and save file */
-                    byte[] remoteSave = data.getServer().getSaveData(save.name);
+                    byte[] remoteSave = data.getServer().getSaveData(save.getName());
                     byte[] localSave = save.toZipFile();
                     if (remoteSave == null || Arrays.equals(remoteSave, new byte[0])) {
                         status = "Not Synced";
@@ -331,7 +331,7 @@ public class SaveFileSync {
                 }
                 /* Set the status on the table */
                 for (int i = 0; i < dtm.getRowCount(); i++) {
-                    if (dtm.getValueAt(i, 0).equals(save.name)) {
+                    if (dtm.getValueAt(i, 0).equals(save.getName())) {
                         // Set the status
                         dtm.setValueAt(status, i, 2);
                         break;

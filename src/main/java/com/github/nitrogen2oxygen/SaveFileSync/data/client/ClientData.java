@@ -29,14 +29,14 @@ public class ClientData implements java.io.Serializable {
         // Check for duplicates FIRST
         for (String saveName : (this.saves.keySet())) {
             Save currentSave = this.saves.get(saveName);
-            if (currentSave.name.equals(save.name)) throw new Exception("Duplicate name detected. Please use unique identifiers for each save file.");
-            if (currentSave.file.toString().equals(save.file.toString())) throw new Exception("Duplicate location detected. This save file is already in the system");
-            if (currentSave.file.getPath().contains(save.file.getPath())
-                    || save.file.getPath().contains(currentSave.file.getPath())) {
+            if (currentSave.getName().equals(save.getName())) throw new Exception("Duplicate name detected. Please use unique identifiers for each save file.");
+            if (currentSave.getFile().toString().equals(save.getFile().toString())) throw new Exception("Duplicate location detected. This save file is already in the system");
+            if (currentSave.getFile().getPath().contains(save.getFile().getPath())
+                    || save.getFile().getPath().contains(currentSave.getFile().getPath())) {
                 throw new Exception("One location includes another. Please do not sync files in the same path");
             }
         }
-        this.saves.put(save.name, save);
+        this.saves.put(save.getName(), save);
         DataManager.save(this);
     }
 }

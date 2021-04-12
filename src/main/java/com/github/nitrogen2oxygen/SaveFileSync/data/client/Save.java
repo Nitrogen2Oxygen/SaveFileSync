@@ -15,12 +15,20 @@ import java.util.zip.ZipOutputStream;
 
 public class Save implements java.io.Serializable {
     private static final long serialVersionUID = -3053800939549922372L;
-    public final File file;
-    public final String name;
+    private final File file;
+    private final String name;
 
     public Save(String name, File file) {
         this.name = name;
         this.file = file;
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public byte[] toZipFile() throws Exception {
