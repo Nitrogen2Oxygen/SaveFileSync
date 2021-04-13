@@ -4,7 +4,7 @@ import javax.swing.*;
 
 public class Settings implements java.io.Serializable {
     private static final long serialVersionUID = 6143707056688916780L;
-    public Theme theme;
+    private Theme theme;
 
     public Settings() {
         theme = Themes.getDefault();

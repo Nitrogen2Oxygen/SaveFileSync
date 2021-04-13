@@ -2,6 +2,7 @@ package com.github.nitrogen2oxygen.SaveFileSync.ui;
 
 import com.github.nitrogen2oxygen.SaveFileSync.client.Settings;
 import com.github.nitrogen2oxygen.SaveFileSync.client.Theme;
+import com.github.nitrogen2oxygen.SaveFileSync.client.Themes;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
@@ -33,8 +34,27 @@ public class ChangeSettings extends JDialog {
         for (Theme theme : Theme.values()) {
             themeModel.addElement(theme);
         }
-        themeModel.setSelectedItem(settings.theme);
+        themeModel.setSelectedItem(settings.getTheme());
         themeSelector.setModel(themeModel);
+        themeSelector.setRenderer(new ListCellRenderer<>() {
+
+            private final JLabel label = new JLabel();
+
+
+            @Override
+            public Component getListCellRendererComponent(JList<? extends Theme> list, Theme value, int index, boolean isSelected, boolean cellHasFocus) {
+                label.setText(Themes.getThemeName(value));
+                label.setOpaque(true);
+                if (isSelected) {
+                    label.setForeground(list.getSelectionForeground());
+                    label.setBackground(list.getSelectionBackground());
+                } else {
+                    label.setForeground(list.getForeground());
+                    label.setBackground(list.getBackground());
+                }
+                return label;
+            }
+        });
 
         buttonOK.addActionListener(e -> onOK());
         buttonCancel.addActionListener(e -> onCancel());
