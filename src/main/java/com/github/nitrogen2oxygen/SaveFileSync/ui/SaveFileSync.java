@@ -1,5 +1,6 @@
 package com.github.nitrogen2oxygen.SaveFileSync.ui;
 
+import com.github.nitrogen2oxygen.SaveFileSync.App;
 import com.github.nitrogen2oxygen.SaveFileSync.client.ClientData;
 import com.github.nitrogen2oxygen.SaveFileSync.utils.ButtonEvents;
 import com.github.nitrogen2oxygen.SaveFileSync.client.Save;
@@ -15,6 +16,8 @@ import javax.swing.plaf.FontUIResource;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.StyleContext;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -35,6 +38,7 @@ public class SaveFileSync {
     private JButton editButton;
     private JLabel hostNameField;
     private JLabel serverTypeField;
+    private JButton settingsButton;
 
     private static Thread reloadThread;
     private final ClientData data;
@@ -79,6 +83,7 @@ public class SaveFileSync {
         importFromServerButton.addActionListener(e -> ButtonEvents.serverImport(data, this));
         removeButton.addActionListener(e -> ButtonEvents.removeSave(data, this));
         editButton.addActionListener(e -> ButtonEvents.editSave(data, this));
+        settingsButton.addActionListener(e -> ButtonEvents.changeSettings(data, this));
     }
 
     public JPanel getRootPanel() {
@@ -100,6 +105,9 @@ public class SaveFileSync {
             serverStatus.setForeground(Color.white);
             hostNameField.setText(data.getServer() != null ? data.getServer().getHostName() : "None");
             serverTypeField.setText(data.getServer() != null ? data.getServer().serverDisplayName() : "None");
+
+            // Reload the theme
+            SwingUtilities.updateComponentTreeUI(App.getFrame());
 
             // Set server status
             Boolean serverOnline;
@@ -318,6 +326,9 @@ public class SaveFileSync {
         importButton.setText("Import");
         importButton.setToolTipText("Imports selected files from the server");
         rootPanel.add(importButton, new GridConstraints(2, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        settingsButton = new JButton();
+        settingsButton.setText("Settings");
+        rootPanel.add(settingsButton, new GridConstraints(1, 0, 3, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     /**

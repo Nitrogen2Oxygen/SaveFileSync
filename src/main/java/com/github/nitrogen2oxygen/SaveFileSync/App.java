@@ -1,6 +1,5 @@
 package com.github.nitrogen2oxygen.SaveFileSync;
 
-import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDarkerContrastIJTheme;
 import com.github.nitrogen2oxygen.SaveFileSync.client.ClientData;
 import com.github.nitrogen2oxygen.SaveFileSync.ui.ProgressBar;
 import com.github.nitrogen2oxygen.SaveFileSync.utils.Constants;
@@ -13,10 +12,9 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 
 public class App {
+    private static JFrame frame;
 
     public static void main(String[] args) {
-        FlatMaterialDarkerContrastIJTheme.install();
-
         /* Create a progress bar */
         ProgressBar pb = new ProgressBar("Loading " + Constants.APP_NAME + "...");
         pb.start();
@@ -34,10 +32,11 @@ public class App {
 
         /* Create the data object. This object stores any kind of persistent data on the client */
         ClientData data = DataManager.load();
+        data.getSettings().apply(); // Apply the settings object at startup
         pb.setPercent(50);
 
         /* Finally, creating the actual UI frame. Communication between front and backend is iffy but we make do */
-        JFrame frame = new JFrame(Constants.APP_NAME + " - " + Constants.VERSION);
+        frame = new JFrame(Constants.APP_NAME + " - " + Constants.VERSION);
         frame.setContentPane(new SaveFileSync(data).getRootPanel()); // The UI required a ClientData object to update the lists and such
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
@@ -47,7 +46,7 @@ public class App {
                 System.exit(0);
             }
         });
-        frame.setSize(800, 600);
+        frame.pack();
         frame.setLocationRelativeTo(null);
         pb.setPercent(75);
 
@@ -55,5 +54,9 @@ public class App {
         frame.setVisible(true);
         pb.setPercent(100);
         pb.finish();
+    }
+
+    public static JFrame getFrame() {
+        return frame;
     }
 }

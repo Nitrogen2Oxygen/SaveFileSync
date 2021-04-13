@@ -2,11 +2,9 @@ package com.github.nitrogen2oxygen.SaveFileSync.utils;
 
 import com.github.nitrogen2oxygen.SaveFileSync.client.ClientData;
 import com.github.nitrogen2oxygen.SaveFileSync.client.Save;
+import com.github.nitrogen2oxygen.SaveFileSync.client.Settings;
 import com.github.nitrogen2oxygen.SaveFileSync.server.Server;
-import com.github.nitrogen2oxygen.SaveFileSync.ui.SaveFileManager;
-import com.github.nitrogen2oxygen.SaveFileSync.ui.SaveFileSync;
-import com.github.nitrogen2oxygen.SaveFileSync.ui.ServerImport;
-import com.github.nitrogen2oxygen.SaveFileSync.ui.ServerOptions;
+import com.github.nitrogen2oxygen.SaveFileSync.ui.*;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -172,6 +170,14 @@ public class ButtonEvents {
         }
 
         /* Save and reload */
+        DataManager.save(data);
+        ui.reloadUI();
+    }
+
+    public static void changeSettings(ClientData data, SaveFileSync ui) {
+        Settings newSettings = ChangeSettings.main(data.getSettings());
+        if (newSettings == null) return;
+        data.setSettings(newSettings);
         DataManager.save(data);
         ui.reloadUI();
     }

@@ -10,9 +10,12 @@ public class ClientData implements java.io.Serializable {
 
     private static final long serialVersionUID = 7470750048460931688L;
     private Server server = null; // Everything we need server wise is located here
+    private Settings settings; // The client settings includes any kind of extra data the user manually sets
     private final HashMap<String, Save> saves = new HashMap<>(); // Saves can either be retrieved from the server OR created locally.
 
-    public ClientData() {}
+    public ClientData() {
+        settings = new Settings();
+    }
 
     public Server getServer() {
         return server;
@@ -20,6 +23,16 @@ public class ClientData implements java.io.Serializable {
 
     public void setServer(Server server) {
         this.server = server;
+    }
+
+    public Settings getSettings() {
+        if (settings == null) settings = new Settings();
+        return settings;
+    }
+
+    public void setSettings(Settings settings) {
+        this.settings = settings;
+        settings.apply();
     }
 
     public HashMap<String, Save> getSaves() {
