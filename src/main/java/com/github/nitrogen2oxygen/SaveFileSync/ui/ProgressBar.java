@@ -8,6 +8,10 @@ public class ProgressBar {
     public final JProgressBar progressBar;
 
     public ProgressBar(String title) {
+        this(title, null);
+    }
+
+    public ProgressBar(String title, Component relativeTo) {
         frame = new JFrame(title);
         progressBar = new JProgressBar();
         progressBar.setMinimum(0);
@@ -17,7 +21,7 @@ public class ProgressBar {
         frame.getContentPane().add(progressBar);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
-        frame.setLocationRelativeTo(null);
+        frame.setLocationRelativeTo(relativeTo);
     }
 
     public void start() {

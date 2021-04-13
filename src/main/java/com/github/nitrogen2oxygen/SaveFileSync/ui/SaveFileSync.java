@@ -39,7 +39,7 @@ public class SaveFileSync {
 
     private static Thread reloadThread;
     private final ClientData data;
-    private static final String[] header = new String[]{
+    private static final String[] saveListHeaders = new String[]{
             "Name",
             "Location",
             "Status"
@@ -50,17 +50,15 @@ public class SaveFileSync {
 
         /* Create blank data table */
         DefaultTableModel dtm = new DefaultTableModel() {
-            private static final long serialVersionUID = -579065583265560521L;
-
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
-        };
-        dtm.setColumnIdentifiers(header);
+        }; // Prevents the cells from being moved
+        dtm.setColumnIdentifiers(saveListHeaders);
         saveList.setModel(dtm);
-        saveList.getColumnModel().getColumn(2).setCellRenderer(new SaveStatusCellRenderer());
-        saveList.getTableHeader().setReorderingAllowed(false);
+        saveList.getColumnModel().getColumn(2).setCellRenderer(new SaveStatusCellRenderer()); // Render the status column with color
+        saveList.getTableHeader().setReorderingAllowed(false); // Prevents the table columns from being reordered
 
         /* Load the UI */
         reloadUI();
@@ -72,7 +70,7 @@ public class SaveFileSync {
             try {
                 data.addSave(save);
             } catch (Exception ee) {
-                JOptionPane.showMessageDialog(SwingUtilities.getRoot((Component) e.getSource()),
+                JOptionPane.showMessageDialog(rootPanel,
                         ee.getMessage(),
                         "Error!",
                         JOptionPane.ERROR_MESSAGE);
@@ -90,7 +88,10 @@ public class SaveFileSync {
         });
         exportButton.addActionListener(e -> {
             if (data.getServer() == null || !data.getServer().verifyServer()) {
-                JOptionPane.showMessageDialog(SwingUtilities.getRoot((Component) e.getSource()), "Cannot export files without a working data server!", "Export Error!", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(rootPanel,
+                        "Cannot export files without a working data server!",
+                        "Export Error!",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
             int[] rows = saveList.getSelectedRows();
@@ -103,21 +104,33 @@ public class SaveFileSync {
                     if (!Arrays.equals(rawData, new byte[0])) {
                         data.getServer().uploadSaveData(save.getName(), rawData);
                     } else {
-                        JOptionPane.showMessageDialog(SwingUtilities.getRoot((Component) e.getSource()), "Cannot export an empty save file!", name + " Export Error!", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(rootPanel,
+                                "Cannot export an empty save file!",
+                                name + " Export Error!",
+                                JOptionPane.ERROR_MESSAGE);
                         return;
                     }
                 } catch (Exception ee) {
                     ee.printStackTrace();
-                    JOptionPane.showMessageDialog(SwingUtilities.getRoot((Component) e.getSource()), "There was en error uploading a file! Aborting export!", name + " Export Error!", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(rootPanel,
+                            "There was en error uploading a file! Aborting export!",
+                            name + " Export Error!",
+                            JOptionPane.ERROR_MESSAGE);
                     return;
                 }
             }
             reloadUI();
-            JOptionPane.showMessageDialog(SwingUtilities.getRoot((Component) e.getSource()), "Successfully uploaded files(s)!", "Success!", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(rootPanel,
+                    "Successfully uploaded files(s)!",
+                    "Success!",
+                    JOptionPane.INFORMATION_MESSAGE);
         });
         importButton.addActionListener(e -> {
             if (data.getServer() == null || !data.getServer().verifyServer()) {
-                JOptionPane.showMessageDialog(SwingUtilities.getRoot((Component) e.getSource()), "Cannot import files without a working data server!", "Import Error!", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(rootPanel,
+                        "Cannot import files without a working data server!",
+                        "Import Error!",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
             int[] rows = saveList.getSelectedRows();
@@ -130,12 +143,18 @@ public class SaveFileSync {
                     save.overwriteData(remoteSaveData);
                 } catch (Exception ee) {
                     ee.printStackTrace();
-                    JOptionPane.showMessageDialog(SwingUtilities.getRoot((Component) e.getSource()), "There was en error importing a file! Aborting import!", name + " Import Error!", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(rootPanel,
+                            "There was en error importing a file! Aborting import!",
+                            name + " Import Error!",
+                            JOptionPane.ERROR_MESSAGE);
                     return;
                 }
             }
             reloadUI();
-            JOptionPane.showMessageDialog(SwingUtilities.getRoot((Component) e.getSource()), "Successfully downloaded files(s)!", "Success!", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(rootPanel,
+                    "Successfully downloaded files(s)!",
+                    "Success!",
+                    JOptionPane.INFORMATION_MESSAGE);
         });
         saveList.getSelectionModel().addListSelectionListener(e -> {
             // Enable/disable buttons
@@ -165,7 +184,7 @@ public class SaveFileSync {
                     reloadUI();
                 }
             } catch (Exception ee) {
-                JOptionPane.showMessageDialog(SwingUtilities.getRoot((Component) e.getSource()),
+                JOptionPane.showMessageDialog(rootPanel,
                         "Cannot import save data! If this continues, please submit an issue on the GitHub!",
                         "Error!",
                         JOptionPane.ERROR_MESSAGE);
@@ -192,7 +211,7 @@ public class SaveFileSync {
                 data.getSaves().remove(oldName);
                 data.addSave(newSave);
             } catch (Exception ee) {
-                JOptionPane.showMessageDialog(SwingUtilities.getRoot((Component) e.getSource()),
+                JOptionPane.showMessageDialog(rootPanel,
                         "Error editing save file",
                         "Error!",
                         JOptionPane.ERROR_MESSAGE);
@@ -256,14 +275,12 @@ public class SaveFileSync {
 
     private void setTable(HashMap<String, Save> dataSaves, Boolean serverOnline) {
         DefaultTableModel dtm = new DefaultTableModel() {
-            private static final long serialVersionUID = 6327117785602099879L;
-
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
-        dtm.setColumnIdentifiers(header);
+        dtm.setColumnIdentifiers(saveListHeaders);
         saveList.setModel(dtm);
         saveList.getColumnModel().getColumn(2).setCellRenderer(new SaveStatusCellRenderer());
         saveList.getTableHeader().setReorderingAllowed(false);

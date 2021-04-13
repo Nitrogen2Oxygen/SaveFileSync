@@ -6,8 +6,6 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class SaveStatusCellRenderer extends DefaultTableCellRenderer {
-    private static final long serialVersionUID = 6933813177684306960L; // So my IDE stops yelling
-
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
         JLabel l = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
