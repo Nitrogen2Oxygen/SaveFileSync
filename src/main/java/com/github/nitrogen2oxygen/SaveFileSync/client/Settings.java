@@ -1,6 +1,10 @@
 package com.github.nitrogen2oxygen.SaveFileSync.client;
 
+import com.formdev.flatlaf.FlatLaf;
+import com.github.nitrogen2oxygen.SaveFileSync.App;
+
 import javax.swing.*;
+import java.awt.*;
 
 public class Settings implements java.io.Serializable {
     private static final long serialVersionUID = 6143707056688916780L;
@@ -21,11 +25,13 @@ public class Settings implements java.io.Serializable {
     /* Applies the settings to the client */
     public void apply() {
         // Apply theme
-        try {
-            UIManager.setLookAndFeel(Themes.getThemeClass(theme));
-        } catch (UnsupportedLookAndFeelException e) {
-            e.printStackTrace();
-        }
+            EventQueue.invokeLater(() -> {
+                try {
+                    UIManager.setLookAndFeel(Themes.getThemeClass(theme));
+                    FlatLaf.updateUI();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
     }
-
 }

@@ -1,6 +1,5 @@
 package com.github.nitrogen2oxygen.SaveFileSync.ui;
 
-import com.github.nitrogen2oxygen.SaveFileSync.App;
 import com.github.nitrogen2oxygen.SaveFileSync.client.ClientData;
 import com.github.nitrogen2oxygen.SaveFileSync.utils.ButtonEvents;
 import com.github.nitrogen2oxygen.SaveFileSync.client.Save;
@@ -16,8 +15,6 @@ import javax.swing.plaf.FontUIResource;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.StyleContext;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -105,9 +102,6 @@ public class SaveFileSync {
             serverStatus.setForeground(Color.white);
             hostNameField.setText(data.getServer() != null ? data.getServer().getHostName() : "None");
             serverTypeField.setText(data.getServer() != null ? data.getServer().serverDisplayName() : "None");
-
-            // Reload the theme
-            SwingUtilities.updateComponentTreeUI(App.getFrame());
 
             // Set server status
             Boolean serverOnline;

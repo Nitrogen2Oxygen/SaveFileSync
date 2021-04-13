@@ -37,9 +37,7 @@ public class ChangeSettings extends JDialog {
         themeModel.setSelectedItem(settings.getTheme());
         themeSelector.setModel(themeModel);
         themeSelector.setRenderer(new ListCellRenderer<>() {
-
             private final JLabel label = new JLabel();
-
 
             @Override
             public Component getListCellRendererComponent(JList<? extends Theme> list, Theme value, int index, boolean isSelected, boolean cellHasFocus) {
