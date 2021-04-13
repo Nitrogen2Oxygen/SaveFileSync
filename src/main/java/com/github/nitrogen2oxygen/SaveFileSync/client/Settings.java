@@ -1,6 +1,7 @@
 package com.github.nitrogen2oxygen.SaveFileSync.client;
 
 import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.extras.FlatAnimatedLafChange;
 import com.github.nitrogen2oxygen.SaveFileSync.App;
 
 import javax.swing.*;
@@ -27,8 +28,14 @@ public class Settings implements java.io.Serializable {
         // Apply theme
             EventQueue.invokeLater(() -> {
                 try {
+                    FlatAnimatedLafChange.showSnapshot();
+
+                    // Change look and feel
                     UIManager.setLookAndFeel(Themes.getThemeClass(theme));
+
+                    // Reload the UI
                     FlatLaf.updateUI();
+                    FlatAnimatedLafChange.hideSnapshotWithAnimation();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
