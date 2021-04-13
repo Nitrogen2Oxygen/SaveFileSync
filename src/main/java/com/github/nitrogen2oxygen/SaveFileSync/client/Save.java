@@ -1,4 +1,4 @@
-package com.github.nitrogen2oxygen.SaveFileSync.data.client;
+package com.github.nitrogen2oxygen.SaveFileSync.client;
 
 import com.github.nitrogen2oxygen.SaveFileSync.utils.FileUtilities;
 

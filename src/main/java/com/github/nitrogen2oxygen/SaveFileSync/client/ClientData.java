@@ -1,8 +1,9 @@
-package com.github.nitrogen2oxygen.SaveFileSync.data.client;
+package com.github.nitrogen2oxygen.SaveFileSync.client;
 
-import com.github.nitrogen2oxygen.SaveFileSync.data.server.Server;
+import com.github.nitrogen2oxygen.SaveFileSync.server.Server;
 import com.github.nitrogen2oxygen.SaveFileSync.utils.DataManager;
 
+import java.io.File;
 import java.util.HashMap;
 
 public class ClientData implements java.io.Serializable {
@@ -29,9 +30,11 @@ public class ClientData implements java.io.Serializable {
         // Check for duplicates FIRST
         for (String saveName : (this.saves.keySet())) {
             Save currentSave = this.saves.get(saveName);
-            if (currentSave.getName().equals(save.getName())) throw new Exception("Duplicate name detected. Please use unique identifiers for each save file.");
-            if (currentSave.getFile().toString().equals(save.getFile().toString())) throw new Exception("Duplicate location detected. This save file is already in the system");
-            if (currentSave.getFile().getPath().contains(save.getFile().getPath())
+            String name = currentSave.getName();
+            File file = currentSave.getFile();
+            if (name.equals(save.getName())) throw new Exception("Duplicate name detected. Please use unique identifiers for each save file.");
+            if (file.getPath().equals(save.getFile().getPath())) throw new Exception("Duplicate location detected. This save file is already in the system");
+            if (file.getPath().contains(save.getFile().getPath())
                     || save.getFile().getPath().contains(currentSave.getFile().getPath())) {
                 throw new Exception("One location includes another. Please do not sync files in the same path");
             }

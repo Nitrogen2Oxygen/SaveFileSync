@@ -1,4 +1,4 @@
-package com.github.nitrogen2oxygen.SaveFileSync.data.server;
+package com.github.nitrogen2oxygen.SaveFileSync.server;
 
 import org.apache.commons.io.IOUtils;
 

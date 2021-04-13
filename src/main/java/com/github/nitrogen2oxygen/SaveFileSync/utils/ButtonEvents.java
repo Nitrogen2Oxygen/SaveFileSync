@@ -1,8 +1,8 @@
 package com.github.nitrogen2oxygen.SaveFileSync.utils;
 
-import com.github.nitrogen2oxygen.SaveFileSync.data.client.ClientData;
-import com.github.nitrogen2oxygen.SaveFileSync.data.client.Save;
-import com.github.nitrogen2oxygen.SaveFileSync.data.server.Server;
+import com.github.nitrogen2oxygen.SaveFileSync.client.ClientData;
+import com.github.nitrogen2oxygen.SaveFileSync.client.Save;
+import com.github.nitrogen2oxygen.SaveFileSync.server.Server;
 import com.github.nitrogen2oxygen.SaveFileSync.ui.SaveFileManager;
 import com.github.nitrogen2oxygen.SaveFileSync.ui.SaveFileSync;
 import com.github.nitrogen2oxygen.SaveFileSync.ui.ServerImport;
@@ -20,9 +20,9 @@ public class ButtonEvents {
         if (save == null) return;
         try {
             data.addSave(save);
-        } catch (Exception ee) {
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(ui.getRootPanel(),
-                    ee.getMessage(),
+                    e.getMessage(),
                     "Error!",
                     JOptionPane.ERROR_MESSAGE);
         }
@@ -63,8 +63,8 @@ public class ButtonEvents {
                             JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-            } catch (Exception ee) {
-                ee.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
                 JOptionPane.showMessageDialog(ui.getRootPanel(),
                         "There was en error uploading a file! Aborting export!",
                         name + " Export Error!",
@@ -95,8 +95,8 @@ public class ButtonEvents {
             try {
                 byte[] remoteSaveData = data.getServer().getSaveData(save.getName());
                 save.overwriteData(remoteSaveData);
-            } catch (Exception ee) {
-                ee.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
                 JOptionPane.showMessageDialog(ui.getRootPanel(),
                         "There was en error importing a file! Aborting import!",
                         name + " Import Error!",
@@ -131,7 +131,7 @@ public class ButtonEvents {
                 data.addSave(save);
                 ui.reloadUI();
             }
-        } catch (Exception ee) {
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(ui.getRootPanel(),
                     "Cannot import save data! If this continues, please submit an issue on the GitHub!",
                     "Error!",
@@ -160,7 +160,7 @@ public class ButtonEvents {
         try {
             data.getSaves().remove(oldName);
             data.addSave(newSave);
-        } catch (Exception ee) {
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(ui.getRootPanel(),
                     "Error editing save file",
                     "Error!",

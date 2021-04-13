@@ -1,5 +1,6 @@
-package com.github.nitrogen2oxygen.SaveFileSync.data.server;
+package com.github.nitrogen2oxygen.SaveFileSync.server;
 
+import com.github.nitrogen2oxygen.SaveFileSync.utils.Constants;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -152,60 +153,56 @@ public class DropboxServer extends Server {
 
     private String getBearerKey() {
         try {
-            if (bearerKey == null || refreshKey == null) {
-                HttpURLConnection connection = (HttpURLConnection) new URL("https://api.dropboxapi.com/oauth2/token").openConnection();
-                connection.setDoOutput(true);
-                connection.setRequestMethod("POST");
-                connection.setInstanceFollowRedirects(false);
-                connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                connection.setRequestProperty("charset", "utf-8");
-                byte[] postData = ("code=" + apiKey + "&grant_type=authorization_code&client_id=i136jjbqxg4aaci&code_verifier=" + verifier).getBytes(StandardCharsets.UTF_8);
-                connection.setRequestProperty("Content-Length", Integer.toString(postData.length));
-                connection.setUseCaches(false);
-                OutputStream outputStream = connection.getOutputStream();
-                outputStream.write(postData);
-                outputStream.close();
-
-                InputStream stream = connection.getInputStream();
-                String json = IOUtils.toString(stream, StandardCharsets.UTF_8);
-                JSONObject object = new JSONObject(json);
-                String token = object.getString("access_token");
-                String refresh = object.getString("refresh_token");
-                String expiresTime = object.getString("expires_in");
-                expires = new Date(System.currentTimeMillis() + Integer.parseInt(expiresTime));
-                refreshKey = refresh;
-                bearerKey = token;
-                return token;
-            } else if (expires.before(new Date())) {
-                /* Regenerate the bearer token when it expires */
-                HttpURLConnection connection = (HttpURLConnection) new URL("https://api.dropboxapi.com/oauth2/token").openConnection();
-                connection.setDoOutput(true);
-                connection.setRequestMethod("POST");
-                connection.setInstanceFollowRedirects(false);
-                connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                connection.setRequestProperty("charset", "utf-8");
-                byte[] postData = ("grant_type=refresh_token&client_id=i136jjbqxg4aaci&refresh_token=" + refreshKey).getBytes(StandardCharsets.UTF_8);
-                connection.setRequestProperty("Content-Length", Integer.toString(postData.length));
-                connection.setUseCaches(false);
-                OutputStream outputStream = connection.getOutputStream();
-                outputStream.write(postData);
-                outputStream.close();
-
-                InputStream stream = connection.getInputStream();
-                String json = IOUtils.toString(stream, StandardCharsets.UTF_8);
-                JSONObject object = new JSONObject(json);
-                String token = object.getString("access_token");
-                String expiresTime = object.getString("expires_in");
-                expires = new Date(System.currentTimeMillis() + (Integer.parseInt(expiresTime) * 1000L));
-                bearerKey = token;
-                return token;
-            } else {
-                /* Return the current bearer token if its not expired */
+            boolean hasKeys = bearerKey != null && refreshKey != null;
+            boolean keyExpired = expires == null || expires.before(new Date());
+            boolean refreshing = hasKeys && keyExpired;
+            if (hasKeys && !keyExpired) {
                 return bearerKey;
             }
-        } catch (IOException | JSONException e) {
+
+            /* If the keys don't exist OR the key has expired, request new credentials */
+            HttpURLConnection connection = (HttpURLConnection) new URL("https://api.dropboxapi.com/oauth2/token").openConnection();
+            connection.setRequestMethod("POST");
+            connection.setInstanceFollowRedirects(false);
+            connection.setUseCaches(false);
+            connection.setDoOutput(true);
+            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            connection.setRequestProperty("charset", "utf-8");
+
+            /* If there are no keys, create them. Otherwise, regenerate since the key has expired */
+            StringBuilder postDataBuilder = new StringBuilder();
+            postDataBuilder.append("client_id=").append(Constants.DROPBOX_APP_ID);
+            if (refreshing) {
+                postDataBuilder.append("&grant_type=refresh_token");
+                postDataBuilder.append("&refresh_token=").append(refreshKey);
+            } else {
+                postDataBuilder.append("&grant_type=authorization_code");
+                postDataBuilder.append("&code=").append(apiKey);
+                postDataBuilder.append("&code_verifier=").append(verifier);
+            }
+            byte[] postData = postDataBuilder.toString().getBytes(StandardCharsets.UTF_8);
+
+            /* Write post data to output stream */
+            OutputStream outputStream = connection.getOutputStream();
+            outputStream.write(postData);
+            outputStream.close();
+
+            /* Get response and handle it */
+            InputStream stream = connection.getInputStream();
+            String json = IOUtils.toString(stream, StandardCharsets.UTF_8);
+            try {
+                JSONObject object = new JSONObject(json);
+                expires = new Date(System.currentTimeMillis() + Integer.parseInt(object.getString("expires_in")));
+                if (!refreshing) refreshKey = object.getString("refresh_token");
+                bearerKey = object.getString("access_token");
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return null;
+            }
+            return bearerKey;
+        } catch (IOException e) {
             e.printStackTrace();
-            return "";
+            return null;
         }
     }
 

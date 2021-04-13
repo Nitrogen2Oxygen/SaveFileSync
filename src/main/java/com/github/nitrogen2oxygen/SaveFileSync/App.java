@@ -1,7 +1,7 @@
 package com.github.nitrogen2oxygen.SaveFileSync;
 
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDarkerContrastIJTheme;
-import com.github.nitrogen2oxygen.SaveFileSync.data.client.ClientData;
+import com.github.nitrogen2oxygen.SaveFileSync.client.ClientData;
 import com.github.nitrogen2oxygen.SaveFileSync.ui.ProgressBar;
 import com.github.nitrogen2oxygen.SaveFileSync.utils.Constants;
 import com.github.nitrogen2oxygen.SaveFileSync.utils.DataManager;

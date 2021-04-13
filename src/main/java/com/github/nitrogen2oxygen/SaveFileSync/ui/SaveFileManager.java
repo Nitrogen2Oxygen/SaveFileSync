@@ -1,6 +1,6 @@
 package com.github.nitrogen2oxygen.SaveFileSync.ui;
 
-import com.github.nitrogen2oxygen.SaveFileSync.data.client.Save;
+import com.github.nitrogen2oxygen.SaveFileSync.client.Save;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
