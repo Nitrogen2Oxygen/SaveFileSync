@@ -35,9 +35,9 @@ public class DataManager {
             return (ClientData) objectInputStream.readObject();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "An error has occurred when saving data to " + Constants.getDataFile(), "Save Error!", JOptionPane.ERROR_MESSAGE);
-            return null;
+            JOptionPane.showMessageDialog(null, "An error has occurred when loading data from " + Constants.getDataFile(), "Load Error!", JOptionPane.ERROR_MESSAGE);
+            System.exit(1);
         }
+        return null;
     }
-
 }
