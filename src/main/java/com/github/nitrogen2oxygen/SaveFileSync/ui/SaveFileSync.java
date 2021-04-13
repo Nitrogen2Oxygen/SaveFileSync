@@ -1,6 +1,8 @@
 package com.github.nitrogen2oxygen.SaveFileSync.ui;
 
 import com.github.nitrogen2oxygen.SaveFileSync.client.ClientData;
+import com.github.nitrogen2oxygen.SaveFileSync.client.ThemeColor;
+import com.github.nitrogen2oxygen.SaveFileSync.client.Themes;
 import com.github.nitrogen2oxygen.SaveFileSync.utils.ButtonEvents;
 import com.github.nitrogen2oxygen.SaveFileSync.client.Save;
 import com.github.nitrogen2oxygen.SaveFileSync.utils.FileUtilities;
@@ -57,7 +59,7 @@ public class SaveFileSync {
         }; // Prevents the cells from being moved
         dtm.setColumnIdentifiers(saveListHeaders);
         saveList.setModel(dtm);
-        saveList.getColumnModel().getColumn(2).setCellRenderer(new SaveStatusCellRenderer()); // Render the status column with color
+        saveList.getColumnModel().getColumn(2).setCellRenderer(new SaveStatusCellRenderer(data.getSettings().getTheme())); // Render the status column with color
         saveList.getTableHeader().setReorderingAllowed(false); // Prevents the table columns from being reordered
 
         /* Load the UI */
@@ -99,7 +101,7 @@ public class SaveFileSync {
 
         reloadThread = new Thread(() -> {
             serverStatus.setText("Connecting...");
-            serverStatus.setForeground(Color.white);
+            serverStatus.setForeground(Themes.getColor(data.getSettings().getTheme(), ThemeColor.DEFAULT));
             hostNameField.setText(data.getServer() != null ? data.getServer().getHostName() : "None");
             serverTypeField.setText(data.getServer() != null ? data.getServer().serverDisplayName() : "None");
 
@@ -110,20 +112,20 @@ public class SaveFileSync {
                 if (status == null) {
                     serverStatus.setText("None");
                     serverOnline = null;
-                    serverStatus.setForeground(Color.white);
+                    serverStatus.setForeground(Themes.getColor(data.getSettings().getTheme(), ThemeColor.DEFAULT));
                 } else if (status) {
                     serverOnline = true;
                     serverStatus.setText("Online");
-                    serverStatus.setForeground(Color.green);
+                    serverStatus.setForeground(Themes.getColor(data.getSettings().getTheme(), ThemeColor.SUCCESS));
                 } else {
                     serverOnline = false;
                     serverStatus.setText("Offline");
-                    serverStatus.setForeground(Color.red);
+                    serverStatus.setForeground(Themes.getColor(data.getSettings().getTheme(), ThemeColor.OFFLINE));
                 }
             } else {
                 serverOnline = null;
                 serverStatus.setText("None");
-                serverStatus.setForeground(Color.white);
+                serverStatus.setForeground(Themes.getColor(data.getSettings().getTheme(), ThemeColor.DEFAULT));
             }
 
             // Reload the saves table
@@ -142,7 +144,7 @@ public class SaveFileSync {
         };
         dtm.setColumnIdentifiers(saveListHeaders);
         saveList.setModel(dtm);
-        saveList.getColumnModel().getColumn(2).setCellRenderer(new SaveStatusCellRenderer());
+        saveList.getColumnModel().getColumn(2).setCellRenderer(new SaveStatusCellRenderer(data.getSettings().getTheme()));
         saveList.getTableHeader().setReorderingAllowed(false);
 
         ArrayList<Save> saves = new ArrayList<>();
