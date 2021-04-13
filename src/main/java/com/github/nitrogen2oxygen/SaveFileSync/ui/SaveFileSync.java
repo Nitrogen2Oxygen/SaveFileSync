@@ -1,8 +1,7 @@
 package com.github.nitrogen2oxygen.SaveFileSync.ui;
 
 import com.github.nitrogen2oxygen.SaveFileSync.data.client.ClientData;
-import com.github.nitrogen2oxygen.SaveFileSync.data.server.Server;
-import com.github.nitrogen2oxygen.SaveFileSync.utils.DataManager;
+import com.github.nitrogen2oxygen.SaveFileSync.utils.ButtonEvents;
 import com.github.nitrogen2oxygen.SaveFileSync.data.client.Save;
 import com.github.nitrogen2oxygen.SaveFileSync.utils.FileUtilities;
 import com.intellij.uiDesigner.core.GridConstraints;
@@ -63,99 +62,7 @@ public class SaveFileSync {
         /* Load the UI */
         reloadUI();
 
-        /* Action listeners */
-        newSaveFile.addActionListener(e -> {
-            Save save = SaveFileManager.main();
-            if (save == null) return;
-            try {
-                data.addSave(save);
-            } catch (Exception ee) {
-                JOptionPane.showMessageDialog(rootPanel,
-                        ee.getMessage(),
-                        "Error!",
-                        JOptionPane.ERROR_MESSAGE);
-            }
-            DataManager.save(data);
-            reloadUI();
-        });
-        manageServerButton.addActionListener(e -> {
-            Server newServer = ServerOptions.main(data);
-            data.setServer(newServer);
-
-            /* Save and reload */
-            DataManager.save(data);
-            reloadUI();
-        });
-        exportButton.addActionListener(e -> {
-            if (data.getServer() == null || !data.getServer().verifyServer()) {
-                JOptionPane.showMessageDialog(rootPanel,
-                        "Cannot export files without a working data server!",
-                        "Export Error!",
-                        JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            int[] rows = saveList.getSelectedRows();
-            if (rows.length == 0) return;
-            for (int i : rows) {
-                String name = (String) saveList.getValueAt(i, 0);
-                Save save = data.getSaves().get(name);
-                try {
-                    byte[] rawData = save.toZipFile();
-                    if (!Arrays.equals(rawData, new byte[0])) {
-                        data.getServer().uploadSaveData(save.getName(), rawData);
-                    } else {
-                        JOptionPane.showMessageDialog(rootPanel,
-                                "Cannot export an empty save file!",
-                                name + " Export Error!",
-                                JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-                } catch (Exception ee) {
-                    ee.printStackTrace();
-                    JOptionPane.showMessageDialog(rootPanel,
-                            "There was en error uploading a file! Aborting export!",
-                            name + " Export Error!",
-                            JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-            }
-            reloadUI();
-            JOptionPane.showMessageDialog(rootPanel,
-                    "Successfully uploaded files(s)!",
-                    "Success!",
-                    JOptionPane.INFORMATION_MESSAGE);
-        });
-        importButton.addActionListener(e -> {
-            if (data.getServer() == null || !data.getServer().verifyServer()) {
-                JOptionPane.showMessageDialog(rootPanel,
-                        "Cannot import files without a working data server!",
-                        "Import Error!",
-                        JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            int[] rows = saveList.getSelectedRows();
-            if (rows.length == 0) return;
-            for (int i : rows) {
-                String name = (String) saveList.getValueAt(i, 0);
-                Save save = data.getSaves().get(name);
-                try {
-                    byte[] remoteSaveData = data.getServer().getSaveData(save.getName());
-                    save.overwriteData(remoteSaveData);
-                } catch (Exception ee) {
-                    ee.printStackTrace();
-                    JOptionPane.showMessageDialog(rootPanel,
-                            "There was en error importing a file! Aborting import!",
-                            name + " Import Error!",
-                            JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-            }
-            reloadUI();
-            JOptionPane.showMessageDialog(rootPanel,
-                    "Successfully downloaded files(s)!",
-                    "Success!",
-                    JOptionPane.INFORMATION_MESSAGE);
-        });
+        /* Standard action listeners */
         saveList.getSelectionModel().addListSelectionListener(e -> {
             // Enable/disable buttons
             importButton.setEnabled(saveList.getSelectedRows().length != 0);
@@ -163,72 +70,23 @@ public class SaveFileSync {
             removeButton.setEnabled(saveList.getSelectedRows().length == 1);
             editButton.setEnabled(saveList.getSelectedRows().length == 1);
         });
-        importFromServerButton.addActionListener(e -> {
-            ArrayList<String> newSaves = new ArrayList<>();
-            ArrayList<String> serverSaveNames = data.getServer().getSaveNames();
-            ArrayList<String> localSaveNames = new ArrayList<>();
-            Set<String> localKeys = data.getSaves().keySet();
-            for (String key : localKeys) {
-                localSaveNames.add(data.getSaves().get(key).getName());
-            }
-            /* Check for any new saves on the server that aren't in the local file system */
-            for (String serverName : serverSaveNames) {
-                if (!localSaveNames.contains(serverName)) {
-                    newSaves.add(serverName);
-                }
-            }
-            try {
-                Save save = ServerImport.main(data.getServer(), newSaves);
-                if (save != null) {
-                    data.addSave(save);
-                    reloadUI();
-                }
-            } catch (Exception ee) {
-                JOptionPane.showMessageDialog(rootPanel,
-                        "Cannot import save data! If this continues, please submit an issue on the GitHub!",
-                        "Error!",
-                        JOptionPane.ERROR_MESSAGE);
-            }
-        });
-        removeButton.addActionListener(e -> {
-            int selected = saveList.getSelectedRow();
-            String name = (String) saveList.getValueAt(selected, 0);
-            /* Remove save file */
-            data.getSaves().remove(name);
 
-            /* Save and reload */
-            DataManager.save(data);
-            reloadUI();
-        });
-        editButton.addActionListener(e -> {
-            int selected = saveList.getSelectedRow();
-            String name = (String) saveList.getValueAt(selected, 0);
-            Save save = data.getSaves().get(name);
-            String oldName = save.getName();
-            Save newSave = SaveFileManager.edit(save.getName(), save.getFile().getPath());
-            if (newSave == null) return;
-            try {
-                data.getSaves().remove(oldName);
-                data.addSave(newSave);
-            } catch (Exception ee) {
-                JOptionPane.showMessageDialog(rootPanel,
-                        "Error editing save file",
-                        "Error!",
-                        JOptionPane.ERROR_MESSAGE);
-                try {
-                    data.addSave(save);
-                } catch (Exception ignored) {
-                }
-            }
-
-            /* Save and reload */
-            DataManager.save(data);
-            reloadUI();
-        });
+        /* Button events */
+        newSaveFile.addActionListener(e -> ButtonEvents.newSaveFile(data, this));
+        manageServerButton.addActionListener(e -> ButtonEvents.manageServer(data, this));
+        exportButton.addActionListener(e -> ButtonEvents.exportSaves(data, this));
+        importButton.addActionListener(e -> ButtonEvents.importSaves(data, this));
+        importFromServerButton.addActionListener(e -> ButtonEvents.serverImport(data, this));
+        removeButton.addActionListener(e -> ButtonEvents.removeSave(data, this));
+        editButton.addActionListener(e -> ButtonEvents.editSave(data, this));
     }
 
     public JPanel getRootPanel() {
         return rootPanel;
+    }
+
+    public JTable getSaveList() {
+        return saveList;
     }
 
     /* We reload the UI on a separate thread to prevent any kind of freezing */
