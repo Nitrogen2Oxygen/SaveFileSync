@@ -38,9 +38,15 @@ public class ServerOptions extends JDialog {
     private JPanel emptyPanel;
 
     private Server server;
-    private Server oldServer;
+    private final Server oldServer;
     public Boolean cancelled = false;
     private String dropboxVerifier;
+
+    private static final String[] serverTypes = {
+            "WebDAV",
+            "Google Drive",
+            "Dropbox"
+    };
 
     public ServerOptions(Server currentServer) {
         this.server = currentServer;
@@ -49,9 +55,9 @@ public class ServerOptions extends JDialog {
         /* Create logic for the UI */
         DefaultComboBoxModel<String> defaultComboBoxModel = new DefaultComboBoxModel<>();
         defaultComboBoxModel.addElement("None");
-        defaultComboBoxModel.addElement("WebDav");
-        defaultComboBoxModel.addElement("Google Drive");
-        defaultComboBoxModel.addElement("Dropbox");
+        for (String type : serverTypes) {
+            defaultComboBoxModel.addElement(type);
+        }
         defaultComboBoxModel.setSelectedItem(currentServer != null ? currentServer.serverDisplayName() : "None");
         serverTypeSelector.setModel(defaultComboBoxModel);
 
@@ -87,9 +93,6 @@ public class ServerOptions extends JDialog {
             }
             reloadUI();
         });
-
-        // Reload the UI before rendering
-        reloadUI();
         webdavUseAuthenticationBox.addActionListener(e -> {
             boolean authentication = webdavUseAuthenticationBox.isSelected();
             if (authentication) {
@@ -115,6 +118,9 @@ public class ServerOptions extends JDialog {
                 ee.printStackTrace();
             }
         });
+
+        // Reload the UI before rendering
+        reloadUI();
     }
 
     private void reloadUI() {

@@ -6,7 +6,8 @@ import java.util.HashMap;
 public abstract class Server implements java.io.Serializable {
     private static final long serialVersionUID = 5800662342970946726L;
 
-    public Server() {}
+    public Server() {
+    }
 
     /* Used to identify the type in most cases */
     public abstract String serverDisplayName();
@@ -33,9 +34,9 @@ public abstract class Server implements java.io.Serializable {
     public abstract Boolean verifyServer();
 
     /* Create a server object */
-    public static Server ServerFactory(String name) {
-        switch (name) {
-            case "WebDav":
+    public static Server ServerFactory(String type) {
+        switch (type) {
+            case "WebDAV":
                 return new WebDavServer();
             case "Google Drive":
                 return new GoogleDriveServer();
