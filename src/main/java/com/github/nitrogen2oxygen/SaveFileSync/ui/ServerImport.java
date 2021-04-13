@@ -11,8 +11,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
@@ -81,35 +81,46 @@ public class ServerImport extends JDialog {
     private void onOK() {
         cancelled = false;
         // Get the save file
+        String name = importList.getSelectedValue();
+        File tempSave;
+        ZipFile zipFile;
         try {
-            String name = importList.getSelectedValue();
             File savePath = new File(saveLocationTextField.getText());
-            File saveFile;
-            File tempSave = Files.createTempFile("SaveFileSync", ".zip").toFile();
-            FileUtils.forceDeleteOnExit(tempSave);
+            savePath.mkdirs();
+            tempSave = Files.createTempFile("SaveFileSync", ".zip").toFile();
+            tempSave.deleteOnExit();
             byte[] saveData = server.getSaveData(name);
             FileUtils.writeByteArrayToFile(tempSave, saveData);
-            ZipFile zipFile = new ZipFile(tempSave);
+            zipFile = new ZipFile(tempSave);
             // Check if directory or file, then get the name
-            Enumeration<? extends ZipEntry> e = zipFile.entries();
-            String firstEntry = e.nextElement().getName();
-            saveFile = new File(Paths.get(savePath.getPath(), firstEntry).toString());
-            if (firstEntry.contains(File.separator) || firstEntry.contains("/")) {
-                saveFile.mkdirs();
+            Enumeration<? extends ZipEntry> entries = zipFile.entries();
+            String firstEntry = entries.nextElement().getName();
+            boolean hasMoreEntries = entries.hasMoreElements();
+            if (hasMoreEntries) {
+                save = new Save(name, savePath);
             } else {
-                saveFile.getParentFile().mkdirs();
+                File saveFile = new File(savePath, firstEntry);
                 saveFile.createNewFile();
+                save = new Save(name, saveFile);
             }
-            save = new Save(name, saveFile);
-            dispose();
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this,
                     "Cannot import save data! If this continues, please submit an issue on the GitHub!",
                     "Error!",
                     JOptionPane.ERROR_MESSAGE);
+            return;
         }
 
+        /* Cleanup */
+        try {
+            zipFile.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            tempSave.delete();
+            dispose();
+        }
     }
 
     public Save getSave() {
