@@ -2,10 +2,10 @@ package com.github.nitrogen2oxygen.SaveFileSync.client;
 
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.extras.FlatAnimatedLafChange;
-import com.github.nitrogen2oxygen.SaveFileSync.App;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Enumeration;
 
 public class Settings implements java.io.Serializable {
     private static final long serialVersionUID = 6143707056688916780L;
