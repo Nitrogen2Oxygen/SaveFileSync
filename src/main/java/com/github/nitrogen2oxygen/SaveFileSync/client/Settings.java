@@ -14,7 +14,8 @@ public class Settings {
     public Settings(Properties properties) {
         try {
             theme = Theme.valueOf(properties.getProperty("theme"));
-            makeBackups = Boolean.parseBoolean(properties.getProperty("make-backup"));
+            makeBackups = Boolean.parseBoolean(properties.getProperty("make-backups"));
+            System.out.println(makeBackups);
         } catch (Exception e) {
             int response = JOptionPane.showConfirmDialog(null, "There was an error reading the config file. Would you like to reset it?", "Error!", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
             if (response == 0) {
