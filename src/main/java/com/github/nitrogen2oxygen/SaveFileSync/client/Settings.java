@@ -9,13 +9,24 @@ import java.util.Properties;
 
 public class Settings {
     private Theme theme;
+    private boolean makeBackups;
 
     public Settings(Properties properties) {
         theme = Theme.valueOf(properties.getProperty("theme"));
+        makeBackups = Boolean.parseBoolean(properties.getProperty("make-backup"));
     }
 
     public Settings() {
         theme = Themes.getDefault();
+        makeBackups = true;
+    }
+
+    public boolean shouldMakeBackups() {
+        return makeBackups;
+    }
+
+    public void setMakeBackups(boolean makeBackups) {
+        this.makeBackups = makeBackups;
     }
 
     public void setTheme(Theme theme) {
@@ -48,6 +59,7 @@ public class Settings {
     public Properties toProperties() {
         Properties prop = new Properties();
         prop.setProperty("theme", String.valueOf(theme));
+        prop.setProperty("make-backups", String.valueOf(makeBackups));
         return prop;
     }
 }

@@ -92,7 +92,7 @@ public class ButtonEvents {
             Save save = data.getSaves().get(name);
             try {
                 byte[] remoteSaveData = data.getServer().getSaveData(save.getName());
-                save.overwriteData(remoteSaveData);
+                save.overwriteData(remoteSaveData, data.getSettings().shouldMakeBackups());
             } catch (Exception e) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(ui.getRootPanel(),
