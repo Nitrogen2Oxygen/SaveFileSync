@@ -12,11 +12,24 @@ public class Settings {
     private boolean makeBackups;
 
     public Settings(Properties properties) {
-        theme = Theme.valueOf(properties.getProperty("theme"));
-        makeBackups = Boolean.parseBoolean(properties.getProperty("make-backup"));
+        try {
+            theme = Theme.valueOf(properties.getProperty("theme"));
+            makeBackups = Boolean.parseBoolean(properties.getProperty("make-backup"));
+        } catch (Exception e) {
+            int response = JOptionPane.showConfirmDialog(null, "There was an error reading the config file. Would you like to reset it?", "Error!", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
+            if (response == 0) {
+                setDefaults();
+            } else {
+                System.exit(1);
+            }
+        }
     }
 
     public Settings() {
+        setDefaults();
+    }
+
+    public void setDefaults() {
         theme = Themes.getDefault();
         makeBackups = true;
     }

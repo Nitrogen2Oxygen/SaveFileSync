@@ -136,7 +136,7 @@ public class ChangeSettings extends JDialog {
         themeSelector = new JComboBox();
         panel3.add(themeSelector, new GridConstraints(0, 1, 2, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         makeBackupsCheckBox = new JCheckBox();
-        makeBackupsCheckBox.setText("Make save data backups?");
+        makeBackupsCheckBox.setText("Make save data backups on import?");
         panel3.add(makeBackupsCheckBox, new GridConstraints(2, 0, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
