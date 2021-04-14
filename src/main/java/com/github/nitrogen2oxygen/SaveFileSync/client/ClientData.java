@@ -11,12 +11,6 @@ public class ClientData {
     private Settings settings; // The client settings includes any kind of extra data the user manually sets
     private final HashMap<String, Save> saves; // Saves can either be retrieved from the server OR created locally.
 
-
-    /* Create new data if it doesn't have any */
-    public ClientData() {
-        this(null, new Settings(), new HashMap<>());
-    }
-
     /* Load already created data */
     public ClientData(Server server, Settings settings, HashMap<String, Save> saves) {
         this.server = server;

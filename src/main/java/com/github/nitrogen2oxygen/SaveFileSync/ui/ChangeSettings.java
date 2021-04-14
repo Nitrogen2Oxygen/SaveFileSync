@@ -28,6 +28,7 @@ public class ChangeSettings extends JDialog {
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
         setLocationRelativeTo(null);
+        setTitle("Settings");
         pack();
 
         /* Set theme selector model */
