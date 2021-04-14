@@ -39,7 +39,7 @@ public class Themes {
                     case ERROR:
                         return Color.ORANGE;
                     case DEFAULT:
-                        return Color.LIGHT_GRAY;
+                        return Color.WHITE;
                     case OFFLINE:
                         return Color.RED;
                     case SUCCESS:
@@ -50,15 +50,15 @@ public class Themes {
             case LIGHT:
                 switch (color) {
                     case ERROR:
-                        return Color.ORANGE;
+                        return new Color(255, 140, 0);
                     case DEFAULT:
                         return Color.BLACK;
                     case OFFLINE:
                         return Color.RED;
                     case SUCCESS:
-                        return Color.GREEN;
+                        return new Color(0, 150, 0);
                     case WARNING:
-                        return Color.YELLOW;
+                        return new Color(218, 165, 32);
                 }
         }
         return null;
