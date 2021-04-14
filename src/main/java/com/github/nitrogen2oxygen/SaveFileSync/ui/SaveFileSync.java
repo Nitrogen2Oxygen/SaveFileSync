@@ -45,7 +45,7 @@ public class SaveFileSync {
     private static Thread reloadThread;
     private final ClientData data;
     private static final Font dataLabelFont = new Font("Segoe", Font.PLAIN, 16);
-    private static final Font dataServerLabeFont = new Font("Segoe", Font.PLAIN, 24);
+    private static final Font dataServerLabelFont = new Font("Segoe", Font.PLAIN, 24);
     private static final String[] saveListHeaders = new String[]{
             "Name",
             "Location",
@@ -56,7 +56,7 @@ public class SaveFileSync {
         data = userData;
 
         /* Set fonts (due to weird theming bug) */
-        dataServerLabel.setFont(dataServerLabeFont);
+        dataServerLabel.setFont(dataServerLabelFont);
         typeLabel.setFont(dataLabelFont);
         hostLabel.setFont(dataLabelFont);
         statusLabel.setFont(dataLabelFont);

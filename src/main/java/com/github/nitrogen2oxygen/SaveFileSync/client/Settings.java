@@ -5,11 +5,14 @@ import com.formdev.flatlaf.extras.FlatAnimatedLafChange;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Enumeration;
+import java.util.Properties;
 
-public class Settings implements java.io.Serializable {
-    private static final long serialVersionUID = 6143707056688916780L;
+public class Settings {
     private Theme theme;
+
+    public Settings(Properties properties) {
+        theme = Theme.valueOf(properties.getProperty("theme"));
+    }
 
     public Settings() {
         theme = Themes.getDefault();
@@ -40,5 +43,11 @@ public class Settings implements java.io.Serializable {
                     e.printStackTrace();
                 }
             });
+    }
+
+    public Properties toProperties() {
+        Properties prop = new Properties();
+        prop.setProperty("theme", String.valueOf(theme));
+        return prop;
     }
 }

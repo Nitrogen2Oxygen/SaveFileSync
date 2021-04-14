@@ -6,15 +6,22 @@ import com.github.nitrogen2oxygen.SaveFileSync.utils.DataManager;
 import java.io.File;
 import java.util.HashMap;
 
-public class ClientData implements java.io.Serializable {
-
-    private static final long serialVersionUID = 7470750048460931688L;
-    private Server server = null; // Everything we need server wise is located here
+public class ClientData {
+    private Server server; // Everything we need server wise is located here
     private Settings settings; // The client settings includes any kind of extra data the user manually sets
-    private final HashMap<String, Save> saves = new HashMap<>(); // Saves can either be retrieved from the server OR created locally.
+    private final HashMap<String, Save> saves; // Saves can either be retrieved from the server OR created locally.
 
+
+    /* Create new data if it doesn't have any */
     public ClientData() {
-        settings = new Settings();
+        this(null, new Settings(), new HashMap<>());
+    }
+
+    /* Load already created data */
+    public ClientData(Server server, Settings settings, HashMap<String, Save> saves) {
+        this.server = server;
+        this.settings = settings;
+        this.saves = saves;
     }
 
     public Server getServer() {
