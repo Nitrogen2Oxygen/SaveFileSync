@@ -12,7 +12,6 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 
 public class App {
-    private static JFrame frame;
 
     public static void main(String[] args) {
         /* Create a progress bar */
@@ -36,7 +35,7 @@ public class App {
         pb.setPercent(50);
 
         /* Finally, creating the actual UI frame. Communication between front and backend is iffy but we make do */
-        frame = new JFrame(Constants.APP_NAME + " - " + Constants.VERSION);
+        JFrame frame = new JFrame(Constants.APP_NAME + " - " + Constants.VERSION);
         frame.setContentPane(new SaveFileSync(data).getRootPanel()); // The UI required a ClientData object to update the lists and such
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
@@ -54,9 +53,5 @@ public class App {
         frame.setVisible(true);
         pb.setPercent(100);
         pb.finish();
-    }
-
-    public static JFrame getFrame() {
-        return frame;
     }
 }
