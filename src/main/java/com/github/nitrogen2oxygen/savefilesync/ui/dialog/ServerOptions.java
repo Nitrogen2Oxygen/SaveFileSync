@@ -107,7 +107,7 @@ public class ServerOptions extends JDialog {
         });
         dropboxLinkButton.addActionListener(e -> {
             try {
-                if (dropboxVerifier == null) dropboxVerifier = DropboxServer.getVerifier();
+                if (dropboxVerifier == null) dropboxVerifier = DropboxServer.generateVerifier();
                 String url = "https://www.dropbox.com/oauth2/authorize" +
                         "?response_type=code&token_access_type=offline" +
                         "&client_id=" + Constants.DROPBOX_APP_ID +

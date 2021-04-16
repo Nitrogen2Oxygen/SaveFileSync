@@ -40,11 +40,13 @@ public class DropboxServer extends Server {
 
     @Override
     public void setData(HashMap<String, String> args) {
-        apiKey = args.get("apiKey");
-        bearerKey = null;
-        refreshKey = null;
-        expires = null;
-        verifier = args.get("verifier");
+        if (!apiKey.equals(args.get("apiKey"))) {
+            apiKey = args.get("apiKey");
+            verifier = args.get("verifier");
+            bearerKey = null;
+            refreshKey = null;
+            expires = null;
+        }
     }
 
     @Override
@@ -206,7 +208,7 @@ public class DropboxServer extends Server {
         }
     }
 
-    public static String getVerifier() {
+    public static String generateVerifier() {
         SecureRandom sr = new SecureRandom();
         byte[] code = new byte[32];
         sr.nextBytes(code);
