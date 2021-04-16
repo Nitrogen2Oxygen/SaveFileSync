@@ -18,6 +18,7 @@ public class ChangeSettings extends JDialog {
     private JComboBox<Theme> themeSelector;
     private JLabel themeLabel;
     private JCheckBox makeBackupsCheckBox;
+    private JCheckBox forceOverwriteCheckBox;
 
     private final Settings settings;
     public Boolean saveChanges;
@@ -58,6 +59,7 @@ public class ChangeSettings extends JDialog {
 
         /* Set current settings */
         makeBackupsCheckBox.setSelected(settings.shouldMakeBackups());
+        forceOverwriteCheckBox.setSelected(settings.shouldForceOverwrite());
 
         buttonOK.addActionListener(e -> onOK());
         buttonCancel.addActionListener(e -> onCancel());
@@ -73,9 +75,19 @@ public class ChangeSettings extends JDialog {
         // add your code here
         saveChanges = true;
 
+        // Settings warnings
+        if (!makeBackupsCheckBox.isSelected() && forceOverwriteCheckBox.isSelected()) {
+            int confirm = JOptionPane.showConfirmDialog(this, "File import backups SHOULD be enabled when using force directory overwrites to prevent data loss." +
+                    " Are you sure you want to continue with these settings?", "Waring!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+            if (confirm != 0) {
+                return;
+            }
+        }
+
         // Set the theme
         settings.setTheme((Theme) themeSelector.getSelectedItem());
         settings.setMakeBackups(makeBackupsCheckBox.isSelected());
+        settings.setForceOverwrites(forceOverwriteCheckBox.isSelected());
         dispose();
     }
 
@@ -128,7 +140,7 @@ public class ChangeSettings extends JDialog {
         buttonCancel.setText("Cancel");
         panel2.add(buttonCancel, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JPanel panel3 = new JPanel();
-        panel3.setLayout(new GridLayoutManager(3, 2, new Insets(0, 0, 0, 0), -1, -1));
+        panel3.setLayout(new GridLayoutManager(4, 2, new Insets(0, 0, 0, 0), -1, -1));
         contentPane.add(panel3, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         themeLabel = new JLabel();
         themeLabel.setText("Theme:");
@@ -138,6 +150,9 @@ public class ChangeSettings extends JDialog {
         makeBackupsCheckBox = new JCheckBox();
         makeBackupsCheckBox.setText("Make save data backups on import?");
         panel3.add(makeBackupsCheckBox, new GridConstraints(2, 0, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        forceOverwriteCheckBox = new JCheckBox();
+        forceOverwriteCheckBox.setText("Delete old save directories to forcibly overwrite the save data?");
+        panel3.add(forceOverwriteCheckBox, new GridConstraints(3, 0, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     /**

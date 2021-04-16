@@ -69,7 +69,7 @@ public class Save implements java.io.Serializable {
         return data;
     }
 
-    public void overwriteData(byte[] data, boolean makeBackup) throws Exception {
+    public void overwriteData(byte[] data, boolean makeBackup, boolean forceOverwrite) throws Exception {
         /* Backup our current data if the user wants to */
         if (makeBackup) {
             byte[] backupData = toZipFile();
@@ -92,16 +92,21 @@ public class Save implements java.io.Serializable {
         tmpFile.deleteOnExit();
         FileUtils.writeByteArrayToFile(tmpFile, data);
 
+        /* Delete data if force overwrite is enabled */
+        if (forceOverwrite && file.isDirectory()) FileUtils.cleanDirectory(file);
+
         /* Extract zip to original folder */
         ZipInputStream in = new ZipInputStream(new FileInputStream(tmpFile));
         ZipEntry entry = in.getNextEntry();
         if (file.isFile()) {
+            /* Is just a file, just overwrite the data */
             String filePath = file.getPath();
             File saveFile = new File(filePath);
             if (!saveFile.toPath().normalize().startsWith(file.getPath())) // Test if the file name is valid due to bug
                 throw new Exception("Bad Zip Entry! Aborting!");
             IOUtils.copy(in, new FileOutputStream(saveFile));
         } else {
+            /* Is a folder */
             while (entry != null) {
                 String filePath = file.getPath() + File.separator + entry.getName().substring(name.length() + 1);
                 File saveFile = new File(filePath);

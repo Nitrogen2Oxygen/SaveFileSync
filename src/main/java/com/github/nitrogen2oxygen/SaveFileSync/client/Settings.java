@@ -10,11 +10,13 @@ import java.util.Properties;
 public class Settings {
     private Theme theme;
     private boolean makeBackups;
+    private boolean forceOverwriteSave;
 
     public Settings(Properties properties) {
         try {
             theme = Theme.valueOf(properties.getProperty("theme"));
             makeBackups = Boolean.parseBoolean(properties.getProperty("make-backups"));
+            forceOverwriteSave = Boolean.parseBoolean(properties.getProperty("force-overwrite"));
             System.out.println(makeBackups);
         } catch (Exception e) {
             int response = JOptionPane.showConfirmDialog(null, "There was an error reading the config file. Would you like to reset it?", "Error!", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
@@ -33,6 +35,7 @@ public class Settings {
     public void setDefaults() {
         theme = Themes.getDefault();
         makeBackups = true;
+        forceOverwriteSave = false;
     }
 
     public boolean shouldMakeBackups() {
@@ -41,6 +44,14 @@ public class Settings {
 
     public void setMakeBackups(boolean makeBackups) {
         this.makeBackups = makeBackups;
+    }
+
+    public boolean shouldForceOverwrite() {
+        return forceOverwriteSave;
+    }
+
+    public void setForceOverwrites(boolean forceOverwriteSave) {
+        this.forceOverwriteSave = forceOverwriteSave;
     }
 
     public void setTheme(Theme theme) {
@@ -74,6 +85,7 @@ public class Settings {
         Properties prop = new Properties();
         prop.setProperty("theme", String.valueOf(theme));
         prop.setProperty("make-backups", String.valueOf(makeBackups));
+        prop.setProperty("force-overwrite", String.valueOf(forceOverwriteSave));
         return prop;
     }
 }
