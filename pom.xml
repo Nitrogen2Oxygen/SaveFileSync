@@ -25,7 +25,7 @@
                     <appendAssemblyId>false</appendAssemblyId>
                     <archive>
                         <manifest>
-                            <mainClass>com.github.nitrogen2oxygen.SaveFileSync.App</mainClass>
+                            <mainClass>com.github.nitrogen2oxygen.savefilesync.App</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

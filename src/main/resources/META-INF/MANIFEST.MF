@@ -1,2 +1,2 @@
 Manifest-Version: 1.0
-Main-Class: com.github.nitrogen2oxygen.SaveFileSync.App
+Main-Class: com.github.nitrogen2oxygen.savefilesync.App
