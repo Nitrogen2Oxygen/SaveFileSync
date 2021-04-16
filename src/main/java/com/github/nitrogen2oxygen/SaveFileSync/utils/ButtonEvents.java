@@ -13,7 +13,7 @@ import java.util.Set;
 
 public class ButtonEvents {
 
-    public static void newSaveFile(ClientData data, SaveFileSync ui) {
+    public static void newSaveFile(ClientData data, MainPanel ui) {
         Save save = SaveFileManager.main();
         if (save == null) return;
         try {
@@ -28,7 +28,7 @@ public class ButtonEvents {
         ui.reloadUI();
     }
 
-    public static void manageServer(ClientData data, SaveFileSync ui) {
+    public static void manageServer(ClientData data, MainPanel ui) {
         Server newServer = ServerOptions.main(data);
         data.setServer(newServer);
 
@@ -37,7 +37,7 @@ public class ButtonEvents {
         ui.reloadUI();
     }
 
-    public static void exportSaves(ClientData data, SaveFileSync ui) {
+    public static void exportSaves(ClientData data, MainPanel ui) {
         if (data.getServer() == null || !data.getServer().verifyServer()) {
             JOptionPane.showMessageDialog(ui.getRootPanel(),
                     "Cannot export files without a working data server!",
@@ -77,7 +77,7 @@ public class ButtonEvents {
                 JOptionPane.INFORMATION_MESSAGE);
     }
 
-    public static void importSaves(ClientData data, SaveFileSync ui) {
+    public static void importSaves(ClientData data, MainPanel ui) {
         if (data.getServer() == null || !data.getServer().verifyServer()) {
             JOptionPane.showMessageDialog(ui.getRootPanel(),
                     "Cannot import files without a working data server!",
@@ -109,7 +109,7 @@ public class ButtonEvents {
                 JOptionPane.INFORMATION_MESSAGE);
     }
 
-    public static void serverImport(ClientData data, SaveFileSync ui) {
+    public static void serverImport(ClientData data, MainPanel ui) {
         ArrayList<String> newSaves = new ArrayList<>();
         ArrayList<String> serverSaveNames = data.getServer().getSaveNames();
         ArrayList<String> localSaveNames = new ArrayList<>();
@@ -137,7 +137,7 @@ public class ButtonEvents {
         }
     }
 
-    public static void removeSave(ClientData data, SaveFileSync ui) {
+    public static void removeSave(ClientData data, MainPanel ui) {
         int selected = ui.getSaveList().getSelectedRow();
         String name = (String) ui.getSaveList().getValueAt(selected, 0);
         /* Remove save file */
@@ -148,7 +148,7 @@ public class ButtonEvents {
         ui.reloadUI();
     }
 
-    public static void editSave(ClientData data, SaveFileSync ui) {
+    public static void editSave(ClientData data, MainPanel ui) {
         int selected = ui.getSaveList().getSelectedRow();
         String name = (String) ui.getSaveList().getValueAt(selected, 0);
         Save save = data.getSaves().get(name);
@@ -174,7 +174,7 @@ public class ButtonEvents {
         ui.reloadUI();
     }
 
-    public static void changeSettings(ClientData data, SaveFileSync ui) {
+    public static void changeSettings(ClientData data, MainPanel ui) {
         Settings newSettings = ChangeSettings.main(data.getSettings());
         if (newSettings == null) return;
         data.setSettings(newSettings);

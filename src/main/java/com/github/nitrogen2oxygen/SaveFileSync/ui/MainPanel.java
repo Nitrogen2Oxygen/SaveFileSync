@@ -23,7 +23,7 @@ import java.nio.file.Files;
 import java.util.*;
 import java.util.zip.ZipFile;
 
-public class SaveFileSync {
+public class MainPanel {
     private JPanel rootPanel;
     private JButton newSaveFile;
     private JButton importButton;
@@ -52,7 +52,7 @@ public class SaveFileSync {
             "Status"
     };
 
-    public SaveFileSync(ClientData userData) {
+    public MainPanel(ClientData userData) {
         data = userData;
 
         /* Set fonts (due to weird theming bug) */

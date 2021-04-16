@@ -4,7 +4,7 @@ import com.github.nitrogen2oxygen.SaveFileSync.client.ClientData;
 import com.github.nitrogen2oxygen.SaveFileSync.ui.ProgressBar;
 import com.github.nitrogen2oxygen.SaveFileSync.utils.Constants;
 import com.github.nitrogen2oxygen.SaveFileSync.utils.DataManager;
-import com.github.nitrogen2oxygen.SaveFileSync.ui.SaveFileSync;
+import com.github.nitrogen2oxygen.SaveFileSync.ui.MainPanel;
 
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
@@ -36,7 +36,7 @@ public class App {
 
         /* Finally, creating the actual UI frame. Communication between front and backend is iffy but we make do */
         JFrame frame = new JFrame(Constants.APP_NAME + " - " + Constants.VERSION);
-        frame.setContentPane(new SaveFileSync(data).getRootPanel()); // The UI required a ClientData object to update the lists and such
+        frame.setContentPane(new MainPanel(data).getRootPanel()); // The UI required a ClientData object to update the lists and such
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
             @Override
