@@ -5,6 +5,10 @@ import com.github.nitrogen2oxygen.SaveFileSync.client.Save;
 import com.github.nitrogen2oxygen.SaveFileSync.client.Settings;
 import com.github.nitrogen2oxygen.SaveFileSync.server.Server;
 import com.github.nitrogen2oxygen.SaveFileSync.ui.*;
+import com.github.nitrogen2oxygen.SaveFileSync.ui.dialog.ChangeSettings;
+import com.github.nitrogen2oxygen.SaveFileSync.ui.dialog.SaveFileManager;
+import com.github.nitrogen2oxygen.SaveFileSync.ui.dialog.ServerImport;
+import com.github.nitrogen2oxygen.SaveFileSync.ui.dialog.ServerOptions;
 
 import javax.swing.*;
 import java.util.ArrayList;

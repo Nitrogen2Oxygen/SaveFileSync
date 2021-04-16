@@ -25,14 +25,14 @@ public class DataManager {
         /* Save the settings to config.properties */
         try {
             Properties props = settings.toProperties();
-            File configFile = new File(Constants.getConfigFile());
+            File configFile = new File(Locations.getConfigFile());
             configFile.createNewFile();
             FileOutputStream stream = new FileOutputStream(configFile);
             props.store(stream, "");
             stream.close();
 
             /* Save the server to server.ser */
-            File serverFile = new File(Constants.getServerFile());
+            File serverFile = new File(Locations.getServerFile());
             serverFile.createNewFile();
             ObjectOutputStream serverStream = new ObjectOutputStream(new FileOutputStream(serverFile));
             serverStream.writeObject(server);
@@ -40,7 +40,7 @@ public class DataManager {
 
 
             /* Save the saves to /saves */
-            File savesDirectory = new File(Constants.getSaveDirectory());
+            File savesDirectory = new File(Locations.getSaveDirectory());
             savesDirectory.mkdirs();
             FileUtils.cleanDirectory(savesDirectory); // Clear any deleted save files or renamed ones
             for (String key : saves.keySet()) {
@@ -68,7 +68,7 @@ public class DataManager {
 
         try {
             /* Get settings */
-            File configFile = new File(Constants.getConfigFile());
+            File configFile = new File(Locations.getConfigFile());
             if (configFile.exists()) {
                 Properties props = new Properties();
                 FileInputStream stream = new FileInputStream(configFile);
@@ -80,13 +80,13 @@ public class DataManager {
             }
 
             /* Get server */
-            File serverFile = new File(Constants.getServerFile());
+            File serverFile = new File(Locations.getServerFile());
             if (serverFile.exists()) {
                 ObjectInputStream stream = new ObjectInputStream(new FileInputStream(serverFile));
                 server = (Server) stream.readObject();
             }
 
-            File saveDirectory = new File(Constants.getSaveDirectory());
+            File saveDirectory = new File(Locations.getSaveDirectory());
             if (saveDirectory.exists()) {
                 File[] fileList = saveDirectory.listFiles();
                 if (fileList != null) {

@@ -1,8 +1,9 @@
 package com.github.nitrogen2oxygen.SaveFileSync.ui;
 
 import com.github.nitrogen2oxygen.SaveFileSync.client.ClientData;
-import com.github.nitrogen2oxygen.SaveFileSync.client.ThemeColor;
-import com.github.nitrogen2oxygen.SaveFileSync.client.Themes;
+import com.github.nitrogen2oxygen.SaveFileSync.client.themes.ThemeColor;
+import com.github.nitrogen2oxygen.SaveFileSync.client.themes.Themes;
+import com.github.nitrogen2oxygen.SaveFileSync.ui.renderer.SaveStatusCellRenderer;
 import com.github.nitrogen2oxygen.SaveFileSync.utils.ButtonEvents;
 import com.github.nitrogen2oxygen.SaveFileSync.client.Save;
 import com.github.nitrogen2oxygen.SaveFileSync.utils.FileUtilities;

@@ -1,12 +1,11 @@
-package com.github.nitrogen2oxygen.SaveFileSync.ui;
+package com.github.nitrogen2oxygen.SaveFileSync.ui.dialog;
 
 import com.github.nitrogen2oxygen.SaveFileSync.client.Settings;
-import com.github.nitrogen2oxygen.SaveFileSync.client.Theme;
-import com.github.nitrogen2oxygen.SaveFileSync.client.Themes;
-import com.github.nitrogen2oxygen.SaveFileSync.utils.Constants;
+import com.github.nitrogen2oxygen.SaveFileSync.client.themes.Theme;
+import com.github.nitrogen2oxygen.SaveFileSync.client.themes.Themes;
+import com.github.nitrogen2oxygen.SaveFileSync.utils.Locations;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import com.intellij.uiDesigner.core.Spacer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -76,7 +75,7 @@ public class ChangeSettings extends JDialog {
         openDataDirectoryButton.addActionListener(e -> {
             Desktop desktop = Desktop.getDesktop();
             try {
-                desktop.open(new File(Constants.getDataDirectory()));
+                desktop.open(new File(Locations.getDataDirectory()));
             } catch (IOException ee) {
                 ee.printStackTrace();
             }

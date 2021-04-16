@@ -1,4 +1,4 @@
-package com.github.nitrogen2oxygen.SaveFileSync.ui;
+package com.github.nitrogen2oxygen.SaveFileSync.ui.component;
 
 import javax.swing.*;
 import java.awt.*;

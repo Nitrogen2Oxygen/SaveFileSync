@@ -1,4 +1,4 @@
-package com.github.nitrogen2oxygen.SaveFileSync.ui;
+package com.github.nitrogen2oxygen.SaveFileSync.ui.dialog;
 
 import com.github.nitrogen2oxygen.SaveFileSync.client.Save;
 import com.github.nitrogen2oxygen.SaveFileSync.server.Server;

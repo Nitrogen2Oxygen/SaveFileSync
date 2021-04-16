@@ -1,8 +1,8 @@
-package com.github.nitrogen2oxygen.SaveFileSync.ui;
+package com.github.nitrogen2oxygen.SaveFileSync.ui.renderer;
 
-import com.github.nitrogen2oxygen.SaveFileSync.client.Theme;
-import com.github.nitrogen2oxygen.SaveFileSync.client.ThemeColor;
-import com.github.nitrogen2oxygen.SaveFileSync.client.Themes;
+import com.github.nitrogen2oxygen.SaveFileSync.client.themes.Theme;
+import com.github.nitrogen2oxygen.SaveFileSync.client.themes.ThemeColor;
+import com.github.nitrogen2oxygen.SaveFileSync.client.themes.Themes;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;

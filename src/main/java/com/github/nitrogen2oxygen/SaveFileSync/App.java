@@ -1,10 +1,11 @@
 package com.github.nitrogen2oxygen.SaveFileSync;
 
 import com.github.nitrogen2oxygen.SaveFileSync.client.ClientData;
-import com.github.nitrogen2oxygen.SaveFileSync.ui.ProgressBar;
+import com.github.nitrogen2oxygen.SaveFileSync.ui.component.ProgressBar;
 import com.github.nitrogen2oxygen.SaveFileSync.utils.Constants;
 import com.github.nitrogen2oxygen.SaveFileSync.utils.DataManager;
 import com.github.nitrogen2oxygen.SaveFileSync.ui.MainPanel;
+import com.github.nitrogen2oxygen.SaveFileSync.utils.Locations;
 
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
@@ -18,7 +19,7 @@ public class App {
         ProgressBar pb = new ProgressBar("Loading " + Constants.APP_NAME + "...");
         pb.start();
        /* Obtain the client data from <USER_HOME>/SaveFileSync */
-        File clientDataFolder = new File(Constants.getDataDirectory());
+        File clientDataFolder = new File(Locations.getDataDirectory());
         if (!clientDataFolder.isDirectory() || !clientDataFolder.exists()) {
             boolean mkdir = clientDataFolder.mkdir();
                if (!mkdir) {
