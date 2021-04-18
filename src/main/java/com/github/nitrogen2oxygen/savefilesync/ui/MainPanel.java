@@ -123,12 +123,8 @@ public class MainPanel {
             // Set server status
             Boolean serverOnline;
             if (data.getServer() != null) {
-                Boolean status = data.getServer().verifyServer();
-                if (status == null) {
-                    serverStatus.setText("None");
-                    serverOnline = null;
-                    serverStatus.setForeground(Themes.getColor(data.getSettings().getTheme(), ThemeColor.DEFAULT));
-                } else if (status) {
+                boolean status = data.getServer().verifyServer();
+                if (status) {
                     serverOnline = true;
                     serverStatus.setText("Online");
                     serverStatus.setForeground(Themes.getColor(data.getSettings().getTheme(), ThemeColor.SUCCESS));
