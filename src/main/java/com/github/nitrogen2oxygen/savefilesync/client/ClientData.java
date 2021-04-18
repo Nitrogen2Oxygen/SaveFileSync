@@ -1,7 +1,7 @@
 package com.github.nitrogen2oxygen.savefilesync.client;
 
 import com.github.nitrogen2oxygen.savefilesync.server.DataServer;
-import com.github.nitrogen2oxygen.savefilesync.utils.DataManager;
+import com.github.nitrogen2oxygen.savefilesync.util.DataManager;
 
 import java.io.File;
 import java.util.HashMap;

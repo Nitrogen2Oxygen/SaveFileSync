@@ -1,4 +1,4 @@
-package com.github.nitrogen2oxygen.savefilesync.utils;
+package com.github.nitrogen2oxygen.savefilesync.util;
 
 public class Constants {
     public static final String VERSION = "v0.4.0-alpha";

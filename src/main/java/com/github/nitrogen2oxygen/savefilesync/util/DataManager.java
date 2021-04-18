@@ -1,4 +1,4 @@
-package com.github.nitrogen2oxygen.savefilesync.utils;
+package com.github.nitrogen2oxygen.savefilesync.util;
 
 import com.github.nitrogen2oxygen.savefilesync.client.ClientData;
 import com.github.nitrogen2oxygen.savefilesync.client.Save;
@@ -25,14 +25,14 @@ public class DataManager {
         /* Save the settings to config.properties */
         try {
             Properties props = settings.toProperties();
-            File configFile = new File(Locations.getConfigFile());
+            File configFile = new File(FileLocations.getConfigFile());
             configFile.createNewFile();
             FileOutputStream stream = new FileOutputStream(configFile);
             props.store(stream, "");
             stream.close();
 
             /* Save the dataServer to dataServer.ser */
-            File serverFile = new File(Locations.getServerFile());
+            File serverFile = new File(FileLocations.getServerFile());
             serverFile.createNewFile();
             ObjectOutputStream serverStream = new ObjectOutputStream(new FileOutputStream(serverFile));
             serverStream.writeObject(dataServer);
@@ -40,7 +40,7 @@ public class DataManager {
 
 
             /* Save the saves to /saves */
-            File savesDirectory = new File(Locations.getSaveDirectory());
+            File savesDirectory = new File(FileLocations.getSaveDirectory());
             savesDirectory.mkdirs();
             FileUtils.cleanDirectory(savesDirectory); // Clear any deleted save files or renamed ones
             for (String key : saves.keySet()) {
@@ -68,7 +68,7 @@ public class DataManager {
 
         try {
             /* Get settings */
-            File configFile = new File(Locations.getConfigFile());
+            File configFile = new File(FileLocations.getConfigFile());
             if (configFile.exists()) {
                 Properties props = new Properties();
                 FileInputStream stream = new FileInputStream(configFile);
@@ -80,7 +80,7 @@ public class DataManager {
             }
 
             /* Get dataServer */
-            File serverFile = new File(Locations.getServerFile());
+            File serverFile = new File(FileLocations.getServerFile());
             if (serverFile.exists()) {
                 try {
                     ObjectInputStream stream = new ObjectInputStream(new FileInputStream(serverFile));
@@ -92,7 +92,7 @@ public class DataManager {
                 }
             }
 
-            File saveDirectory = new File(Locations.getSaveDirectory());
+            File saveDirectory = new File(FileLocations.getSaveDirectory());
             if (saveDirectory.exists()) {
                 File[] fileList = saveDirectory.listFiles();
                 if (fileList != null) {

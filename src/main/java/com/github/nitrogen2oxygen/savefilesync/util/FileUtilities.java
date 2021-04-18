@@ -1,4 +1,4 @@
-package com.github.nitrogen2oxygen.savefilesync.utils;
+package com.github.nitrogen2oxygen.savefilesync.util;
 
 import org.apache.commons.io.IOUtils;
 

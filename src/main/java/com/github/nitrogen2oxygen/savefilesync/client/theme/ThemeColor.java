@@ -1,4 +1,4 @@
-package com.github.nitrogen2oxygen.savefilesync.client.themes;
+package com.github.nitrogen2oxygen.savefilesync.client.theme;
 
 public enum ThemeColor {
     DEFAULT,

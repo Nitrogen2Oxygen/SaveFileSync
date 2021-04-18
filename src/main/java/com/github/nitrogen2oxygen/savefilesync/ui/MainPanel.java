@@ -1,13 +1,12 @@
 package com.github.nitrogen2oxygen.savefilesync.ui;
 
 import com.github.nitrogen2oxygen.savefilesync.client.ClientData;
-import com.github.nitrogen2oxygen.savefilesync.client.themes.ThemeColor;
-import com.github.nitrogen2oxygen.savefilesync.client.themes.Themes;
+import com.github.nitrogen2oxygen.savefilesync.client.theme.ThemeColor;
+import com.github.nitrogen2oxygen.savefilesync.client.theme.Themes;
 import com.github.nitrogen2oxygen.savefilesync.server.DataServers;
 import com.github.nitrogen2oxygen.savefilesync.ui.renderer.SaveStatusCellRenderer;
-import com.github.nitrogen2oxygen.savefilesync.utils.ButtonEvents;
 import com.github.nitrogen2oxygen.savefilesync.client.Save;
-import com.github.nitrogen2oxygen.savefilesync.utils.FileUtilities;
+import com.github.nitrogen2oxygen.savefilesync.util.FileUtilities;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;

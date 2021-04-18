@@ -1,8 +1,8 @@
-package com.github.nitrogen2oxygen.savefilesync.utils;
+package com.github.nitrogen2oxygen.savefilesync.util;
 
 import java.nio.file.Paths;
 
-public class Locations {
+public class FileLocations {
     public static String getConfigFile() {
         return Paths.get(getDataDirectory(), "config.properties").toString();
     }

@@ -1,6 +1,6 @@
 package com.github.nitrogen2oxygen.savefilesync.client;
 
-import com.github.nitrogen2oxygen.savefilesync.utils.FileUtilities;
+import com.github.nitrogen2oxygen.savefilesync.util.FileUtilities;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;

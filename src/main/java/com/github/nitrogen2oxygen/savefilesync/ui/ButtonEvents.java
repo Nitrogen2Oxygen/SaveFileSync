@@ -1,4 +1,4 @@
-package com.github.nitrogen2oxygen.savefilesync.utils;
+package com.github.nitrogen2oxygen.savefilesync.ui;
 
 import com.github.nitrogen2oxygen.savefilesync.client.ClientData;
 import com.github.nitrogen2oxygen.savefilesync.client.Save;
@@ -9,6 +9,7 @@ import com.github.nitrogen2oxygen.savefilesync.ui.dialog.ChangeSettings;
 import com.github.nitrogen2oxygen.savefilesync.ui.dialog.SaveFileManager;
 import com.github.nitrogen2oxygen.savefilesync.ui.dialog.ServerImport;
 import com.github.nitrogen2oxygen.savefilesync.ui.dialog.ServerOptions;
+import com.github.nitrogen2oxygen.savefilesync.util.DataManager;
 
 import javax.swing.*;
 import java.util.ArrayList;
