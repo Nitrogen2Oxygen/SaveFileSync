@@ -2,6 +2,7 @@ package com.github.nitrogen2oxygen.savefilesync.ui.dialog;
 
 import com.github.nitrogen2oxygen.savefilesync.client.ClientData;
 import com.github.nitrogen2oxygen.savefilesync.server.DropboxServer;
+import com.github.nitrogen2oxygen.savefilesync.server.GoogleDriveServer;
 import com.github.nitrogen2oxygen.savefilesync.server.Server;
 import com.github.nitrogen2oxygen.savefilesync.utils.Constants;
 import com.intellij.uiDesigner.core.GridConstraints;
@@ -15,6 +16,8 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
@@ -36,11 +39,14 @@ public class ServerOptions extends JDialog {
     private JTextField dropboxCodeField;
     private JButton dropboxLinkButton;
     private JPanel emptyPanel;
+    private JButton googleDriveLinkButton;
+    private JTextField googleDriveApiCode;
 
     private Server server;
     private final Server oldServer;
     public Boolean cancelled = false;
     private String dropboxVerifier;
+    private String googleDriveVerifier;
 
     private static final String[] serverTypes = {
             "WebDAV",
@@ -105,6 +111,23 @@ public class ServerOptions extends JDialog {
                 webdavPasswordField.setText("");
             }
         });
+        googleDriveLinkButton.addActionListener(e -> {
+            try {
+                if (googleDriveVerifier == null) googleDriveVerifier = GoogleDriveServer.generateVerifier();
+                String url = "https://accounts.google.com/o/oauth2/v2/auth?" +
+                        "response_type=code" +
+                        "&client_id=" + Constants.GOOGLE_DRIVE_APP_ID +
+                        "&redirect_uri=" + Constants.GOOGLE_DRIVE_REDIRECT_URI +
+                        "&scope=" + String.join("%20", GoogleDriveServer.scopes) +
+                        "&code_challenge=" + GoogleDriveServer.getChallenge(googleDriveVerifier) +
+                        "&code_challenge_method=S256";
+                Desktop.getDesktop().browse(new URI(url));
+                String code = GoogleDriveServer.getKey();
+                googleDriveApiCode.setText(code);
+            } catch (NoSuchAlgorithmException | URISyntaxException | IOException ee) {
+                ee.printStackTrace();
+            }
+        });
         dropboxLinkButton.addActionListener(e -> {
             try {
                 if (dropboxVerifier == null) dropboxVerifier = DropboxServer.generateVerifier();
@@ -147,6 +170,12 @@ public class ServerOptions extends JDialog {
                     break;
                 case "Google Drive":
                     cl.show(optionsPanel, "2");
+                    if (serverData.get("apiKey") != null) {
+                        googleDriveApiCode.setText(serverData.get("apiKey"));
+                    }
+                    if (serverData.get("verifier") != null) {
+                        googleDriveVerifier = serverData.get("verifier");
+                    }
                     break;
                 case "Dropbox":
                     cl.show(optionsPanel, "3");
@@ -185,6 +214,16 @@ public class ServerOptions extends JDialog {
                     server.setData(newData);
                     break;
                 case "Google Drive":
+                    HashMap<String, String> googleDriveData = new HashMap<>();
+                    if (googleDriveApiCode.getText().length() == 0) {
+                        JOptionPane.showMessageDialog(null, "A valid key is required to continue", "Error!", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    } else {
+                        googleDriveData.put("apiKey", googleDriveApiCode.getText());
+                        googleDriveData.put("verifier", googleDriveVerifier);
+                    }
+
+                    server.setData(googleDriveData);
                     break;
                 case "Dropbox":
                     HashMap<String, String> dropboxData = new HashMap<>();
@@ -302,22 +341,34 @@ public class ServerOptions extends JDialog {
         webdavPasswordField = new JPasswordField();
         webdavPanel.add(webdavPasswordField, new GridConstraints(4, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         googleDrivePanel = new JPanel();
-        googleDrivePanel.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
+        googleDrivePanel.setLayout(new GridLayoutManager(6, 1, new Insets(0, 0, 0, 0), -1, -1));
         optionsPanel.add(googleDrivePanel, "2");
         googleDriveLabel = new JLabel();
         googleDriveLabel.setText("Google Drive Setup");
         googleDrivePanel.add(googleDriveLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer2 = new Spacer();
-        googleDrivePanel.add(spacer2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        googleDrivePanel.add(spacer2, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        final JLabel label5 = new JLabel();
+        label5.setText("Click here to login with Google:");
+        googleDrivePanel.add(label5, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        googleDriveLinkButton = new JButton();
+        googleDriveLinkButton.setText("Button");
+        googleDrivePanel.add(googleDriveLinkButton, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label6 = new JLabel();
+        label6.setText("A code will be pasted here on completion:");
+        googleDrivePanel.add(label6, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        googleDriveApiCode = new JTextField();
+        googleDriveApiCode.setEditable(false);
+        googleDrivePanel.add(googleDriveApiCode, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         dropboxPanel = new JPanel();
         dropboxPanel.setLayout(new GridLayoutManager(4, 2, new Insets(0, 0, 0, 0), -1, -1));
         optionsPanel.add(dropboxPanel, "3");
-        final JLabel label5 = new JLabel();
-        label5.setText("Click here and login with dropbox:");
-        dropboxPanel.add(label5, new GridConstraints(0, 0, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label6 = new JLabel();
-        label6.setText("Paste the code recieved here:");
-        dropboxPanel.add(label6, new GridConstraints(2, 0, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label7 = new JLabel();
+        label7.setText("Click here and login with dropbox:");
+        dropboxPanel.add(label7, new GridConstraints(0, 0, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label8 = new JLabel();
+        label8.setText("Paste the code recieved here:");
+        dropboxPanel.add(label8, new GridConstraints(2, 0, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         dropboxCodeField = new JTextField();
         dropboxPanel.add(dropboxCodeField, new GridConstraints(3, 0, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         dropboxLinkButton = new JButton();

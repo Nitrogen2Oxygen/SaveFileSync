@@ -40,7 +40,7 @@ public class DropboxServer extends Server {
 
     @Override
     public void setData(HashMap<String, String> args) {
-        if (!apiKey.equals(args.get("apiKey"))) {
+        if (apiKey == null || !apiKey.equals(args.get("apiKey"))) {
             apiKey = args.get("apiKey");
             verifier = args.get("verifier");
             bearerKey = null;
