@@ -1,5 +1,6 @@
 package com.github.nitrogen2oxygen.savefilesync.server;
 
+import com.github.nitrogen2oxygen.savefilesync.utils.CallbackServer;
 import com.github.nitrogen2oxygen.savefilesync.utils.Constants;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
@@ -178,23 +179,19 @@ public class OneDriveDataServer extends DataServer {
         }
     }
 
-    public static String getApiKey() throws IOException {
-        ServerSocket socket = new ServerSocket(Constants.ONEDRIVE_REDIRECT_PORT);
-        try (Socket client = socket.accept()) {
-            InputStreamReader isr = new InputStreamReader(client.getInputStream());
-            BufferedReader reader = new BufferedReader(isr);
-            String line = reader.readLine();
-            String query = line.split(" ")[1].substring(2);
-            String[] pairs = query.split("&");
-            HashMap<String, String> queries = new HashMap<>();
-            for (String pair : pairs) {
-                queries.put(pair.split("=")[0], pair.split("=")[1]);
+    public static String getApiKey() {
+
+        try (CallbackServer callbackServer = new CallbackServer(Constants.ONEDRIVE_REDIRECT_PORT)) {
+            String key = callbackServer.getQuery("code");
+            if (key == null || key.length() == 0) {
+                callbackServer.send("No code specified in query. Please close this window and try again...");
+            } else {
+                callbackServer.send("Code received! You can close this window and return to the app!");
             }
-            DataOutputStream outputStream = new DataOutputStream(client.getOutputStream());
-            outputStream.writeUTF("You can close this window and return to the app!");
-            outputStream.flush();
-            client.close();
-            return queries.get("code");
+            return key;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "";
         }
     }
 }

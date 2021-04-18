@@ -201,6 +201,10 @@ public class ServerOptions extends JDialog {
             switch (dataServer.getServerType()) {
                 case WEBDAV:
                     HashMap<String, String> newData = new HashMap<>();
+                    if (webdavUriTextField.getText().length() == 0) {
+                        JOptionPane.showMessageDialog(null, "A WebDAV server URL must be specified!", "Error!", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
                     newData.put("uri", webdavUriTextField.getText());
                     if (webdavUseAuthenticationBox.isSelected()) {
                         if (webdavUsernameTextField.getText().length() > 0 && webdavPasswordField.getPassword().length > 0) {
@@ -242,8 +246,8 @@ public class ServerOptions extends JDialog {
             boolean isValid = dataServer == null || dataServer.verifyServer();
             if (!isValid) {
                 JOptionPane.showMessageDialog(this,
-                        "Something is wrong with your config. Check to make sure that all the credentials are correct.",
-                        "Error",
+                        "Cannot verify connection to data server! Double check your credentials.",
+                        "Error!",
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
