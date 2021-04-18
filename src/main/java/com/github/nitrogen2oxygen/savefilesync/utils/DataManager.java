@@ -82,8 +82,14 @@ public class DataManager {
             /* Get server */
             File serverFile = new File(Locations.getServerFile());
             if (serverFile.exists()) {
-                ObjectInputStream stream = new ObjectInputStream(new FileInputStream(serverFile));
-                server = (Server) stream.readObject();
+                try {
+                    ObjectInputStream stream = new ObjectInputStream(new FileInputStream(serverFile));
+                    server = (Server) stream.readObject();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Cannot load server data. Resetting...", "Load error", JOptionPane.ERROR_MESSAGE);
+                    server = null;
+                }
             }
 
             File saveDirectory = new File(Locations.getSaveDirectory());
@@ -102,7 +108,7 @@ public class DataManager {
                     }
                 }
             }
-        } catch (IOException | ClassNotFoundException | JSONException e) {
+        } catch (IOException | JSONException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null,
                     "Cannot load data. If this persists, please submit an issue on GitHub.",

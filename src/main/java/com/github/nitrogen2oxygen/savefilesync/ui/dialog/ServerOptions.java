@@ -42,7 +42,6 @@ public class ServerOptions extends JDialog {
 
     private static final String[] serverTypes = {
             "WebDAV",
-            "Google Drive",
             "Dropbox"
     };
 
