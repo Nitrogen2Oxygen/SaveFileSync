@@ -3,7 +3,7 @@ package com.github.nitrogen2oxygen.savefilesync.utils;
 import com.github.nitrogen2oxygen.savefilesync.client.ClientData;
 import com.github.nitrogen2oxygen.savefilesync.client.Save;
 import com.github.nitrogen2oxygen.savefilesync.client.Settings;
-import com.github.nitrogen2oxygen.savefilesync.server.Server;
+import com.github.nitrogen2oxygen.savefilesync.server.DataServer;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
@@ -18,7 +18,7 @@ import java.util.Properties;
 public class DataManager {
 
     public static void save(ClientData data) {
-        Server server = data.getServer();
+        DataServer dataServer = data.getServer();
         Settings settings = data.getSettings();
         HashMap<String, Save> saves = data.getSaves();
 
@@ -31,11 +31,11 @@ public class DataManager {
             props.store(stream, "");
             stream.close();
 
-            /* Save the server to server.ser */
+            /* Save the dataServer to dataServer.ser */
             File serverFile = new File(Locations.getServerFile());
             serverFile.createNewFile();
             ObjectOutputStream serverStream = new ObjectOutputStream(new FileOutputStream(serverFile));
-            serverStream.writeObject(server);
+            serverStream.writeObject(dataServer);
             serverStream.close();
 
 
@@ -62,7 +62,7 @@ public class DataManager {
 
     public static ClientData load() {
         Settings settings = null;
-        Server server = null;
+        DataServer dataServer = null;
         HashMap<String, Save> saves = new HashMap<>();
 
 
@@ -79,16 +79,16 @@ public class DataManager {
                 settings = new Settings();
             }
 
-            /* Get server */
+            /* Get dataServer */
             File serverFile = new File(Locations.getServerFile());
             if (serverFile.exists()) {
                 try {
                     ObjectInputStream stream = new ObjectInputStream(new FileInputStream(serverFile));
-                    server = (Server) stream.readObject();
+                    dataServer = (DataServer) stream.readObject();
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Cannot load server data. Resetting...", "Load error", JOptionPane.ERROR_MESSAGE);
-                    server = null;
+                    JOptionPane.showMessageDialog(null, "Cannot load dataServer data. Resetting...", "Load error", JOptionPane.ERROR_MESSAGE);
+                    dataServer = null;
                 }
             }
 
@@ -117,6 +117,6 @@ public class DataManager {
             System.exit(1);
         }
 
-        return new ClientData(server, settings, saves);
+        return new ClientData(dataServer, settings, saves);
     }
 }

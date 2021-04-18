@@ -81,7 +81,7 @@
                     <properties>
                       <enabled value="true"/>
                       <text value="Import Save From Server"/>
-                      <toolTipText value="Imports a save file from the data server"/>
+                      <toolTipText value="Imports a save file from the data dataServer"/>
                     </properties>
                   </component>
                   <component id="a3c5d" class="javax.swing.JButton" binding="manageServerButton" default-binding="true">
@@ -90,7 +90,7 @@
                     </constraints>
                     <properties>
                       <text value="Manage Server"/>
-                      <toolTipText value="Manages the status and location of the data server"/>
+                      <toolTipText value="Manages the status and location of the data dataServer"/>
                     </properties>
                   </component>
                   <component id="5dc2c" class="javax.swing.JLabel" binding="hostLabel">
@@ -177,7 +177,7 @@
         <properties>
           <enabled value="false"/>
           <text value="Export"/>
-          <toolTipText value="Backs up selected file(s) to the server"/>
+          <toolTipText value="Backs up selected file(s) to the dataServer"/>
         </properties>
       </component>
       <component id="d2e3b" class="javax.swing.JButton" binding="importButton">
@@ -187,7 +187,7 @@
         <properties>
           <enabled value="false"/>
           <text value="Import"/>
-          <toolTipText value="Imports selected files from the server"/>
+          <toolTipText value="Imports selected files from the dataServer"/>
         </properties>
       </component>
       <component id="8eb1d" class="javax.swing.JButton" binding="settingsButton" default-binding="true">

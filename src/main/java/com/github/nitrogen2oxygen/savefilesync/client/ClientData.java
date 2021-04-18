@@ -1,29 +1,29 @@
 package com.github.nitrogen2oxygen.savefilesync.client;
 
-import com.github.nitrogen2oxygen.savefilesync.server.Server;
+import com.github.nitrogen2oxygen.savefilesync.server.DataServer;
 import com.github.nitrogen2oxygen.savefilesync.utils.DataManager;
 
 import java.io.File;
 import java.util.HashMap;
 
 public class ClientData {
-    private Server server; // Everything we need server wise is located here
+    private DataServer dataServer; // Everything we need dataServer wise is located here
     private Settings settings; // The client settings includes any kind of extra data the user manually sets
-    private final HashMap<String, Save> saves; // Saves can either be retrieved from the server OR created locally.
+    private final HashMap<String, Save> saves; // Saves can either be retrieved from the dataServer OR created locally.
 
     /* Load already created data */
-    public ClientData(Server server, Settings settings, HashMap<String, Save> saves) {
-        this.server = server;
+    public ClientData(DataServer dataServer, Settings settings, HashMap<String, Save> saves) {
+        this.dataServer = dataServer;
         this.settings = settings;
         this.saves = saves;
     }
 
-    public Server getServer() {
-        return server;
+    public DataServer getServer() {
+        return dataServer;
     }
 
-    public void setServer(Server server) {
-        this.server = server;
+    public void setServer(DataServer dataServer) {
+        this.dataServer = dataServer;
     }
 
     public Settings getSettings() {

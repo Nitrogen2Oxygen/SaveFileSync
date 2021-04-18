@@ -11,22 +11,24 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
 
-public class WebDavServer extends Server {
+public class WebDavDataServer extends DataServer {
 
     private static final long serialVersionUID = -2218215115068183298L;
     private String username;
     private String password;
     private String uri;
 
-    public WebDavServer() {
+    public WebDavDataServer() {
         super();
     }
 
-    /* Abstract function overrides */
     @Override
-    public String serverDisplayName() {
-        return "WebDAV";
+    public ServerType getServerType() {
+        return ServerType.WEBDAV;
     }
+
+    /* Abstract function overrides */
+
 
     @Override
     public String getHostName() {

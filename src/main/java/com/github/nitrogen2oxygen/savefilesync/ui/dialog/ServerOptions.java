@@ -1,8 +1,12 @@
 package com.github.nitrogen2oxygen.savefilesync.ui.dialog;
 
 import com.github.nitrogen2oxygen.savefilesync.client.ClientData;
-import com.github.nitrogen2oxygen.savefilesync.server.DropboxServer;
-import com.github.nitrogen2oxygen.savefilesync.server.Server;
+import com.github.nitrogen2oxygen.savefilesync.client.themes.Theme;
+import com.github.nitrogen2oxygen.savefilesync.client.themes.Themes;
+import com.github.nitrogen2oxygen.savefilesync.server.DataServer;
+import com.github.nitrogen2oxygen.savefilesync.server.DataServers;
+import com.github.nitrogen2oxygen.savefilesync.server.DropboxDataServer;
+import com.github.nitrogen2oxygen.savefilesync.server.ServerType;
 import com.github.nitrogen2oxygen.savefilesync.utils.Constants;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
@@ -22,7 +26,7 @@ public class ServerOptions extends JDialog {
     private JPanel contentPane;
     private JButton saveButton;
     private JButton buttonCancel;
-    private JComboBox<String> serverTypeSelector;
+    private JComboBox<ServerType> serverTypeSelector;
     private JPanel optionsPanel;
     private JPanel webdavPanel;
     private JPanel dropboxPanel;
@@ -35,28 +39,35 @@ public class ServerOptions extends JDialog {
     private JButton dropboxLinkButton;
     private JPanel emptyPanel;
 
-    private Server server;
-    private final Server oldServer;
+    private DataServer dataServer;
+    private final DataServer oldDataServer;
     public Boolean cancelled = false;
     private String dropboxVerifier;
 
-    private static final String[] serverTypes = {
-            "WebDAV",
-            "Dropbox"
-    };
-
-    public ServerOptions(Server currentServer) {
-        this.server = currentServer;
-        this.oldServer = currentServer;
+    public ServerOptions(DataServer currentDataServer) {
+        this.dataServer = currentDataServer;
+        this.oldDataServer = currentDataServer;
 
         /* Create logic for the UI */
-        DefaultComboBoxModel<String> defaultComboBoxModel = new DefaultComboBoxModel<>();
-        defaultComboBoxModel.addElement("None");
-        for (String type : serverTypes) {
+        DefaultComboBoxModel<ServerType> defaultComboBoxModel = new DefaultComboBoxModel<>();
+        for (ServerType type : ServerType.values()) {
             defaultComboBoxModel.addElement(type);
         }
-        defaultComboBoxModel.setSelectedItem(currentServer != null ? currentServer.serverDisplayName() : "None");
+        defaultComboBoxModel.setSelectedItem(currentDataServer != null ? currentDataServer.getServerType() : ServerType.NONE);
         serverTypeSelector.setModel(defaultComboBoxModel);
+        serverTypeSelector.setRenderer((list, value, index, isSelected, cellHasFocus) -> {
+            JLabel label = new JLabel();
+            label.setText(DataServers.getDisplayName(value));
+            label.setOpaque(true);
+            if (isSelected) {
+                label.setForeground(list.getSelectionForeground());
+                label.setBackground(list.getSelectionBackground());
+            } else {
+                label.setForeground(list.getForeground());
+                label.setBackground(list.getBackground());
+            }
+            return label;
+        });
 
         /* Do all the lame UI stuff */
         setContentPane(contentPane);
@@ -75,18 +86,18 @@ public class ServerOptions extends JDialog {
         saveButton.addActionListener(e -> onOK());
         buttonCancel.addActionListener(e -> onCancel());
         serverTypeSelector.addActionListener(e -> {
-            if (server != null) {
-                int opt = JOptionPane.showConfirmDialog(null, "Changing this option will reset your server config. Continue?", "Warning!", JOptionPane.YES_NO_OPTION);
+            if (dataServer != null) {
+                int opt = JOptionPane.showConfirmDialog(null, "Changing this option will reset your Server config. Continue?", "Warning!", JOptionPane.YES_NO_OPTION);
                 if (opt == 1) {
-                    serverTypeSelector.setSelectedItem(server == null ? "None" : server.serverDisplayName());
+                    serverTypeSelector.setSelectedItem(dataServer == null ? ServerType.NONE : dataServer.getServerType());
                     return;
                 }
             }
-            String option = (String) serverTypeSelector.getSelectedItem();
-            if (option == null || option.equals("None")) {
-                server = null; // Removes any kind of server aspect if the server is "none"
+            ServerType option = (ServerType) serverTypeSelector.getSelectedItem();
+            if (option == null) {
+                dataServer = null; // Removes any kind of dataServer aspect if the dataServer is "none"
             } else {
-                server = Server.ServerFactory(option); // Creates a new empty server object when changing the type
+                dataServer = DataServers.ServerFactory(option); // Creates a new empty dataServer object when changing the type
             }
             reloadUI();
         });
@@ -104,11 +115,11 @@ public class ServerOptions extends JDialog {
         });
         dropboxLinkButton.addActionListener(e -> {
             try {
-                if (dropboxVerifier == null) dropboxVerifier = DropboxServer.generateVerifier();
+                if (dropboxVerifier == null) dropboxVerifier = DropboxDataServer.generateVerifier();
                 String url = "https://www.dropbox.com/oauth2/authorize" +
                         "?response_type=code&token_access_type=offline" +
                         "&client_id=" + Constants.DROPBOX_APP_ID +
-                        "&code_challenge=" + DropboxServer.getChallenge(dropboxVerifier) +
+                        "&code_challenge=" + DropboxDataServer.getChallenge(dropboxVerifier) +
                         "&code_challenge_method=S256";
                 Desktop.getDesktop().browse(new URI(url));
             } catch (IOException | URISyntaxException | NoSuchAlgorithmException ee) {
@@ -122,12 +133,17 @@ public class ServerOptions extends JDialog {
 
     private void reloadUI() {
         CardLayout cl = (CardLayout) optionsPanel.getLayout();
-        if (server == null) {
+        if (dataServer == null) {
             cl.show(optionsPanel, "0");
         } else {
-            HashMap<String, String> serverData = server.getData();
-            switch (server.serverDisplayName()) {
-                case "WebDAV":
+            HashMap<String, String> serverData = dataServer.getData();
+            ServerType serverType = dataServer.getServerType();
+            if (serverType == null) {
+                cl.show(optionsPanel, "0");
+                return;
+            }
+            switch (serverType) {
+                case WEBDAV:
                     cl.show(optionsPanel, "1");
                     webdavUriTextField.setText(serverData.get("uri"));
                     if (serverData.get("username") != null) {
@@ -142,7 +158,7 @@ public class ServerOptions extends JDialog {
                         webdavUseAuthenticationBox.setSelected(false);
                     }
                     break;
-                case "Dropbox":
+                case DROPBOX:
                     cl.show(optionsPanel, "3");
                     if (serverData.get("apiKey") != null) {
                         dropboxCodeField.setText(serverData.get("apiKey"));
@@ -161,10 +177,10 @@ public class ServerOptions extends JDialog {
     private void onOK() {
         cancelled = false;
 
-        /* Take any front end data and send it to the server object before returning */
-        if (server != null) {
-            switch (server.serverDisplayName()) {
-                case "WebDAV":
+        /* Take any front end data and send it to the dataServer object before returning */
+        if (dataServer != null) {
+            switch (dataServer.getServerType()) {
+                case WEBDAV:
                     HashMap<String, String> newData = new HashMap<>();
                     newData.put("uri", webdavUriTextField.getText());
                     if (webdavUseAuthenticationBox.isSelected()) {
@@ -176,9 +192,9 @@ public class ServerOptions extends JDialog {
                             return;
                         }
                     }
-                    server.setData(newData);
+                    dataServer.setData(newData);
                     break;
-                case "Dropbox":
+                case DROPBOX:
                     HashMap<String, String> dropboxData = new HashMap<>();
                     if (dropboxCodeField.getText().length() == 0) {
                         JOptionPane.showMessageDialog(null, "A valid key is required to continue", "Error!", JOptionPane.ERROR_MESSAGE);
@@ -188,12 +204,12 @@ public class ServerOptions extends JDialog {
                         dropboxData.put("verifier", dropboxVerifier);
                     }
 
-                    server.setData(dropboxData);
+                    dataServer.setData(dropboxData);
                     break;
                 default:
-                    server = null;
+                    dataServer = null;
             }
-            boolean isValid = server != null ? server.verifyServer() : true;
+            boolean isValid = dataServer != null ? dataServer.verifyServer() : true;
             if (!isValid) {
                 JOptionPane.showMessageDialog(this,
                         "Something is wrong with your config. Check to make sure that all the credentials are correct.",
@@ -210,15 +226,15 @@ public class ServerOptions extends JDialog {
         dispose();
     }
 
-    public Server getServer() {
-        return server;
+    public DataServer getServer() {
+        return dataServer;
     }
 
-    public Server getOldServer() {
-        return oldServer;
+    public DataServer getOldServer() {
+        return oldDataServer;
     }
 
-    public static Server main(ClientData data) {
+    public static DataServer main(ClientData data) {
         ServerOptions dialog = new ServerOptions(data.getServer());
         dialog.pack();
         dialog.setVisible(true);

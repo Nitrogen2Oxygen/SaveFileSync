@@ -20,7 +20,7 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 
-public class DropboxServer extends Server {
+public class DropboxDataServer extends DataServer {
     private static final long serialVersionUID = 8175793937439456805L;
     private String bearerKey;
     private String refreshKey;
@@ -29,8 +29,8 @@ public class DropboxServer extends Server {
     private String apiKey;
 
     @Override
-    public String serverDisplayName() {
-        return "Dropbox";
+    public ServerType getServerType() {
+        return ServerType.DROPBOX;
     }
 
     @Override

@@ -3,7 +3,7 @@ package com.github.nitrogen2oxygen.savefilesync.utils;
 import com.github.nitrogen2oxygen.savefilesync.client.ClientData;
 import com.github.nitrogen2oxygen.savefilesync.client.Save;
 import com.github.nitrogen2oxygen.savefilesync.client.Settings;
-import com.github.nitrogen2oxygen.savefilesync.server.Server;
+import com.github.nitrogen2oxygen.savefilesync.server.DataServer;
 import com.github.nitrogen2oxygen.savefilesync.ui.*;
 import com.github.nitrogen2oxygen.savefilesync.ui.dialog.ChangeSettings;
 import com.github.nitrogen2oxygen.savefilesync.ui.dialog.SaveFileManager;
@@ -33,8 +33,8 @@ public class ButtonEvents {
     }
 
     public static void manageServer(ClientData data, MainPanel ui) {
-        Server newServer = ServerOptions.main(data);
-        data.setServer(newServer);
+        DataServer newDataServer = ServerOptions.main(data);
+        data.setServer(newDataServer);
 
         /* Save and reload */
         DataManager.save(data);

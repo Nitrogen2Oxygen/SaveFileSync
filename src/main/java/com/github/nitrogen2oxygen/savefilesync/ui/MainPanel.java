@@ -3,6 +3,7 @@ package com.github.nitrogen2oxygen.savefilesync.ui;
 import com.github.nitrogen2oxygen.savefilesync.client.ClientData;
 import com.github.nitrogen2oxygen.savefilesync.client.themes.ThemeColor;
 import com.github.nitrogen2oxygen.savefilesync.client.themes.Themes;
+import com.github.nitrogen2oxygen.savefilesync.server.DataServers;
 import com.github.nitrogen2oxygen.savefilesync.ui.renderer.SaveStatusCellRenderer;
 import com.github.nitrogen2oxygen.savefilesync.utils.ButtonEvents;
 import com.github.nitrogen2oxygen.savefilesync.client.Save;
@@ -119,8 +120,7 @@ public class MainPanel {
             serverStatus.setText("Connecting...");
             serverStatus.setForeground(Themes.getColor(data.getSettings().getTheme(), ThemeColor.DEFAULT));
             hostNameField.setText(data.getServer() != null ? data.getServer().getHostName() : "None");
-            serverTypeField.setText(data.getServer() != null ? data.getServer().serverDisplayName() : "None");
-
+            serverTypeField.setText(data.getServer() != null ? DataServers.getDisplayName(data.getServer().getServerType()) : "None");
             // Set server status
             Boolean serverOnline;
             if (data.getServer() != null) {
@@ -287,11 +287,11 @@ public class MainPanel {
         importFromServerButton = new JButton();
         importFromServerButton.setEnabled(true);
         importFromServerButton.setText("Import Save From Server");
-        importFromServerButton.setToolTipText("Imports a save file from the data server");
+        importFromServerButton.setToolTipText("Imports a save file from the data dataServer");
         panel3.add(importFromServerButton, new GridConstraints(5, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         manageServerButton = new JButton();
         manageServerButton.setText("Manage Server");
-        manageServerButton.setToolTipText("Manages the status and location of the data server");
+        manageServerButton.setToolTipText("Manages the status and location of the data dataServer");
         panel3.add(manageServerButton, new GridConstraints(4, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         hostLabel = new JLabel();
         Font hostLabelFont = this.$$$getFont$$$(null, -1, -1, hostLabel.getFont());
@@ -331,12 +331,12 @@ public class MainPanel {
         exportButton = new JButton();
         exportButton.setEnabled(false);
         exportButton.setText("Export");
-        exportButton.setToolTipText("Backs up selected file(s) to the server");
+        exportButton.setToolTipText("Backs up selected file(s) to the dataServer");
         rootPanel.add(exportButton, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         importButton = new JButton();
         importButton.setEnabled(false);
         importButton.setText("Import");
-        importButton.setToolTipText("Imports selected files from the server");
+        importButton.setToolTipText("Imports selected files from the dataServer");
         rootPanel.add(importButton, new GridConstraints(2, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         settingsButton = new JButton();
         settingsButton.setText("Settings");

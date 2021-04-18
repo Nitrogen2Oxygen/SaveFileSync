@@ -1,7 +1,7 @@
 package com.github.nitrogen2oxygen.savefilesync.ui.dialog;
 
 import com.github.nitrogen2oxygen.savefilesync.client.Save;
-import com.github.nitrogen2oxygen.savefilesync.server.Server;
+import com.github.nitrogen2oxygen.savefilesync.server.DataServer;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
@@ -27,15 +27,15 @@ public class ServerImport extends JDialog {
     private JTextField saveLocationTextField;
     private JLabel descriptionTextField;
 
-    private final Server server;
+    private final DataServer dataServer;
     private Boolean cancelled;
     private Save save;
 
-    public ServerImport(Server server, ArrayList<String> names) {
-        this.server = server;
+    public ServerImport(DataServer dataServer, ArrayList<String> names) {
+        this.dataServer = dataServer;
         setContentPane(contentPane);
         setModal(true);
-        setTitle("Import Save From Server");
+        setTitle("Import Save From server");
         getRootPane().setDefaultButton(buttonOK);
         setLocationRelativeTo(null);
         buttonCancel.addActionListener(e -> onCancel());
@@ -89,7 +89,7 @@ public class ServerImport extends JDialog {
             savePath.mkdirs();
             tempSave = Files.createTempFile("SaveFileSync", ".zip").toFile();
             tempSave.deleteOnExit();
-            byte[] saveData = server.getSaveData(name);
+            byte[] saveData = dataServer.getSaveData(name);
             FileUtils.writeByteArrayToFile(tempSave, saveData);
             zipFile = new ZipFile(tempSave);
             // Check if directory or file, then get the name
@@ -127,9 +127,9 @@ public class ServerImport extends JDialog {
         return save;
     }
 
-    public static Save main(Server server, ArrayList<String> names) {
+    public static Save main(DataServer dataServer, ArrayList<String> names) {
         if (names.size() == 0) return null;
-        ServerImport dialog = new ServerImport(server, names);
+        ServerImport dialog = new ServerImport(dataServer, names);
         dialog.pack();
         dialog.setVisible(true);
         if (dialog.cancelled) return null;
