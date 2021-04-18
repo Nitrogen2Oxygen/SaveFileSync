@@ -89,7 +89,7 @@ public class WebDavDataServer extends DataServer {
     }
 
     @Override
-    public Boolean verifyServer() {
+    public boolean verifyServer() {
         try {
             HttpURLConnection connection = (HttpURLConnection) new URL(uri).openConnection();
             connection.setRequestMethod("HEAD");

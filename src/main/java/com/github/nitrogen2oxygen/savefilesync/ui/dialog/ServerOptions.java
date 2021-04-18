@@ -1,12 +1,7 @@
 package com.github.nitrogen2oxygen.savefilesync.ui.dialog;
 
 import com.github.nitrogen2oxygen.savefilesync.client.ClientData;
-import com.github.nitrogen2oxygen.savefilesync.client.themes.Theme;
-import com.github.nitrogen2oxygen.savefilesync.client.themes.Themes;
-import com.github.nitrogen2oxygen.savefilesync.server.DataServer;
-import com.github.nitrogen2oxygen.savefilesync.server.DataServers;
-import com.github.nitrogen2oxygen.savefilesync.server.DropboxDataServer;
-import com.github.nitrogen2oxygen.savefilesync.server.ServerType;
+import com.github.nitrogen2oxygen.savefilesync.server.*;
 import com.github.nitrogen2oxygen.savefilesync.utils.Constants;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
@@ -14,6 +9,8 @@ import com.intellij.uiDesigner.core.Spacer;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -21,6 +18,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 public class ServerOptions extends JDialog {
     private JPanel contentPane;
@@ -38,6 +36,9 @@ public class ServerOptions extends JDialog {
     private JTextField dropboxCodeField;
     private JButton dropboxLinkButton;
     private JPanel emptyPanel;
+    private JPanel oneDrivePanel;
+    private JButton oneDriveLinkButton;
+    private JTextField oneDriveApiCode;
 
     private DataServer dataServer;
     private final DataServer oldDataServer;
@@ -126,6 +127,18 @@ public class ServerOptions extends JDialog {
                 ee.printStackTrace();
             }
         });
+        oneDriveLinkButton.addActionListener(e -> {
+            try {
+                String url = "https://login.microsoftonline.com/common/oauth2/v2.0/authorize" +
+                        "?client_id=" + Constants.ONEDRIVE_APP_ID +
+                        "&scope=" + String.join("%20", OneDriveDataServer.SCOPES) +
+                        "&response_type=code";
+                Desktop.getDesktop().browse(new URI(url));
+                oneDriveApiCode.setText(OneDriveDataServer.getApiKey());
+            } catch (IOException | URISyntaxException ee) {
+                ee.printStackTrace();
+            }
+        });
 
         // Reload the UI before rendering
         reloadUI();
@@ -167,6 +180,12 @@ public class ServerOptions extends JDialog {
                         dropboxVerifier = serverData.get("verifier");
                     }
                     break;
+                case ONEDRIVE:
+                    cl.show(optionsPanel, "2");
+                    if (serverData.get("apiKey") != null) {
+                        oneDriveApiCode.setText(serverData.get("apiKey"));
+                    }
+                    break;
             }
         }
 
@@ -206,10 +225,21 @@ public class ServerOptions extends JDialog {
 
                     dataServer.setData(dropboxData);
                     break;
+                case ONEDRIVE:
+                    HashMap<String, String> oneDriveData = new HashMap<>();
+                    if (oneDriveApiCode.getText().length() == 0) {
+                        JOptionPane.showMessageDialog(null, "A valid key is required to continue", "Error!", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    } else {
+                        oneDriveData.put("apiKey", oneDriveApiCode.getText());
+                    }
+
+                    dataServer.setData(oneDriveData);
+                    break;
                 default:
                     dataServer = null;
             }
-            boolean isValid = dataServer != null ? dataServer.verifyServer() : true;
+            boolean isValid = dataServer == null || dataServer.verifyServer();
             if (!isValid) {
                 JOptionPane.showMessageDialog(this,
                         "Something is wrong with your config. Check to make sure that all the credentials are correct.",
@@ -326,6 +356,23 @@ public class ServerOptions extends JDialog {
         emptyPanel = new JPanel();
         emptyPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         optionsPanel.add(emptyPanel, "0");
+        oneDrivePanel = new JPanel();
+        oneDrivePanel.setLayout(new GridLayoutManager(5, 1, new Insets(0, 0, 0, 0), -1, -1));
+        optionsPanel.add(oneDrivePanel, "2");
+        final JLabel label7 = new JLabel();
+        label7.setText("Click here to login with Microsoft:");
+        oneDrivePanel.add(label7, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final Spacer spacer2 = new Spacer();
+        oneDrivePanel.add(spacer2, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        oneDriveLinkButton = new JButton();
+        oneDriveLinkButton.setText("Login With Microsoft");
+        oneDrivePanel.add(oneDriveLinkButton, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label8 = new JLabel();
+        label8.setText("A code will be pasted here on completion:");
+        oneDrivePanel.add(label8, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        oneDriveApiCode = new JTextField();
+        oneDriveApiCode.setEditable(false);
+        oneDrivePanel.add(oneDriveApiCode, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
     }
 
     /**

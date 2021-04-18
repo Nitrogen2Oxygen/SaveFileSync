@@ -8,6 +8,8 @@ public class DataServers {
                 return new WebDavDataServer();
             case DROPBOX:
                 return new DropboxDataServer();
+            case ONEDRIVE:
+                return new OneDriveDataServer();
             default:
                 return null;
         }
@@ -20,6 +22,8 @@ public class DataServers {
                 return "WebDAV";
             case DROPBOX:
                 return "Dropbox";
+            case ONEDRIVE:
+                return "OneDrive";
             case NONE:
                 return "None";
             default:

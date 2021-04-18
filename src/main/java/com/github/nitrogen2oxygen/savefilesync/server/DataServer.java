@@ -31,5 +31,5 @@ public abstract class DataServer implements java.io.Serializable {
     public abstract void uploadSaveData(String name, byte[] data) throws Exception;
 
     /* Verifies if the server is working properly */
-    public abstract Boolean verifyServer();
+    public abstract boolean verifyServer();
 }
