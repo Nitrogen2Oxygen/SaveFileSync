@@ -92,12 +92,13 @@ public class OneDriveDataServer extends DataServer {
 
     @Override
     public void uploadSaveData(String name, byte[] data) throws Exception {
-        // TODO: Figure out why this sends an error 500 despite successfully uploading
         HttpURLConnection connection = (HttpURLConnection) new URL(rootURL + "drive/special/approot:/" + name.replace(" ", "%20") + ".zip" + ":/content").openConnection();
         connection.setRequestMethod("PUT");
         connection.setRequestProperty("Authorization", "Bearer " + getBearerKey());
-        connection.setRequestProperty("Content-Type", "text/plain");
+        connection.setDoInput(true);
+        connection.setRequestProperty("Accept", "application/json");
         connection.setDoOutput(true);
+        connection.setRequestProperty("Content-Type", "application/octet-stream");
         OutputStream outputStream = connection.getOutputStream();
         outputStream.write(data);
         outputStream.close();
