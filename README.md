@@ -1,9 +1,9 @@
 # Save File Sync
-A Java application for syncing files between different computers through a mutual data dataServer.
+A Java application for syncing files between different computers through a mutual data servers.
 
 ## Features
 * Importing/Exporting save files/directories
-* WebDAV & Dropbox data dataServer support
+* WebDAV & Dropbox data server support
 
 
 ## Download

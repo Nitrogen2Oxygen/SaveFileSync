@@ -27,9 +27,6 @@ public class WebDavDataServer extends DataServer {
         return ServerType.WEBDAV;
     }
 
-    /* Abstract function overrides */
-
-
     @Override
     public String getHostName() {
         try {

@@ -7,23 +7,23 @@ import java.io.File;
 import java.util.HashMap;
 
 public class ClientData {
-    private DataServer dataServer; // Everything we need dataServer wise is located here
+    private DataServer server; // Everything we need server wise is located here
     private Settings settings; // The client settings includes any kind of extra data the user manually sets
     private final HashMap<String, Save> saves; // Saves can either be retrieved from the dataServer OR created locally.
 
     /* Load already created data */
     public ClientData(DataServer dataServer, Settings settings, HashMap<String, Save> saves) {
-        this.dataServer = dataServer;
+        this.server = dataServer;
         this.settings = settings;
         this.saves = saves;
     }
 
     public DataServer getServer() {
-        return dataServer;
+        return server;
     }
 
     public void setServer(DataServer dataServer) {
-        this.dataServer = dataServer;
+        this.server = dataServer;
     }
 
     public Settings getSettings() {

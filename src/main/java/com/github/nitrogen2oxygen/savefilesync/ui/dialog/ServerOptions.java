@@ -95,9 +95,9 @@ public class ServerOptions extends JDialog {
             }
             ServerType option = (ServerType) serverTypeSelector.getSelectedItem();
             if (option == null) {
-                dataServer = null; // Removes any kind of dataServer aspect if the dataServer is "none"
+                dataServer = null; // Removes any kind of server aspect if the server is "none"
             } else {
-                dataServer = DataServers.ServerFactory(option); // Creates a new empty dataServer object when changing the type
+                dataServer = DataServers.ServerFactory(option); // Creates a new empty DataServer object when changing the type
             }
             reloadUI();
         });
