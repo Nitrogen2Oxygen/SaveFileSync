@@ -65,7 +65,9 @@ public class OneDriveDataServer extends DataServer {
             ArrayList<String> names = new ArrayList<>();
             for (int i = 0; i < files.length(); i++) {
                 JSONObject file = files.getJSONObject(i);
-                names.add(file.getString("name"));
+                String fileName = file.getString("name");
+                if (!fileName.endsWith(".zip")) continue;
+                names.add(fileName.substring(0, fileName.length() - 4));
             }
             return names;
         } catch (IOException | JSONException e) {
