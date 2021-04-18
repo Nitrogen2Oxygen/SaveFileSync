@@ -257,6 +257,7 @@ public class MainPanel {
         rootPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         newSaveFile = new JButton();
         newSaveFile.setText("New Save File");
+        newSaveFile.setToolTipText("Creates a new instance of a save file");
         rootPanel.add(newSaveFile, new GridConstraints(1, 1, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JPanel panel1 = new JPanel();
         panel1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
@@ -287,11 +288,11 @@ public class MainPanel {
         importFromServerButton = new JButton();
         importFromServerButton.setEnabled(true);
         importFromServerButton.setText("Import Save From Server");
-        importFromServerButton.setToolTipText("Imports a save file from the data dataServer");
+        importFromServerButton.setToolTipText("Imports a save file from the data server");
         panel3.add(importFromServerButton, new GridConstraints(5, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         manageServerButton = new JButton();
         manageServerButton.setText("Manage Server");
-        manageServerButton.setToolTipText("Manages the status and location of the data dataServer");
+        manageServerButton.setToolTipText("Manages the status and location of the data server");
         panel3.add(manageServerButton, new GridConstraints(4, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         hostLabel = new JLabel();
         Font hostLabelFont = this.$$$getFont$$$(null, -1, -1, hostLabel.getFont());
@@ -331,12 +332,12 @@ public class MainPanel {
         exportButton = new JButton();
         exportButton.setEnabled(false);
         exportButton.setText("Export");
-        exportButton.setToolTipText("Backs up selected file(s) to the dataServer");
+        exportButton.setToolTipText("Backs up selected file(s) to the server");
         rootPanel.add(exportButton, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         importButton = new JButton();
         importButton.setEnabled(false);
         importButton.setText("Import");
-        importButton.setToolTipText("Imports selected files from the dataServer");
+        importButton.setToolTipText("Imports selected files from the server");
         rootPanel.add(importButton, new GridConstraints(2, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         settingsButton = new JButton();
         settingsButton.setText("Settings");
