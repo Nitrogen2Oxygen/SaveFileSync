@@ -33,7 +33,7 @@ public class Save implements java.io.Serializable {
 
     public byte[] toZipFile() throws Exception {
         /* Test if the file exists */
-        if ((file.isDirectory() && !Files.list(file.toPath()).findFirst().isPresent()) || !file.exists())
+        if ((file.isDirectory() && Files.list(file.toPath()).findFirst().isEmpty()) || !file.exists())
             return new byte[0];
 
         /* Create a temporary zip file */
