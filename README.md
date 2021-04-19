@@ -2,16 +2,18 @@
 A Java application for syncing files between different computers through a mutual data servers.
 
 ## Features
-* Importing/Exporting save files/directories
-* WebDAV & Dropbox data server support
+* Import and export save files/directories
+* WebDAV, Dropbox & OneDrive data server support
+* Various settings and themes
 
 
 ## Download
 **WARNING: This project is currently in an early alpha stage.
 It's not recommended to use pre-release versions due to limited bug testing.**
 
-1. Download the [latest jar release](https://github.com/Nitrogen2Oxygen/SaveFileSync/releases/latest) (SaveFileSync.jar)
-2. Run the .jar file using the latest version of Java
+1. Download Java 11
+2. Download the [latest jar release](https://github.com/Nitrogen2Oxygen/SaveFileSync/releases/latest) (SaveFileSync.jar)
+3. Run the .jar file using Java 11
 
 ## Build
 ### Requirements
