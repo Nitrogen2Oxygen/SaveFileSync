@@ -8,9 +8,6 @@ A Java application for syncing files between different computers through a mutua
 
 
 ## Download
-**WARNING: This project is currently in an early alpha stage.
-It's not recommended to use pre-release versions due to limited bug testing.**
-
 1. Download Java 11
 2. Download the [latest jar release](https://github.com/Nitrogen2Oxygen/SaveFileSync/releases/latest) (SaveFileSync.jar)
 3. Run the .jar file using Java 11
@@ -32,7 +29,7 @@ This will package all dependencies inside the `/target/SaveFileSync.jar` file.
 
 ## Contributing
 Anyone is welcome to contribute to the project.
-At the project's current state, there are no guidelines for contributions.
+There are no major guidelines for contributions.
 Just submit a pull request, and I'll work with you.
 
 ## License
