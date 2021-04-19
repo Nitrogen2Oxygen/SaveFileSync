@@ -2,6 +2,7 @@ package com.github.nitrogen2oxygen.savefilesync.ui.dialog;
 
 import com.github.nitrogen2oxygen.savefilesync.client.Save;
 import com.github.nitrogen2oxygen.savefilesync.server.DataServer;
+import com.github.nitrogen2oxygen.savefilesync.util.Constants;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
@@ -35,7 +36,7 @@ public class ServerImport extends JDialog {
         this.dataServer = dataServer;
         setContentPane(contentPane);
         setModal(true);
-        setTitle("Import Save From server");
+        setTitle(Constants.APP_NAME + " - Import Save");
         getRootPane().setDefaultButton(buttonOK);
         setLocationRelativeTo(null);
         buttonCancel.addActionListener(e -> onCancel());

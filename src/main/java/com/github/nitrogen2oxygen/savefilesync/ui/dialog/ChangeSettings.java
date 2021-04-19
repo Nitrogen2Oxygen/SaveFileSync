@@ -3,6 +3,7 @@ package com.github.nitrogen2oxygen.savefilesync.ui.dialog;
 import com.github.nitrogen2oxygen.savefilesync.client.Settings;
 import com.github.nitrogen2oxygen.savefilesync.client.theme.Theme;
 import com.github.nitrogen2oxygen.savefilesync.client.theme.Themes;
+import com.github.nitrogen2oxygen.savefilesync.util.Constants;
 import com.github.nitrogen2oxygen.savefilesync.util.FileLocations;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
@@ -32,7 +33,7 @@ public class ChangeSettings extends JDialog {
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
         setLocationRelativeTo(null);
-        setTitle("Settings");
+        setTitle(Constants.APP_NAME + " - Settings");
         pack();
 
         /* Set theme selector model */
@@ -42,22 +43,18 @@ public class ChangeSettings extends JDialog {
         }
         themeModel.setSelectedItem(settings.getTheme());
         themeSelector.setModel(themeModel);
-        themeSelector.setRenderer(new ListCellRenderer<>() {
-            private final JLabel label = new JLabel();
-
-            @Override
-            public Component getListCellRendererComponent(JList<? extends Theme> list, Theme value, int index, boolean isSelected, boolean cellHasFocus) {
-                label.setText(Themes.getThemeName(value));
-                label.setOpaque(true);
-                if (isSelected) {
-                    label.setForeground(list.getSelectionForeground());
-                    label.setBackground(list.getSelectionBackground());
-                } else {
-                    label.setForeground(list.getForeground());
-                    label.setBackground(list.getBackground());
-                }
-                return label;
+        themeSelector.setRenderer((list, value, index, isSelected, cellHasFocus) -> {
+            JLabel label = new JLabel();
+            label.setText(Themes.getThemeName(value));
+            label.setOpaque(true);
+            if (isSelected) {
+                label.setForeground(list.getSelectionForeground());
+                label.setBackground(list.getSelectionBackground());
+            } else {
+                label.setForeground(list.getForeground());
+                label.setBackground(list.getBackground());
             }
+            return label;
         });
 
         /* Set current settings */

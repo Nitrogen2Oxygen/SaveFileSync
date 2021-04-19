@@ -3,7 +3,7 @@ package com.github.nitrogen2oxygen.savefilesync.ui.component;
 import javax.swing.*;
 import java.awt.*;
 
-public class ProgressBar {
+public class ProgressBar implements AutoCloseable {
     public final JFrame frame;
     public final JProgressBar progressBar;
 
@@ -33,7 +33,8 @@ public class ProgressBar {
         progressBar.setValue(percent);
     }
 
-    public void finish() {
+    @Override
+    public void close() {
         frame.dispose();
     }
 }

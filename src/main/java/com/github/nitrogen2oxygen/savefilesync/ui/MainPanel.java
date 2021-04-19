@@ -16,6 +16,7 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.io.File;

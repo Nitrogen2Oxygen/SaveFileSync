@@ -18,11 +18,15 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 public class ServerOptions extends JDialog {
+    // General
     private JPanel contentPane;
     private JButton saveButton;
     private JButton buttonCancel;
     private JComboBox<ServerType> serverTypeSelector;
     private JPanel optionsPanel;
+    private JPanel emptyPanel;
+
+    // WebDAV
     private JPanel webdavPanel;
     private JPanel dropboxPanel;
     private JLabel webdavLabel;
@@ -30,9 +34,12 @@ public class ServerOptions extends JDialog {
     private JTextField webdavUriTextField;
     private JCheckBox webdavUseAuthenticationBox;
     private JPasswordField webdavPasswordField;
+
+    // Dropbox
     private JTextField dropboxCodeField;
     private JButton dropboxLinkButton;
-    private JPanel emptyPanel;
+
+    // OneDrive
     private JPanel oneDrivePanel;
     private JButton oneDriveLinkButton;
     private JTextField oneDriveApiCode;
@@ -69,7 +76,7 @@ public class ServerOptions extends JDialog {
 
         /* Do all the lame UI stuff */
         setContentPane(contentPane);
-        setTitle("Manage Server Settings");
+        setTitle(Constants.APP_NAME + " - Manage Server");
         setLocationRelativeTo(null);
         setModal(true);
         getRootPane().setDefaultButton(saveButton);

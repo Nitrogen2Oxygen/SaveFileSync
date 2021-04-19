@@ -1,6 +1,7 @@
 package com.github.nitrogen2oxygen.savefilesync.ui.dialog;
 
 import com.github.nitrogen2oxygen.savefilesync.client.Save;
+import com.github.nitrogen2oxygen.savefilesync.util.Constants;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
@@ -31,7 +32,7 @@ public class SaveFileManager extends JDialog {
 
     public SaveFileManager(String name, String path) {
         setContentPane(contentPane);
-        setTitle("New Save File");
+        setTitle(Constants.APP_NAME + " - New Save");
         setLocationRelativeTo(null);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
