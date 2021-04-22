@@ -1,8 +1,10 @@
 package com.github.nitrogen2oxygen.savefilesync.util;
 
+import com.github.nitrogen2oxygen.savefilesync.client.Save;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
 import java.util.zip.ZipEntry;
@@ -55,5 +57,29 @@ public class FileUtilities {
         }
 
         return true;
+    }
+
+    public static void makeBackup(Save save) throws Exception {
+        byte[] backupData = save.toZipFile();
+        if (backupData == null || Arrays.equals(backupData, new byte[0])) return; // Check to see if data is empty empty
+
+        File backupDirectory = new File(FileLocations.getBackupDirectory());
+        if (!backupDirectory.exists()) {
+            boolean createDir = backupDirectory.mkdirs();
+            if (!createDir) {
+                throw new Exception("Cannot create backup directory!");
+            }
+        }
+        File backupFile = new File(backupDirectory, save.getName() + ".zip");
+        if (!backupFile.exists()) {
+            boolean createFile = backupFile.createNewFile();
+            if (!createFile) {
+                throw new Exception("Cannot create backup file!");
+            }
+        }
+
+        FileOutputStream out = new FileOutputStream(backupFile);
+        out.write(backupData);
+        out.close();
     }
 }

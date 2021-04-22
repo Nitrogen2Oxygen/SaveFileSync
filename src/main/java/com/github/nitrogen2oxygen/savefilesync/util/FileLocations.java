@@ -15,6 +15,10 @@ public class FileLocations {
         return Paths.get(getDataDirectory(), "saves").toString();
     }
 
+    public static String getBackupDirectory() {
+        return Paths.get(getDataDirectory(), "backups").toString();
+    }
+
     public static String getDataDirectory() {
         return Paths.get(System.getProperty("user.home"), "SaveFileSync").toString();
     }

@@ -71,21 +71,7 @@ public class Save implements java.io.Serializable {
 
     public void overwriteData(byte[] data, boolean makeBackup, boolean forceOverwrite) throws Exception {
         /* Backup our current data if the user wants to */
-        if (makeBackup) {
-            byte[] backupData = toZipFile();
-            if (!Arrays.equals(backupData, new byte[0])) {
-                File backupFile = new File(file.getPath() + ".bak.zip");
-                if (!backupFile.exists()) {
-                    boolean createFile = backupFile.createNewFile();
-                    if (!createFile) {
-                        throw new Exception("Cannot create backup file!");
-                    }
-                }
-                FileOutputStream out = new FileOutputStream(backupFile);
-                out.write(backupData);
-                out.close();
-            }
-        }
+        if (makeBackup) FileUtilities.makeBackup(this);
 
         /* Create temporary file to download the zip file from */
         File tmpFile = Files.createTempFile("SaveFileSync", ".zip").toFile();
