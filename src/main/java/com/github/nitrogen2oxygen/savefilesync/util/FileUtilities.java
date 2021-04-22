@@ -1,6 +1,8 @@
 package com.github.nitrogen2oxygen.savefilesync.util;
 
 import com.github.nitrogen2oxygen.savefilesync.client.Save;
+import com.github.nitrogen2oxygen.savefilesync.client.Settings;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
@@ -81,5 +83,20 @@ public class FileUtilities {
         FileOutputStream out = new FileOutputStream(backupFile);
         out.write(backupData);
         out.close();
+    }
+
+    public static void restoreBackup(Save save, Settings settings) throws Exception {
+        if (!hasBackup(save)) throw new Exception("Does not have backup. This function should not be called unless a backup has been verified");
+        File backupDirectory = new File(FileLocations.getBackupDirectory());
+        File backupFile = new File(backupDirectory, save.getName() + ".zip");
+        byte[] data = FileUtils.readFileToByteArray(backupFile);
+        save.overwriteData(data, true, settings.shouldForceOverwrite()); // Data will be force backed up to allows restoration
+    }
+
+    public static boolean hasBackup(Save save) {
+        File backupDirectory = new File(FileLocations.getBackupDirectory());
+        if (!backupDirectory.exists()) return false;
+        File backupFile = new File(backupDirectory, save.getName() + ".zip");
+        return backupFile.exists();
     }
 }

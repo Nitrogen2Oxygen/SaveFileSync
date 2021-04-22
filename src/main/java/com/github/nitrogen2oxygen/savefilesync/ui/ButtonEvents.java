@@ -9,6 +9,7 @@ import com.github.nitrogen2oxygen.savefilesync.ui.dialog.SaveFileManager;
 import com.github.nitrogen2oxygen.savefilesync.ui.dialog.ServerImport;
 import com.github.nitrogen2oxygen.savefilesync.ui.dialog.ServerOptions;
 import com.github.nitrogen2oxygen.savefilesync.util.DataManager;
+import com.github.nitrogen2oxygen.savefilesync.util.FileUtilities;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -184,5 +185,25 @@ public class ButtonEvents {
         data.setSettings(newSettings);
         DataManager.save(data);
         ui.reloadUI();
+    }
+
+    public static void restoreBackup(ClientData data, MainPanel ui) {
+        // Get current save
+        int selected = ui.getSaveList().getSelectedRow();
+        String name = (String) ui.getSaveList().getValueAt(selected, 0);
+        Save save = data.getSaves().get(name);
+
+        // Check if there's a backup (just in case)
+        if (!FileUtilities.hasBackup(save)) return;
+
+        // Restore
+        try {
+            FileUtilities.restoreBackup(save, data.getSettings());
+            JOptionPane.showMessageDialog(ui.getRootPanel(), "Successfully restored backup data! Old data saved to backup directory.", "Success!", JOptionPane.INFORMATION_MESSAGE);
+            ui.reloadUI();
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(ui.getRootPanel(), "Could not restore backup data!", "Error!", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }
