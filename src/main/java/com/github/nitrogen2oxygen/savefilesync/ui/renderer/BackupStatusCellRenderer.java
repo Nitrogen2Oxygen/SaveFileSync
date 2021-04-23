@@ -30,7 +30,7 @@ public class BackupStatusCellRenderer extends DefaultTableCellRenderer {
 
         // Get Save
         String name = (String) table.getValueAt(row, 0);
-        Save save = data.getSaves().get(name);
+        Save save = data.getSave(name);
 
         label.setForeground(Themes.getColor(data.getSettings().getTheme(), ThemeColor.DEFAULT));
             // Get backup file

@@ -93,7 +93,7 @@ public class MainPanel {
                 createBackupButton.setEnabled(true);
                 int selected = saveList.getSelectedRow();
                 String name = (String) saveList.getValueAt(selected, 0);
-                Save save = data.getSaves().get(name);
+                Save save = data.getSave(name);
                 restoreBackupButton.setEnabled(FileUtilities.hasBackup(save));
             } else {
                 removeButton.setEnabled(false);

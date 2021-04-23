@@ -33,7 +33,7 @@ public class SaveListTableModel extends DefaultTableModel {
     private void setStatus(int row, ClientData data) {
         // Get save
         String name = (String) getValueAt(row, 0);
-        Save save = data.getSaves().get(name);
+        Save save = data.getSave(name);
 
         // Set the status
         String status;

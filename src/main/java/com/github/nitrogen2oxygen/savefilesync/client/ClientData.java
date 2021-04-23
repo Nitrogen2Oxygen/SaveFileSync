@@ -38,8 +38,8 @@ public class ClientData {
         settings.apply();
     }
 
-    public HashMap<String, Save> getSaves() {
-        return saves;
+    public Save getSave(String name) {
+        return saves.get(name);
     }
 
     public ArrayList<Save> getSaveList() {
@@ -49,6 +49,10 @@ public class ClientData {
             saveList.add(save);
         }
         return saveList;
+    }
+
+    public void removeSave(String name) {
+        saves.remove(name);
     }
 
     public void addSave(Save save) throws Exception {

@@ -55,7 +55,7 @@ public class ButtonEvents {
         if (rows.length == 0) return;
         for (int i : rows) {
             String name = (String) ui.getSaveList().getValueAt(i, 0);
-            Save save = data.getSaves().get(name);
+            Save save = data.getSave(name);
             try {
                 byte[] rawData = save.toZipFile();
                 if (!Arrays.equals(rawData, new byte[0])) {
@@ -95,7 +95,7 @@ public class ButtonEvents {
         if (rows.length == 0) return;
         for (int i : rows) {
             String name = (String) ui.getSaveList().getValueAt(i, 0);
-            Save save = data.getSaves().get(name);
+            Save save = data.getSave(name);
             try {
                 byte[] remoteSaveData = data.getServer().getSaveData(save.getName());
                 save.overwriteData(remoteSaveData, data.getSettings().shouldMakeBackups(), data.getSettings().shouldForceOverwrite());
@@ -119,9 +119,9 @@ public class ButtonEvents {
         ArrayList<String> newSaves = new ArrayList<>();
         ArrayList<String> serverSaveNames = data.getServer().getSaveNames();
         ArrayList<String> localSaveNames = new ArrayList<>();
-        Set<String> localKeys = data.getSaves().keySet();
-        for (String key : localKeys) {
-            localSaveNames.add(data.getSaves().get(key).getName());
+        ArrayList<Save> localSaves = data.getSaveList();
+        for (Save save : localSaves) {
+            localSaveNames.add(save.getName());
         }
         /* Check for any new saves on the server that aren't in the local file system */
         for (String serverName : serverSaveNames) {
@@ -147,7 +147,7 @@ public class ButtonEvents {
         int selected = ui.getSaveList().getSelectedRow();
         String name = (String) ui.getSaveList().getValueAt(selected, 0);
         /* Remove save file */
-        data.getSaves().remove(name);
+        data.removeSave(name);
 
         /* Save and reload */
         DataManager.save(data);
@@ -157,12 +157,12 @@ public class ButtonEvents {
     public static void editSave(ClientData data, MainPanel ui) {
         int selected = ui.getSaveList().getSelectedRow();
         String name = (String) ui.getSaveList().getValueAt(selected, 0);
-        Save save = data.getSaves().get(name);
+        Save save = data.getSave(name);
         String oldName = save.getName();
         Save newSave = SaveFileManager.edit(save.getName(), save.getFile().getPath());
         if (newSave == null) return;
         try {
-            data.getSaves().remove(oldName);
+            data.removeSave(oldName);
             data.addSave(newSave);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(ui.getRootPanel(),
@@ -192,7 +192,7 @@ public class ButtonEvents {
         // Get current save
         int selected = ui.getSaveList().getSelectedRow();
         String name = (String) ui.getSaveList().getValueAt(selected, 0);
-        Save save = data.getSaves().get(name);
+        Save save = data.getSave(name);
 
         // Check if there's a backup (just in case)
         if (!FileUtilities.hasBackup(save)) return;
@@ -212,7 +212,7 @@ public class ButtonEvents {
         // Get current save
         int selected = ui.getSaveList().getSelectedRow();
         String name = (String) ui.getSaveList().getValueAt(selected, 0);
-        Save save = data.getSaves().get(name);
+        Save save = data.getSave(name);
 
         if (FileUtilities.hasBackup(save)) {
             int cont = JOptionPane.showConfirmDialog(ui.getRootPanel(),

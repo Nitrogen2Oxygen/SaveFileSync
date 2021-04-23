@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import javax.swing.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
 
@@ -20,7 +21,8 @@ public class DataManager {
     public static void save(ClientData data) {
         DataServer dataServer = data.getServer();
         Settings settings = data.getSettings();
-        HashMap<String, Save> saves = data.getSaves();
+        ArrayList<Save> saves = data.getSaveList();
+        // HashMap<String, Save> saves = data.getSaves();
 
         /* Save the settings to config.properties */
         try {
@@ -43,10 +45,9 @@ public class DataManager {
             File savesDirectory = new File(FileLocations.getSaveDirectory());
             savesDirectory.mkdirs();
             FileUtils.cleanDirectory(savesDirectory); // Clear any deleted save files or renamed ones
-            for (String key : saves.keySet()) {
-                File saveFile = new File(savesDirectory, key + ".json");
+            for (Save save : saves) {
+                File saveFile = new File(savesDirectory, save.getName() + ".json");
                 saveFile.createNewFile();
-                Save save = saves.get(key);
                 JSONObject saveObject = new JSONObject();
                 saveObject.put("name", save.getName());
                 saveObject.put("location", save.getFile().getPath());
