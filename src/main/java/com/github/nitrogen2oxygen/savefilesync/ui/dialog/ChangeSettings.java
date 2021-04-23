@@ -2,7 +2,7 @@ package com.github.nitrogen2oxygen.savefilesync.ui.dialog;
 
 import com.github.nitrogen2oxygen.savefilesync.client.Settings;
 import com.github.nitrogen2oxygen.savefilesync.client.theme.Theme;
-import com.github.nitrogen2oxygen.savefilesync.client.theme.Themes;
+import com.github.nitrogen2oxygen.savefilesync.util.Themes;
 import com.github.nitrogen2oxygen.savefilesync.util.Constants;
 import com.github.nitrogen2oxygen.savefilesync.util.FileLocations;
 import com.intellij.uiDesigner.core.GridConstraints;

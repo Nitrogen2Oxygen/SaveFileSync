@@ -3,7 +3,7 @@ package com.github.nitrogen2oxygen.savefilesync.client;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.extras.FlatAnimatedLafChange;
 import com.github.nitrogen2oxygen.savefilesync.client.theme.Theme;
-import com.github.nitrogen2oxygen.savefilesync.client.theme.Themes;
+import com.github.nitrogen2oxygen.savefilesync.util.Themes;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,8 +1,10 @@
-package com.github.nitrogen2oxygen.savefilesync.client.theme;
+package com.github.nitrogen2oxygen.savefilesync.util;
 
 import com.formdev.flatlaf.*;
 import com.formdev.flatlaf.intellijthemes.FlatCarbonIJTheme;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.*;
+import com.github.nitrogen2oxygen.savefilesync.client.theme.Theme;
+import com.github.nitrogen2oxygen.savefilesync.client.theme.ThemeColor;
 
 import java.awt.*;
 

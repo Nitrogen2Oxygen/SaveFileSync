@@ -1,4 +1,6 @@
-package com.github.nitrogen2oxygen.savefilesync.server;
+package com.github.nitrogen2oxygen.savefilesync.util;
+
+import com.github.nitrogen2oxygen.savefilesync.server.*;
 
 public class DataServers {
     /* Create a server object */

@@ -3,6 +3,7 @@ package com.github.nitrogen2oxygen.savefilesync.ui.dialog;
 import com.github.nitrogen2oxygen.savefilesync.client.ClientData;
 import com.github.nitrogen2oxygen.savefilesync.server.*;
 import com.github.nitrogen2oxygen.savefilesync.util.Constants;
+import com.github.nitrogen2oxygen.savefilesync.util.DataServers;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;

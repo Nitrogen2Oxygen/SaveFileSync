@@ -1,9 +1,10 @@
-package com.github.nitrogen2oxygen.savefilesync.ui;
+package com.github.nitrogen2oxygen.savefilesync.ui.event;
 
 import com.github.nitrogen2oxygen.savefilesync.client.ClientData;
 import com.github.nitrogen2oxygen.savefilesync.client.Save;
 import com.github.nitrogen2oxygen.savefilesync.client.Settings;
 import com.github.nitrogen2oxygen.savefilesync.server.DataServer;
+import com.github.nitrogen2oxygen.savefilesync.ui.MainPanel;
 import com.github.nitrogen2oxygen.savefilesync.ui.dialog.ChangeSettings;
 import com.github.nitrogen2oxygen.savefilesync.ui.dialog.SaveFileManager;
 import com.github.nitrogen2oxygen.savefilesync.ui.dialog.ServerImport;

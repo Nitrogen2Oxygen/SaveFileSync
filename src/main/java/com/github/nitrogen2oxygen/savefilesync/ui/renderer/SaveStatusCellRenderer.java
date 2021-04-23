@@ -2,7 +2,7 @@ package com.github.nitrogen2oxygen.savefilesync.ui.renderer;
 
 import com.github.nitrogen2oxygen.savefilesync.client.theme.Theme;
 import com.github.nitrogen2oxygen.savefilesync.client.theme.ThemeColor;
-import com.github.nitrogen2oxygen.savefilesync.client.theme.Themes;
+import com.github.nitrogen2oxygen.savefilesync.util.Themes;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
