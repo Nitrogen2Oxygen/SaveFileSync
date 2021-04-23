@@ -89,8 +89,18 @@ public class MainPanel {
         /* Standard action listeners */
         saveList.getSelectionModel().addListSelectionListener(e -> {
             // Enable/disable buttons
-            importButton.setEnabled(saveList.getSelectedRows().length != 0);
-            exportButton.setEnabled(saveList.getSelectedRows().length != 0);
+            if (saveList.getSelectedRows().length != 0) {
+                boolean canExport = false;
+                for (int i : saveList.getSelectedRows()) {
+                    String status = (String) saveList.getValueAt(i, 2);
+                    if (status.equals("Not Synced")) {
+                        canExport = true;
+                        break;
+                    }
+                }
+                importButton.setEnabled(canExport);
+                exportButton.setEnabled(canExport);
+            }
             if (saveList.getSelectedRows().length == 1) {
                 removeButton.setEnabled(true);
                 editButton.setEnabled(true);
