@@ -1,5 +1,6 @@
 package com.github.nitrogen2oxygen.savefilesync.server;
 
+import com.github.nitrogen2oxygen.savefilesync.io.CallbackServer;
 import com.github.nitrogen2oxygen.savefilesync.util.Constants;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
@@ -153,6 +154,21 @@ public class DropboxDataServer extends DataServer {
         }
     }
 
+    public static String getApiKey() {
+        try (CallbackServer callbackServer = new CallbackServer(Constants.CALLBACK_PORT)) {
+            String key = callbackServer.getQuery("code");
+            if (key == null || key.length() == 0) {
+                callbackServer.send("No code specified in query. Please close this window and try again...");
+            } else {
+                callbackServer.send("Code received! You can close this window and return to the app!");
+            }
+            return key;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
     private String getBearerKey() {
         try {
             boolean hasKeys = bearerKey != null && refreshKey != null;
@@ -174,6 +190,7 @@ public class DropboxDataServer extends DataServer {
             /* If there are no keys, create them. Otherwise, regenerate since the key has expired */
             StringBuilder postDataBuilder = new StringBuilder();
             postDataBuilder.append("client_id=").append(Constants.DROPBOX_APP_ID);
+            postDataBuilder.append("&redirect_uri=http://localhost:").append(Constants.CALLBACK_PORT);
             if (refreshing) {
                 postDataBuilder.append("&grant_type=refresh_token");
                 postDataBuilder.append("&refresh_token=").append(refreshKey);

@@ -123,10 +123,12 @@ public class ServerOptions extends JDialog {
                 if (dropboxVerifier == null) dropboxVerifier = DropboxDataServer.generateVerifier();
                 String url = "https://www.dropbox.com/oauth2/authorize" +
                         "?response_type=code&token_access_type=offline" +
+                        "&redirect_uri=http://localhost:" + Constants.CALLBACK_PORT +
                         "&client_id=" + Constants.DROPBOX_APP_ID +
                         "&code_challenge=" + DropboxDataServer.getChallenge(dropboxVerifier) +
                         "&code_challenge_method=S256";
                 Desktop.getDesktop().browse(new URI(url));
+                dropboxCodeField.setText(DropboxDataServer.getApiKey());
             } catch (IOException | URISyntaxException | NoSuchAlgorithmException ee) {
                 ee.printStackTrace();
             }
@@ -354,9 +356,10 @@ public class ServerOptions extends JDialog {
         label5.setText("Click here and login with dropbox:");
         dropboxPanel.add(label5, new GridConstraints(0, 0, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JLabel label6 = new JLabel();
-        label6.setText("Paste the code recieved here:");
+        label6.setText("A code will be pasted here on completion:");
         dropboxPanel.add(label6, new GridConstraints(2, 0, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         dropboxCodeField = new JTextField();
+        dropboxCodeField.setEditable(false);
         dropboxPanel.add(dropboxCodeField, new GridConstraints(3, 0, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         dropboxLinkButton = new JButton();
         dropboxLinkButton.setText("Login with Dropbox");

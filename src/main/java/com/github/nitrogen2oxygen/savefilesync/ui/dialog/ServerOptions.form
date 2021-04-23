@@ -175,7 +175,7 @@
                       <grid row="2" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
-                      <text value="Paste the code recieved here:"/>
+                      <text value="A code will be pasted here on completion:"/>
                     </properties>
                   </component>
                   <component id="fad8f" class="javax.swing.JTextField" binding="dropboxCodeField">
@@ -184,7 +184,9 @@
                         <preferred-size width="150" height="-1"/>
                       </grid>
                     </constraints>
-                    <properties/>
+                    <properties>
+                      <editable value="false"/>
+                    </properties>
                   </component>
                   <component id="9ff34" class="javax.swing.JButton" binding="dropboxLinkButton">
                     <constraints>

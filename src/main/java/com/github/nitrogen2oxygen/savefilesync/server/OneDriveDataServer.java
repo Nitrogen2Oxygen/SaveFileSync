@@ -183,7 +183,7 @@ public class OneDriveDataServer extends DataServer {
 
     public static String getApiKey() {
 
-        try (CallbackServer callbackServer = new CallbackServer(Constants.ONEDRIVE_REDIRECT_PORT)) {
+        try (CallbackServer callbackServer = new CallbackServer(Constants.CALLBACK_PORT)) {
             String key = callbackServer.getQuery("code");
             if (key == null || key.length() == 0) {
                 callbackServer.send("No code specified in query. Please close this window and try again...");
