@@ -27,7 +27,6 @@ public class App {
 
         /* Create the data object. This object stores any kind of persistent data on the client */
         ClientData data = DataManager.load();
-        data.getSettings().apply(); // Apply the settings object at startup
 
         /* Finally, creating the actual UI frame. Communication between front and backend is iffy but we make do */
         JFrame frame = new JFrame(Constants.APP_NAME + " - " + Constants.VERSION);

@@ -59,6 +59,7 @@ public class MainPanel {
 
     public MainPanel(ClientData userData) {
         data = userData;
+        data.getSettings().apply(); // Apply the settings object at startup
 
         /* Set fonts (due to weird theming bug) */
         dataServerLabel.setFont(dataServerLabelFont);
