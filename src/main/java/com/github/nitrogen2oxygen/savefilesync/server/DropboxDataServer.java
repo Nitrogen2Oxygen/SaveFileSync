@@ -190,11 +190,11 @@ public class DropboxDataServer extends DataServer {
             /* If there are no keys, create them. Otherwise, regenerate since the key has expired */
             StringBuilder postDataBuilder = new StringBuilder();
             postDataBuilder.append("client_id=").append(Constants.DROPBOX_APP_ID);
-            postDataBuilder.append("&redirect_uri=http://localhost:").append(Constants.CALLBACK_PORT);
             if (refreshing) {
                 postDataBuilder.append("&grant_type=refresh_token");
                 postDataBuilder.append("&refresh_token=").append(refreshKey);
             } else {
+                postDataBuilder.append("&redirect_uri=http://localhost:").append(Constants.CALLBACK_PORT);
                 postDataBuilder.append("&grant_type=authorization_code");
                 postDataBuilder.append("&code=").append(apiKey);
                 postDataBuilder.append("&code_verifier=").append(verifier);
