@@ -99,4 +99,12 @@ public class FileUtilities {
         File backupFile = new File(backupDirectory, save.getName() + ".zip");
         return backupFile.exists();
     }
+
+    public static File getBackup(Save save) {
+        File backupDirectory = new File(FileLocations.getBackupDirectory());
+        if (!backupDirectory.exists()) return null;
+        File backupFile = new File(backupDirectory, save.getName() + ".zip");
+        if (!backupFile.exists()) return null;
+        return backupFile;
+    }
 }

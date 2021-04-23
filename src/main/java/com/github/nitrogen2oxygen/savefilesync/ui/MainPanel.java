@@ -4,6 +4,7 @@ import com.github.nitrogen2oxygen.savefilesync.client.ClientData;
 import com.github.nitrogen2oxygen.savefilesync.client.theme.ThemeColor;
 import com.github.nitrogen2oxygen.savefilesync.client.theme.Themes;
 import com.github.nitrogen2oxygen.savefilesync.server.DataServers;
+import com.github.nitrogen2oxygen.savefilesync.ui.renderer.BackupStatusCellRenderer;
 import com.github.nitrogen2oxygen.savefilesync.ui.renderer.SaveStatusCellRenderer;
 import com.github.nitrogen2oxygen.savefilesync.client.Save;
 import com.github.nitrogen2oxygen.savefilesync.util.FileUtilities;
@@ -54,8 +55,9 @@ public class MainPanel {
     private static final Font dataServerLabelFont = new Font("Segoe", Font.PLAIN, 24);
     private static final String[] saveListHeaders = new String[]{
             "Name",
-            "Location",
-            "Status"
+            "File Location",
+            "Sync Status",
+            "Backup"
     };
 
     public MainPanel(ClientData userData) {
@@ -82,6 +84,7 @@ public class MainPanel {
         dtm.setColumnIdentifiers(saveListHeaders);
         saveList.setModel(dtm);
         saveList.getColumnModel().getColumn(2).setCellRenderer(new SaveStatusCellRenderer(data.getSettings().getTheme())); // Render the status column with color
+        saveList.getColumnModel().getColumn(3).setCellRenderer(new BackupStatusCellRenderer(data));
         saveList.getTableHeader().setReorderingAllowed(false); // Prevents the table columns from being reordered
 
         /* Load the UI */
@@ -189,6 +192,7 @@ public class MainPanel {
         dtm.setColumnIdentifiers(saveListHeaders);
         saveList.setModel(dtm);
         saveList.getColumnModel().getColumn(2).setCellRenderer(new SaveStatusCellRenderer(data.getSettings().getTheme()));
+        saveList.getColumnModel().getColumn(3).setCellRenderer(new BackupStatusCellRenderer(data));
         saveList.getTableHeader().setReorderingAllowed(false);
 
         ArrayList<Save> saves = new ArrayList<>();
