@@ -206,4 +206,30 @@ public class ButtonEvents {
             JOptionPane.showMessageDialog(ui.getRootPanel(), "Could not restore backup data!", "Error!", JOptionPane.ERROR_MESSAGE);
         }
     }
+
+    public static void createBackup(ClientData data, MainPanel ui) {
+        // Get current save
+        int selected = ui.getSaveList().getSelectedRow();
+        String name = (String) ui.getSaveList().getValueAt(selected, 0);
+        Save save = data.getSaves().get(name);
+
+        if (FileUtilities.hasBackup(save)) {
+            int cont = JOptionPane.showConfirmDialog(ui.getRootPanel(),
+                    "Creating a backup will overwrite the previous backup. Would you like to continue?",
+                    "Warning!",
+                    JOptionPane.YES_NO_OPTION);
+            if (cont != 0) {
+                return;
+            }
+        }
+
+        try {
+            FileUtilities.makeBackup(save);
+            JOptionPane.showMessageDialog(ui.getRootPanel(), "Successfully created a backup!", "Success!", JOptionPane.INFORMATION_MESSAGE);
+            ui.reloadUI();
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(ui.getRootPanel(), "An error occurred when creating a backup!", "Error!", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 }
