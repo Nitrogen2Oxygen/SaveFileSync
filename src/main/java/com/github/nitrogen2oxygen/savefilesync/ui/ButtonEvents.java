@@ -30,7 +30,7 @@ public class ButtonEvents {
                     JOptionPane.ERROR_MESSAGE);
         }
         DataManager.save(data);
-        ui.reloadUI();
+        ui.reload();
     }
 
     public static void manageServer(ClientData data, MainPanel ui) {
@@ -39,7 +39,7 @@ public class ButtonEvents {
 
         /* Save and reload */
         DataManager.save(data);
-        ui.reloadUI();
+        ui.reload();
     }
 
     public static void exportSaves(ClientData data, MainPanel ui) {
@@ -75,7 +75,7 @@ public class ButtonEvents {
                 return;
             }
         }
-        ui.reloadUI();
+        ui.reload();
         JOptionPane.showMessageDialog(ui.getRootPanel(),
                 "Successfully uploaded files(s)!",
                 "Success!",
@@ -107,7 +107,7 @@ public class ButtonEvents {
                 return;
             }
         }
-        ui.reloadUI();
+        ui.reload();
         JOptionPane.showMessageDialog(ui.getRootPanel(),
                 "Successfully downloaded files(s)!",
                 "Success!",
@@ -132,7 +132,7 @@ public class ButtonEvents {
             Save save = ServerImport.main(data.getServer(), newSaves);
             if (save != null) {
                 data.addSave(save);
-                ui.reloadUI();
+                ui.reload();
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(ui.getRootPanel(),
@@ -150,7 +150,7 @@ public class ButtonEvents {
 
         /* Save and reload */
         DataManager.save(data);
-        ui.reloadUI();
+        ui.reload();
     }
 
     public static void editSave(ClientData data, MainPanel ui) {
@@ -176,7 +176,7 @@ public class ButtonEvents {
 
         /* Save and reload */
         DataManager.save(data);
-        ui.reloadUI();
+        ui.reload();
     }
 
     public static void changeSettings(ClientData data, MainPanel ui) {
@@ -184,7 +184,7 @@ public class ButtonEvents {
         if (newSettings == null) return;
         data.setSettings(newSettings);
         DataManager.save(data);
-        ui.reloadUI();
+        ui.reload();
     }
 
     public static void restoreBackup(ClientData data, MainPanel ui) {
@@ -200,7 +200,7 @@ public class ButtonEvents {
         try {
             FileUtilities.restoreBackup(save, data.getSettings());
             JOptionPane.showMessageDialog(ui.getRootPanel(), "Successfully restored backup data! Old data saved to backup directory.", "Success!", JOptionPane.INFORMATION_MESSAGE);
-            ui.reloadUI();
+            ui.reload();
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(ui.getRootPanel(), "Could not restore backup data!", "Error!", JOptionPane.ERROR_MESSAGE);
@@ -226,7 +226,7 @@ public class ButtonEvents {
         try {
             FileUtilities.makeBackup(save);
             JOptionPane.showMessageDialog(ui.getRootPanel(), "Successfully created a backup!", "Success!", JOptionPane.INFORMATION_MESSAGE);
-            ui.reloadUI();
+            ui.reload();
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(ui.getRootPanel(), "An error occurred when creating a backup!", "Error!", JOptionPane.ERROR_MESSAGE);

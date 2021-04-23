@@ -4,6 +4,8 @@ import com.github.nitrogen2oxygen.savefilesync.server.DataServer;
 import com.github.nitrogen2oxygen.savefilesync.util.DataManager;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class ClientData {
@@ -38,6 +40,15 @@ public class ClientData {
 
     public HashMap<String, Save> getSaves() {
         return saves;
+    }
+
+    public ArrayList<Save> getSaveList() {
+        ArrayList<Save> saveList = new ArrayList<>();
+        for (String saveName : saves.keySet()) {
+            Save save = saves.get(saveName);
+            saveList.add(save);
+        }
+        return saveList;
     }
 
     public void addSave(Save save) throws Exception {

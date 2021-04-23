@@ -4,6 +4,7 @@ import com.github.nitrogen2oxygen.savefilesync.client.ClientData;
 import com.github.nitrogen2oxygen.savefilesync.client.theme.ThemeColor;
 import com.github.nitrogen2oxygen.savefilesync.client.theme.Themes;
 import com.github.nitrogen2oxygen.savefilesync.server.DataServers;
+import com.github.nitrogen2oxygen.savefilesync.ui.model.SaveListTableModel;
 import com.github.nitrogen2oxygen.savefilesync.ui.renderer.BackupStatusCellRenderer;
 import com.github.nitrogen2oxygen.savefilesync.ui.renderer.SaveStatusCellRenderer;
 import com.github.nitrogen2oxygen.savefilesync.client.Save;
@@ -17,15 +18,15 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 import javax.swing.text.StyleContext;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.zip.ZipFile;
 
 public class MainPanel {
@@ -73,22 +74,8 @@ public class MainPanel {
         serverTypeField.setFont(dataLabelFont);
         hostNameField.setFont(dataLabelFont);
 
-
-        /* Create blank data table */
-        DefaultTableModel dtm = new DefaultTableModel() {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        }; // Prevents the cells from being moved
-        dtm.setColumnIdentifiers(saveListHeaders);
-        saveList.setModel(dtm);
-        saveList.getColumnModel().getColumn(2).setCellRenderer(new SaveStatusCellRenderer(data.getSettings().getTheme())); // Render the status column with color
-        saveList.getColumnModel().getColumn(3).setCellRenderer(new BackupStatusCellRenderer(data));
-        saveList.getTableHeader().setReorderingAllowed(false); // Prevents the table columns from being reordered
-
         /* Load the UI */
-        reloadUI();
+        reload();
 
         /* Standard action listeners */
         saveList.getSelectionModel().addListSelectionListener(e -> {
@@ -145,127 +132,50 @@ public class MainPanel {
         return saveList;
     }
 
-    /* We reload the UI on a separate thread to prevent any kind of freezing */
-    public void reloadUI() {
+    public void reload() {
         if (reloadThread != null && reloadThread.isAlive()) {
             reloadThread.interrupt();
+            reloadThread = null;
         }
-
         reloadThread = new Thread(() -> {
+            /* Data the data server meta data */
             serverStatus.setText("Connecting...");
             serverStatus.setForeground(Themes.getColor(data.getSettings().getTheme(), ThemeColor.DEFAULT));
             hostNameField.setText(data.getServer() != null ? data.getServer().getHostName() : "None");
             serverTypeField.setText(data.getServer() != null ? DataServers.getDisplayName(data.getServer().getServerType()) : "None");
-            // Set server status
-            Boolean serverOnline;
-            if (data.getServer() != null) {
-                boolean status = data.getServer().verifyServer();
-                if (status) {
-                    serverOnline = true;
-                    serverStatus.setText("Online");
-                    serverStatus.setForeground(Themes.getColor(data.getSettings().getTheme(), ThemeColor.SUCCESS));
-                } else {
-                    serverOnline = false;
-                    serverStatus.setText("Offline");
-                    serverStatus.setForeground(Themes.getColor(data.getSettings().getTheme(), ThemeColor.OFFLINE));
-                }
-            } else {
-                serverOnline = null;
+
+            /* Update the data server status */
+            Boolean serverOnline = DataServers.serverOnline(data.getServer());
+            if (serverOnline == null) {
                 serverStatus.setText("None");
                 serverStatus.setForeground(Themes.getColor(data.getSettings().getTheme(), ThemeColor.DEFAULT));
+            } else if (serverOnline) {
+                serverStatus.setText("Online");
+                serverStatus.setForeground(Themes.getColor(data.getSettings().getTheme(), ThemeColor.SUCCESS));
+            } else {
+                serverStatus.setText("Offline");
+                serverStatus.setForeground(Themes.getColor(data.getSettings().getTheme(), ThemeColor.OFFLINE));
             }
 
-            // Reload the saves table
-            setTable(data.getSaves(), serverOnline);
+            /* Create the save list model and set it */
+            SaveListTableModel model = new SaveListTableModel();
+            model.setColumnIdentifiers(saveListHeaders);
+            saveList.setModel(model);
+
+            /* Set column properties not defined in the model */
+            saveList.getColumnModel().getColumn(2).setCellRenderer(new SaveStatusCellRenderer(data.getSettings().getTheme()));
+            saveList.getColumnModel().getColumn(3).setCellRenderer(new BackupStatusCellRenderer(data));
+            saveList.getTableHeader().setReorderingAllowed(false);
+
+            /* Get a list of all the save files and add them */
+            ArrayList<Save> saves = data.getSaveList();
+            for (Save save : saves) {
+                model.addSave(save, serverOnline);
+            }
+            if (serverOnline != null && serverOnline) model.setStatuses(data);
         });
 
         reloadThread.start();
-    }
-
-    private void setTable(HashMap<String, Save> dataSaves, Boolean serverOnline) {
-        DefaultTableModel dtm = new DefaultTableModel() {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-        dtm.setColumnIdentifiers(saveListHeaders);
-        saveList.setModel(dtm);
-        saveList.getColumnModel().getColumn(2).setCellRenderer(new SaveStatusCellRenderer(data.getSettings().getTheme()));
-        saveList.getColumnModel().getColumn(3).setCellRenderer(new BackupStatusCellRenderer(data));
-        saveList.getTableHeader().setReorderingAllowed(false);
-
-        ArrayList<Save> saves = new ArrayList<>();
-        for (String saveName : dataSaves.keySet()) {
-            Save save = dataSaves.get(saveName);
-            saves.add(save);
-            dtm.addRow(new Object[]{
-                    save.getName(),
-                    save.getFile(),
-                    serverOnline == null ? "No Server" : (serverOnline ? "Checking..." : "Offline")
-            });
-        }
-        if (serverOnline != null && serverOnline) {
-            for (Save save : saves) {
-                /* Get the server status */
-                String status;
-                File remoteSaveFile = null;
-                File localSaveFile = null;
-                ZipFile remoteZipFile = null;
-                ZipFile localZipFile = null;
-                try {
-                    /* Create remote and local temp files */
-                    remoteSaveFile = Files.createTempFile("SaveFileSync", ".zip").toFile();
-                    remoteSaveFile.deleteOnExit();
-                    localSaveFile = Files.createTempFile("SaveFileSync", ".zip").toFile();
-                    localSaveFile.deleteOnExit();
-
-                    /* Get the file data from server and save file */
-                    byte[] remoteSave = data.getServer().getSaveData(save.getName());
-                    byte[] localSave = save.toZipFile();
-                    if (remoteSave == null || Arrays.equals(remoteSave, new byte[0])) {
-                        status = "Not Synced";
-                    } else if (localSave == null || Arrays.equals(localSave, new byte[0])) {
-                        status = "Not Synced";
-                    } else {
-                        /* Write to zip files */
-                        FileUtils.writeByteArrayToFile(remoteSaveFile, remoteSave);
-                        remoteZipFile = new ZipFile(remoteSaveFile);
-                        FileUtils.writeByteArrayToFile(localSaveFile, localSave);
-                        localZipFile = new ZipFile(localSaveFile);
-
-                        /* Compare the 2 using external script */
-                        status = FileUtilities.ZipCompare(remoteZipFile, localZipFile) ? "Synced" : "Not Synced";
-
-                        /* Cleanup */
-                        remoteZipFile.close();
-                        remoteSaveFile.delete();
-                        localZipFile.close();
-                        localSaveFile.delete();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    try {
-                        if (remoteZipFile != null) remoteZipFile.close();
-                        if (localZipFile != null) localZipFile.close();
-                    } catch (IOException ee) {
-                        ee.printStackTrace();
-                    } finally {
-                        if (localSaveFile != null) localSaveFile.delete();
-                        if (remoteSaveFile != null) remoteSaveFile.delete();
-                        status = "Error";
-                    }
-                }
-                /* Set the status on the table */
-                for (int i = 0; i < dtm.getRowCount(); i++) {
-                    if (dtm.getValueAt(i, 0).equals(save.getName())) {
-                        // Set the status
-                        dtm.setValueAt(status, i, 2);
-                        break;
-                    }
-                }
-            }
-        }
     }
 
 

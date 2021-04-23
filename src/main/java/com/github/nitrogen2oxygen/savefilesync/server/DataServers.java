@@ -30,4 +30,9 @@ public class DataServers {
                 return null;
         }
     }
+
+    public static Boolean serverOnline(DataServer server) {
+        if (server == null) return null;
+        return server.verifyServer();
+    }
 }
