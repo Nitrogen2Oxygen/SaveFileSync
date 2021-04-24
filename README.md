@@ -4,6 +4,7 @@ A Java application for syncing files between different computers through a mutua
 ## Features
 * Import and export save files/directories
 * WebDAV, Dropbox & OneDrive data server support
+* Create and restore backups for your save files
 * Various settings and themes
 
 
