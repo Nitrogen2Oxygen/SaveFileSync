@@ -40,7 +40,7 @@ public class BackupStatusCellRenderer extends DefaultTableCellRenderer {
             } else {
                 try {
                     BasicFileAttributes attr = Files.readAttributes(backup.toPath(), BasicFileAttributes.class);
-                    FileTime fileTime = attr.creationTime();
+                    FileTime fileTime = attr.lastModifiedTime();
                     PrettyTime prettyTime = new PrettyTime();
                     label.setText(prettyTime.format(fileTime.toInstant()));
                 } catch (IOException e) {
