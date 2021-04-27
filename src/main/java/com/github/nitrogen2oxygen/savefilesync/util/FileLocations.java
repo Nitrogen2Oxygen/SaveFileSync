@@ -20,6 +20,10 @@ public class FileLocations {
     }
 
     public static String getDataDirectory() {
+        return Paths.get(System.getProperty("user.home"), ".savefileSync").toString();
+    }
+
+    public static String getOldDataDirectory() {
         return Paths.get(System.getProperty("user.home"), "SaveFileSync").toString();
     }
 }

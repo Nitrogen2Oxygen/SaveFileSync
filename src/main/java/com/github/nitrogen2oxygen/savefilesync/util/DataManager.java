@@ -12,6 +12,9 @@ import org.json.JSONObject;
 import javax.swing.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
@@ -62,6 +65,7 @@ public class DataManager {
     }
 
     public static ClientData load() {
+        updateSaveLocation();
         Settings settings = null;
         DataServer dataServer = null;
         HashMap<String, Save> saves = new HashMap<>();
@@ -119,5 +123,28 @@ public class DataManager {
         }
 
         return new ClientData(dataServer, settings, saves);
+    }
+
+    private static void updateSaveLocation() {
+        File oldDir = new File(FileLocations.getOldDataDirectory());
+        File newDir = new File(FileLocations.getDataDirectory());
+        try {
+            if (oldDir.isDirectory() && oldDir.exists()) {
+                Files.walk(Paths.get(oldDir.toString()))
+                        .forEach(source -> {
+                            Path destination = Paths.get(newDir.toString(), source.toString()
+                                    .substring(oldDir.toString().length()));
+                            try {
+                                Files.copy(source, destination);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        });
+                FileUtils.cleanDirectory(oldDir);
+                FileUtils.deleteDirectory(oldDir);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
