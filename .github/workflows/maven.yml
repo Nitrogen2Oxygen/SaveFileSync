@@ -28,7 +28,5 @@ jobs:
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
     - name: Build with Maven
-      run: mvn --batch-mode --update-snapshots install
-    - name: Run Application
-      run: java -jar target/SaveFileSync.jar
+      run: mvn --batch-mode --update-snapshots verify
 
