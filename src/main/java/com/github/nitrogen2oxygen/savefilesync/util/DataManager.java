@@ -21,6 +21,18 @@ import java.util.Properties;
 
 public class DataManager {
 
+    public static void init() {
+        File clientDataFolder = new File(FileLocations.getDataDirectory());
+        if (!clientDataFolder.isDirectory() || !clientDataFolder.exists()) {
+            boolean mkdir = clientDataFolder.mkdir();
+            if (!mkdir) {
+                JOptionPane.showMessageDialog(null,
+                        "Cannot create data folder!", "Error!", JOptionPane.ERROR_MESSAGE); // In case the directory can't be made for some reason, throw an error to the user
+                System.exit(1);
+            }
+        }
+    }
+
     public static void save(ClientData data) {
         DataServer dataServer = data.getServer();
         Settings settings = data.getSettings();
