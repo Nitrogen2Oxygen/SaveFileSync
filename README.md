@@ -9,14 +9,14 @@ A Java application for syncing files between different computers through a mutua
 
 
 ## Download
-1. Download Java 11
+1. Download the [latest Java SE](https://java.com/en/download/) 
 2. Download the [latest jar release](https://github.com/Nitrogen2Oxygen/SaveFileSync/releases/latest) (SaveFileSync.jar)
-3. Run the .jar file using Java 11
+3. Run the .jar file using Java
 
 ## Build
 ### Requirements
 * The latest version IntelliJ IDEA (Used for IntelliJ's UI designer)
-* JDK version 11
+* OpenJDK version 8
 
 #### Instructions
 1. Clone the repository: `git clone https://github.com/<Name>/SaveFileSync.git`
