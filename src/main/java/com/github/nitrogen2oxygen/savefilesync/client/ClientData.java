@@ -5,7 +5,6 @@ import com.github.nitrogen2oxygen.savefilesync.util.DataManager;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class ClientData {

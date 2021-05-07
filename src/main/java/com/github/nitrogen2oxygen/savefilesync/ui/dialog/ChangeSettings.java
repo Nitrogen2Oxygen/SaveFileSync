@@ -45,7 +45,7 @@ public class ChangeSettings extends JDialog {
         themeSelector.setModel(themeModel);
         themeSelector.setRenderer((list, value, index, isSelected, cellHasFocus) -> {
             JLabel label = new JLabel();
-            label.setText(Themes.getThemeName(value));
+            label.setText(Themes.getName(value));
             label.setOpaque(true);
             if (isSelected) {
                 label.setForeground(list.getSelectionForeground());

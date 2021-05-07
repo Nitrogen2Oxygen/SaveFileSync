@@ -71,7 +71,7 @@ public class Settings {
                     FlatAnimatedLafChange.showSnapshot();
 
                     // Change look and feel
-                    UIManager.setLookAndFeel(Themes.getThemeClass(theme));
+                    UIManager.setLookAndFeel(Themes.getTheme(theme));
 
                     // Reload the UI
                     FlatLaf.updateUI();

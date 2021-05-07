@@ -14,7 +14,7 @@ public class Themes {
         return Theme.DARK;
     }
 
-    public static String getThemeName(Theme theme) {
+    public static String getName(Theme theme) {
         switch (theme) {
             case DARK:
                 return "Dark";
@@ -35,7 +35,7 @@ public class Themes {
         }
     }
 
-    public static FlatLaf getThemeClass(Theme theme) {
+    public static FlatLaf getTheme(Theme theme) {
         switch (theme) {
             case DARK:
                 return new FlatDarkLaf();
@@ -59,103 +59,46 @@ public class Themes {
     public static Color getColor(Theme theme, ThemeColor color) {
         switch(theme) {
             case DARK:
-                switch (color) {
-                    case ERROR:
-                        return Color.ORANGE;
-                    case DEFAULT:
-                        return Color.WHITE;
-                    case OFFLINE:
-                        return Color.RED;
-                    case SUCCESS:
-                        return Color.GREEN;
-                    case WARNING:
-                        return Color.YELLOW;
-                }
-                break;
-            case LIGHT:
-                switch (color) {
-                    case ERROR:
-                        return new Color(255, 140, 0);
-                    case DEFAULT:
-                        return Color.BLACK;
-                    case OFFLINE:
-                        return Color.RED;
-                    case SUCCESS:
-                        return new Color(0, 150, 0);
-                    case WARNING:
-                        return new Color(218, 165, 32);
-                }
-                break;
             case MATERIAL_DARK:
-                switch (color) {
-                    case ERROR:
-                        return Color.ORANGE;
-                    case DEFAULT:
-                        return Color.WHITE;
-                    case OFFLINE:
-                        return Color.RED;
-                    case SUCCESS:
-                        return Color.GREEN;
-                    case WARNING:
-                        return Color.YELLOW;
-                }
-                break;
             case MATERIAL_OCEAN:
-                switch (color) {
-                    case ERROR:
-                        return Color.ORANGE;
-                    case DEFAULT:
-                        return Color.WHITE;
-                    case OFFLINE:
-                        return Color.RED;
-                    case SUCCESS:
-                        return Color.GREEN;
-                    case WARNING:
-                        return Color.YELLOW;
-                }
-                break;
-            case MATERIAL_LIGHT:
-                switch (color) {
-                    case ERROR:
-                        return new Color(255, 140, 0);
-                    case DEFAULT:
-                        return Color.BLACK;
-                    case OFFLINE:
-                        return Color.RED;
-                    case SUCCESS:
-                        return new Color(0, 150, 0);
-                    case WARNING:
-                        return new Color(218, 165, 32);
-                }
-                break;
             case CARBON:
-                switch (color) {
-                    case ERROR:
-                        return Color.ORANGE;
-                    case DEFAULT:
-                        return Color.WHITE;
-                    case OFFLINE:
-                        return Color.RED;
-                    case SUCCESS:
-                        return Color.GREEN;
-                    case WARNING:
-                        return Color.YELLOW;
-                }
-                break;
             case ONE_DARK:
-                switch (color) {
-                    case ERROR:
-                        return Color.ORANGE;
-                    case DEFAULT:
-                        return Color.WHITE;
-                    case OFFLINE:
-                        return Color.RED;
-                    case SUCCESS:
-                        return Color.GREEN;
-                    case WARNING:
-                        return Color.YELLOW;
-                }
-                break;
+                return defaultDark(color);
+            case LIGHT:
+            case MATERIAL_LIGHT:
+                return defaultLight(color);
+        }
+        return null;
+    }
+
+    private static Color defaultDark(ThemeColor color) {
+        switch (color) {
+            case ERROR:
+                return Color.ORANGE;
+            case DEFAULT:
+                return Color.WHITE;
+            case OFFLINE:
+                return Color.RED;
+            case SUCCESS:
+                return Color.GREEN;
+            case WARNING:
+                return Color.YELLOW;
+        }
+        return null;
+    }
+
+    private static Color defaultLight(ThemeColor color) {
+        switch (color) {
+            case ERROR:
+                return new Color(255, 140, 0);
+            case DEFAULT:
+                return Color.BLACK;
+            case OFFLINE:
+                return Color.RED;
+            case SUCCESS:
+                return new Color(0, 150, 0);
+            case WARNING:
+                return new Color(218, 165, 32);
         }
         return null;
     }
