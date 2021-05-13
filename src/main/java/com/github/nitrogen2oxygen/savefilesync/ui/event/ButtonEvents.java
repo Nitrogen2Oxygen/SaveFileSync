@@ -11,13 +11,11 @@ import com.github.nitrogen2oxygen.savefilesync.ui.dialog.ServerImport;
 import com.github.nitrogen2oxygen.savefilesync.ui.dialog.ServerOptions;
 import com.github.nitrogen2oxygen.savefilesync.util.DataManager;
 import com.github.nitrogen2oxygen.savefilesync.util.FileUtilities;
-import com.sun.security.ntlm.Client;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Set;
 
 public class ButtonEvents {
     private final ClientData data;
