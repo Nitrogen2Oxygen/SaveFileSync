@@ -11,15 +11,24 @@ import com.github.nitrogen2oxygen.savefilesync.ui.dialog.ServerImport;
 import com.github.nitrogen2oxygen.savefilesync.ui.dialog.ServerOptions;
 import com.github.nitrogen2oxygen.savefilesync.util.DataManager;
 import com.github.nitrogen2oxygen.savefilesync.util.FileUtilities;
+import com.sun.security.ntlm.Client;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Set;
 
 public class ButtonEvents {
+    private final ClientData data;
+    private final MainPanel ui;
 
-    public static void newSaveFile(ClientData data, MainPanel ui) {
+    public ButtonEvents(ClientData data, MainPanel ui) {
+        this.data = data;
+        this.ui = ui;
+    }
+
+    public void newSaveFile(ActionEvent event) {
         Save save = SaveFileManager.main();
         if (save == null) return;
         try {
@@ -34,7 +43,7 @@ public class ButtonEvents {
         ui.reload();
     }
 
-    public static void manageServer(ClientData data, MainPanel ui) {
+    public void manageServer(ActionEvent e) {
         DataServer newDataServer = ServerOptions.main(data);
         data.setServer(newDataServer);
 
@@ -43,7 +52,7 @@ public class ButtonEvents {
         ui.reload();
     }
 
-    public static void exportSaves(ClientData data, MainPanel ui) {
+    public void exportSaves(ActionEvent event) {
         if (data.getServer() == null || !data.getServer().verifyServer()) {
             JOptionPane.showMessageDialog(ui.getRootPanel(),
                     "Cannot export files without a working data server!",
@@ -83,7 +92,7 @@ public class ButtonEvents {
                 JOptionPane.INFORMATION_MESSAGE);
     }
 
-    public static void importSaves(ClientData data, MainPanel ui) {
+    public void importSaves(ActionEvent event) {
         if (data.getServer() == null || !data.getServer().verifyServer()) {
             JOptionPane.showMessageDialog(ui.getRootPanel(),
                     "Cannot import files without a working data server!",
@@ -115,7 +124,7 @@ public class ButtonEvents {
                 JOptionPane.INFORMATION_MESSAGE);
     }
 
-    public static void serverImport(ClientData data, MainPanel ui) {
+    public void serverImport(ActionEvent event) {
         ArrayList<String> newSaves = new ArrayList<>();
         ArrayList<String> serverSaveNames = data.getServer().getSaveNames();
         ArrayList<String> localSaveNames = new ArrayList<>();
@@ -143,7 +152,7 @@ public class ButtonEvents {
         }
     }
 
-    public static void removeSave(ClientData data, MainPanel ui) {
+    public  void removeSave(ActionEvent event) {
         int selected = ui.getSaveList().getSelectedRow();
         String name = (String) ui.getSaveList().getValueAt(selected, 0);
         /* Remove save file */
@@ -154,7 +163,7 @@ public class ButtonEvents {
         ui.reload();
     }
 
-    public static void editSave(ClientData data, MainPanel ui) {
+    public void editSave(ActionEvent event) {
         int selected = ui.getSaveList().getSelectedRow();
         String name = (String) ui.getSaveList().getValueAt(selected, 0);
         Save save = data.getSave(name);
@@ -180,7 +189,7 @@ public class ButtonEvents {
         ui.reload();
     }
 
-    public static void changeSettings(ClientData data, MainPanel ui) {
+    public void changeSettings(ActionEvent event) {
         Settings newSettings = ChangeSettings.main(data.getSettings());
         if (newSettings == null) return;
         data.setSettings(newSettings);
@@ -188,7 +197,7 @@ public class ButtonEvents {
         ui.reload();
     }
 
-    public static void restoreBackup(ClientData data, MainPanel ui) {
+    public void restoreBackup(ActionEvent event) {
         // Get current save
         int selected = ui.getSaveList().getSelectedRow();
         String name = (String) ui.getSaveList().getValueAt(selected, 0);
@@ -208,7 +217,7 @@ public class ButtonEvents {
         }
     }
 
-    public static void createBackup(ClientData data, MainPanel ui) {
+    public void createBackup(ActionEvent event) {
         // Get current save
         int selected = ui.getSaveList().getSelectedRow();
         String name = (String) ui.getSaveList().getValueAt(selected, 0);

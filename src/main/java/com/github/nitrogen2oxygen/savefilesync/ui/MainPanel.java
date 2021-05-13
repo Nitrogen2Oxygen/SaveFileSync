@@ -19,7 +19,8 @@ import javax.swing.border.TitledBorder;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.text.StyleContext;
 import java.awt.*;
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
 
 public class MainPanel {
     private JPanel rootPanel;
@@ -104,16 +105,17 @@ public class MainPanel {
         });
 
         /* Button events */
-        newSaveFile.addActionListener(e -> ButtonEvents.newSaveFile(data, this));
-        manageServerButton.addActionListener(e -> ButtonEvents.manageServer(data, this));
-        exportButton.addActionListener(e -> ButtonEvents.exportSaves(data, this));
-        importButton.addActionListener(e -> ButtonEvents.importSaves(data, this));
-        importFromServerButton.addActionListener(e -> ButtonEvents.serverImport(data, this));
-        removeButton.addActionListener(e -> ButtonEvents.removeSave(data, this));
-        editButton.addActionListener(e -> ButtonEvents.editSave(data, this));
-        settingsButton.addActionListener(e -> ButtonEvents.changeSettings(data, this));
-        restoreBackupButton.addActionListener(e -> ButtonEvents.restoreBackup(data, this));
-        createBackupButton.addActionListener(e -> ButtonEvents.createBackup(data, this));
+        ButtonEvents buttonEvents = new ButtonEvents(data, this);
+        newSaveFile.addActionListener(buttonEvents::newSaveFile);
+        manageServerButton.addActionListener(buttonEvents::manageServer);
+        exportButton.addActionListener(buttonEvents::exportSaves);
+        importButton.addActionListener(buttonEvents::importSaves);
+        importFromServerButton.addActionListener(buttonEvents::serverImport);
+        removeButton.addActionListener(buttonEvents::removeSave);
+        editButton.addActionListener(buttonEvents::editSave);
+        settingsButton.addActionListener(buttonEvents::changeSettings);
+        restoreBackupButton.addActionListener(buttonEvents::restoreBackup);
+        createBackupButton.addActionListener(buttonEvents::createBackup);
     }
 
     public JPanel getRootPanel() {
@@ -137,11 +139,12 @@ public class MainPanel {
             serverTypeField.setText(data.getServer() != null ? DataServers.getDisplayName(data.getServer().getServerType()) : "None");
 
             /* Update the data server status */
-            Boolean serverOnline = DataServers.serverOnline(data.getServer());
-            if (serverOnline == null) {
+            boolean serverOnline = false;
+            if (data.getServer() == null) {
                 serverStatus.setText("None");
                 serverStatus.setForeground(Themes.getColor(data.getSettings().getTheme(), ThemeColor.DEFAULT));
-            } else if (serverOnline) {
+            } else if (data.getServer().verifyServer()) {
+                serverOnline = true;
                 serverStatus.setText("Online");
                 serverStatus.setForeground(Themes.getColor(data.getSettings().getTheme(), ThemeColor.SUCCESS));
             } else {
@@ -160,11 +163,11 @@ public class MainPanel {
             saveList.getTableHeader().setReorderingAllowed(false);
 
             /* Get a list of all the save files and add them */
-            ArrayList<Save> saves = data.getSaveList();
+            List<Save> saves = data.getSaveList();
             for (Save save : saves) {
                 model.addSave(save, serverOnline);
             }
-            if (serverOnline != null && serverOnline) model.setStatuses(data);
+            if (serverOnline) model.setStatuses(data);
         });
 
         reloadThread.start();
