@@ -2,8 +2,8 @@ package com.github.nitrogen2oxygen.savefilesync.util;
 
 import com.github.nitrogen2oxygen.savefilesync.client.Save;
 import com.github.nitrogen2oxygen.savefilesync.client.Settings;
-import com.sun.istack.internal.NotNull;
 import org.apache.commons.io.FileUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileOutputStream;
