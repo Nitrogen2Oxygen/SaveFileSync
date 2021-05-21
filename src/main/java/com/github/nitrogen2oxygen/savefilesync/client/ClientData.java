@@ -2,7 +2,9 @@ package com.github.nitrogen2oxygen.savefilesync.client;
 
 import com.github.nitrogen2oxygen.savefilesync.server.DataServer;
 import com.github.nitrogen2oxygen.savefilesync.util.DataManager;
+import org.apache.commons.io.FileUtils;
 
+import javax.swing.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,6 +68,12 @@ public class ClientData {
                     || save.getFile().getPath().contains(currentSave.getFile().getPath())) {
                 throw new Exception("One location includes another. Please do not sync files in the same path");
             }
+        }
+        // Too large warning
+        long saveSize = FileUtils.sizeOf(save.getFile());
+        if (saveSize > 8 * 1024 * 1024) {
+            int res = JOptionPane.showConfirmDialog(null, "Warning, save is over 8MB. Large saves take a long time to import, export, backup and check. Would you like to continue?", "Warning!", JOptionPane.YES_NO_OPTION);
+            if (res != 0) return;
         }
         this.saves.put(save.getName(), save);
         DataManager.save(this);

@@ -2,12 +2,11 @@ package com.github.nitrogen2oxygen.savefilesync.util;
 
 import com.github.nitrogen2oxygen.savefilesync.client.Save;
 import com.github.nitrogen2oxygen.savefilesync.client.Settings;
+import com.sun.istack.internal.NotNull;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -31,7 +30,7 @@ public class FileUtilities {
         return fileList;
     }
 
-    public static boolean ZipCompare(ZipFile zip1, ZipFile zip2) {
+    public static boolean ZipCompare(@NotNull ZipFile zip1, @NotNull ZipFile zip2) {
         Set<String> set1 = new LinkedHashSet<>();
 
         for (Enumeration<? extends ZipEntry> e = zip1.entries(); e.hasMoreElements();) {
@@ -46,14 +45,8 @@ public class FileUtilities {
             if (!set2.contains(name)) {
                 return false;
             }
-            try {
-                set2.remove(name);
-                if (!IOUtils.contentEquals(zip1.getInputStream(zip1.getEntry(name)),
-                        zip2.getInputStream(zip2.getEntry(name)))) {
-                    return false;
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+            set2.remove(name);
+            if (zip1.getEntry(name).getCrc() != zip2.getEntry(name).getCrc()) {
                 return false;
             }
         }
@@ -83,6 +76,23 @@ public class FileUtilities {
         FileOutputStream out = new FileOutputStream(backupFile);
         out.write(backupData);
         out.close();
+    }
+
+    private long getFolderSize(File folder) {
+        long length = 0;
+        File[] files = folder.listFiles();
+
+        int count = files.length;
+
+        for (int i = 0; i < count; i++) {
+            if (files[i].isFile()) {
+                length += files[i].length();
+            }
+            else {
+                length += getFolderSize(files[i]);
+            }
+        }
+        return length;
     }
 
     public static void restoreBackup(Save save, Settings settings) throws Exception {
