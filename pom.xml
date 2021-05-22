@@ -6,7 +6,7 @@
 
     <groupId>com.github.nitrogen2oxygen</groupId>
     <artifactId>savefilesync</artifactId>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
     <name>Save File Sync</name>
     <description>An application for syncing game data/save files between computers.</description>
     <packaging>jar</packaging>
