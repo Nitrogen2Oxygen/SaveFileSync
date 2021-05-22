@@ -1,6 +1,7 @@
 package com.github.nitrogen2oxygen.savefilesync.client;
 
 import com.github.nitrogen2oxygen.savefilesync.server.DataServer;
+import com.github.nitrogen2oxygen.savefilesync.util.Constants;
 import com.github.nitrogen2oxygen.savefilesync.util.DataManager;
 import org.apache.commons.io.FileUtils;
 
@@ -71,7 +72,7 @@ public class ClientData {
         }
         // Too large warning
         long saveSize = FileUtils.sizeOf(save.getFile());
-        if (saveSize > 8 * 1024 * 1024) {
+        if (saveSize > Constants.FILE_SIZE_WARNING_THRESHOLD) {
             int res = JOptionPane.showConfirmDialog(null, "Warning, save is over 8MB. Large saves take a long time to import, export, backup and check. Would you like to continue?", "Warning!", JOptionPane.YES_NO_OPTION);
             if (res != 0) return;
         }
