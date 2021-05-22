@@ -11,10 +11,7 @@ import com.github.nitrogen2oxygen.savefilesync.client.theme.ThemeColor;
 import java.awt.*;
 
 public class Themes {
-
-    public static Theme getDefault() {
-        return Theme.DARK;
-    }
+    public static final Theme DEFAULT_THEME = Theme.DARK;
 
     public static String getName(Theme theme) {
         switch (theme) {

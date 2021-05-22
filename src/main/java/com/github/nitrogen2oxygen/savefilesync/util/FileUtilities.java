@@ -78,23 +78,6 @@ public class FileUtilities {
         out.close();
     }
 
-    private long getFolderSize(File folder) {
-        long length = 0;
-        File[] files = folder.listFiles();
-
-        int count = files.length;
-
-        for (int i = 0; i < count; i++) {
-            if (files[i].isFile()) {
-                length += files[i].length();
-            }
-            else {
-                length += getFolderSize(files[i]);
-            }
-        }
-        return length;
-    }
-
     public static void restoreBackup(Save save, Settings settings) throws Exception {
         if (!hasBackup(save)) throw new Exception("Does not have backup. This function should not be called unless a backup has been verified");
         File backupDirectory = new File(FileLocations.getBackupDirectory());

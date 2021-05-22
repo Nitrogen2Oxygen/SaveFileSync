@@ -34,7 +34,7 @@ public class Settings {
     }
 
     public void setDefaults() {
-        theme = Themes.getDefault();
+        theme = Themes.DEFAULT_THEME;
         makeBackups = true;
         forceOverwriteSave = false;
     }
