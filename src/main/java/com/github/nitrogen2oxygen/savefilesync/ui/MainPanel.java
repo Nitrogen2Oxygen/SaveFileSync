@@ -50,6 +50,7 @@ public class MainPanel {
     private static final String[] saveListHeaders = new String[]{
             "Name",
             "File Location",
+            "Size",
             "Sync Status",
             "Backup"
     };
@@ -158,14 +159,18 @@ public class MainPanel {
             saveList.setModel(model);
 
             /* Set column properties not defined in the model */
-            saveList.getColumnModel().getColumn(2).setCellRenderer(new SaveStatusCellRenderer(data.getSettings().getTheme()));
-            saveList.getColumnModel().getColumn(3).setCellRenderer(new BackupStatusCellRenderer(data));
+            saveList.getColumnModel().getColumn(3).setCellRenderer(new SaveStatusCellRenderer(data.getSettings().getTheme()));
+            saveList.getColumnModel().getColumn(4).setCellRenderer(new BackupStatusCellRenderer(data));
             saveList.getTableHeader().setReorderingAllowed(false);
 
             /* Get a list of all the save files and add them */
             List<Save> saves = data.getSaveList();
             for (Save save : saves) {
-                model.addSave(save, serverOnline);
+                if (data.getServer() == null) {
+                    model.addSave(save);
+                } else {
+                    model.addSave(save, serverOnline);
+                }
             }
             if (serverOnline) model.setStatuses(data);
         });

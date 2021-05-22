@@ -9,7 +9,6 @@ import javax.swing.table.DefaultTableModel;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -86,15 +85,24 @@ public class SaveListTableModel extends DefaultTableModel {
         }
 
         /* Set the status on the table */
-        setValueAt(status, row, 2);
+        setValueAt(status, row, 3);
     }
 
-    public void addSave(Save save, Boolean serverOnline) {
-        // Add the row without the status
-        addRow(new String[] {
+    public void addSave(Save save, boolean serverOnline) {
+        addRow(new Object[] {
                 save.getName(),
-                save.getFile().toString(),
-                serverOnline == null ? "No Server" : (serverOnline ? "Checking..." : "Offline")
+                save.getFile(),
+                FileUtils.byteCountToDisplaySize(FileUtils.sizeOf(save.getFile())),
+                serverOnline ? "Checking..." : "Offline"
+        });
+    }
+
+    public void addSave(Save save) {
+        addRow(new Object[] {
+                save.getName(),
+                save.getFile(),
+                FileUtils.byteCountToDisplaySize(FileUtils.sizeOf(save.getFile())),
+                "No Server"
         });
     }
 }
