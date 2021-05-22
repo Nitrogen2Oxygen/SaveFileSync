@@ -88,21 +88,25 @@ public class SaveListTableModel extends DefaultTableModel {
         setValueAt(status, row, 3);
     }
 
-    public void addSave(Save save, boolean serverOnline) {
-        addRow(new Object[] {
-                save.getName(),
-                save.getFile(),
-                FileUtils.byteCountToDisplaySize(FileUtils.sizeOf(save.getFile())),
-                serverOnline ? "Checking..." : "Offline"
-        });
-    }
-
     public void addSave(Save save) {
         addRow(new Object[] {
                 save.getName(),
                 save.getFile(),
                 FileUtils.byteCountToDisplaySize(FileUtils.sizeOf(save.getFile())),
-                "No Server"
+                "Checking...",
+                "Checking..."
         });
+    }
+
+    public void noServerFound() {
+        for (int i = 0; i < getRowCount(); i++) {
+            setValueAt("No Server", i, 3);
+        }
+    }
+
+    public void serverOffline() {
+        for (int i = 0; i < getRowCount(); i++) {
+            setValueAt("Offline", i, 3);
+        }
     }
 }

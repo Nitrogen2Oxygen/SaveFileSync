@@ -2,6 +2,7 @@ package com.github.nitrogen2oxygen.savefilesync.ui;
 
 import com.github.nitrogen2oxygen.savefilesync.client.ClientData;
 import com.github.nitrogen2oxygen.savefilesync.client.theme.ThemeColor;
+import com.github.nitrogen2oxygen.savefilesync.server.DataServer;
 import com.github.nitrogen2oxygen.savefilesync.ui.event.ButtonEvents;
 import com.github.nitrogen2oxygen.savefilesync.util.Themes;
 import com.github.nitrogen2oxygen.savefilesync.util.DataServers;
@@ -133,46 +134,46 @@ public class MainPanel {
             reloadThread = null;
         }
         reloadThread = new Thread(() -> {
-            /* Data the data server meta data */
+            DataServer server = data.getServer();
+            boolean noServer = server == null;
+
+            /* Set placeholders and metadata on the sidebar */
             serverStatus.setText("Connecting...");
             serverStatus.setForeground(Themes.getColor(data.getSettings().getTheme(), ThemeColor.DEFAULT));
-            hostNameField.setText(data.getServer() != null ? data.getServer().getHostName() : "None");
-            serverTypeField.setText(data.getServer() != null ? DataServers.getDisplayName(data.getServer().getServerType()) : "None");
+            hostNameField.setText(noServer ? "None" : data.getServer().getHostName());
+            serverTypeField.setText(noServer ? "None" : DataServers.getDisplayName(server.getServerType()));
 
-            /* Update the data server status */
-            boolean serverOnline = false;
-            if (data.getServer() == null) {
-                serverStatus.setText("None");
-                serverStatus.setForeground(Themes.getColor(data.getSettings().getTheme(), ThemeColor.DEFAULT));
-            } else if (data.getServer().verifyServer()) {
-                serverOnline = true;
-                serverStatus.setText("Online");
-                serverStatus.setForeground(Themes.getColor(data.getSettings().getTheme(), ThemeColor.SUCCESS));
-            } else {
-                serverStatus.setText("Offline");
-                serverStatus.setForeground(Themes.getColor(data.getSettings().getTheme(), ThemeColor.OFFLINE));
-            }
-
-            /* Create the save list model and set it */
+            /* Create table model and add local saves */
             SaveListTableModel model = new SaveListTableModel();
             model.setColumnIdentifiers(saveListHeaders);
-            saveList.setModel(model);
+            List<Save> saves = data.getSaveList();
+            for (Save save : saves) {
+                model.addSave(save);
+            }
 
-            /* Set column properties not defined in the model */
+            /* Set the new model */
+            saveList.setModel(model);
             saveList.getColumnModel().getColumn(3).setCellRenderer(new SaveStatusCellRenderer(data.getSettings().getTheme()));
             saveList.getColumnModel().getColumn(4).setCellRenderer(new BackupStatusCellRenderer(data));
             saveList.getTableHeader().setReorderingAllowed(false);
 
-            /* Get a list of all the save files and add them */
-            List<Save> saves = data.getSaveList();
-            for (Save save : saves) {
-                if (data.getServer() == null) {
-                    model.addSave(save);
+            /* Check if the server is online and set statuses accordingly */
+            if (noServer) {
+                serverStatus.setText("None");
+                serverStatus.setForeground(Themes.getColor(data.getSettings().getTheme(), ThemeColor.DEFAULT));
+                model.noServerFound(); // Tells the model that no server was found
+            } else {
+                boolean serverOnline = data.getServer().verifyServer();
+                if (serverOnline) {
+                    serverStatus.setText("Online");
+                    serverStatus.setForeground(Themes.getColor(data.getSettings().getTheme(), ThemeColor.SUCCESS));
+                    model.setStatuses(data); // Tells the model to get the sync status for each save
                 } else {
-                    model.addSave(save, serverOnline);
+                    serverStatus.setText("Offline");
+                    serverStatus.setForeground(Themes.getColor(data.getSettings().getTheme(), ThemeColor.OFFLINE));
+                    model.serverOffline(); // Tells the model that the server is offline
                 }
             }
-            if (serverOnline) model.setStatuses(data);
         });
 
         reloadThread.start();
