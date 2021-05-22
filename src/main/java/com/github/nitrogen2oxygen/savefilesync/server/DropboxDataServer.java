@@ -211,7 +211,7 @@ public class DropboxDataServer extends DataServer {
             String json = IOUtils.toString(stream, StandardCharsets.UTF_8);
             try {
                 JSONObject object = new JSONObject(json);
-                expires = new Date(System.currentTimeMillis() + Integer.parseInt(object.getString("expires_in")));
+                expires = new Date(System.currentTimeMillis() + object.getInt("expires_in"));
                 if (!refreshing) refreshKey = object.getString("refresh_token");
                 bearerKey = object.getString("access_token");
             } catch (JSONException e) {
