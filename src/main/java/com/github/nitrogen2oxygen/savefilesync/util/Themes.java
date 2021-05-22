@@ -2,6 +2,8 @@ package com.github.nitrogen2oxygen.savefilesync.util;
 
 import com.formdev.flatlaf.*;
 import com.formdev.flatlaf.intellijthemes.FlatCarbonIJTheme;
+import com.formdev.flatlaf.intellijthemes.FlatCyanLightIJTheme;
+import com.formdev.flatlaf.intellijthemes.FlatDarkPurpleIJTheme;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.*;
 import com.github.nitrogen2oxygen.savefilesync.client.theme.Theme;
 import com.github.nitrogen2oxygen.savefilesync.client.theme.ThemeColor;
@@ -30,6 +32,10 @@ public class Themes {
                 return "Carbon";
             case ONE_DARK:
                 return "One Dark";
+            case CYAN_LIGHT:
+                return "Cyan Light";
+            case DARK_PURPLE:
+                return "Dark Purple";
             default:
                 return null;
         }
@@ -51,6 +57,10 @@ public class Themes {
                 return new FlatCarbonIJTheme();
             case ONE_DARK:
                 return new FlatAtomOneDarkIJTheme();
+            case CYAN_LIGHT:
+                return new FlatCyanLightIJTheme();
+            case DARK_PURPLE:
+                return new FlatDarkPurpleIJTheme();
             default:
                 return null;
         }
@@ -63,9 +73,11 @@ public class Themes {
             case MATERIAL_OCEAN:
             case CARBON:
             case ONE_DARK:
+            case DARK_PURPLE:
                 return defaultDark(color);
             case LIGHT:
             case MATERIAL_LIGHT:
+            case CYAN_LIGHT:
                 return defaultLight(color);
         }
         return null;

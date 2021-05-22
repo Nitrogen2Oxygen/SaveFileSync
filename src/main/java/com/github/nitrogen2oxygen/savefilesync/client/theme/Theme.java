@@ -7,5 +7,7 @@ public enum Theme {
     MATERIAL_OCEAN,
     MATERIAL_LIGHT,
     CARBON,
-    ONE_DARK
+    ONE_DARK,
+    CYAN_LIGHT,
+    DARK_PURPLE
 }
