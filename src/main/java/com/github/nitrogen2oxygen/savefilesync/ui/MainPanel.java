@@ -55,6 +55,9 @@ public class MainPanel {
             "Sync Status",
             "Backup"
     };
+    private static int SIZE_COLUMN = 2;
+    private static int SYNC_STATUS_COLUMN = 3;
+    private static int BACKUP_COLUMN = 4;
 
     public MainPanel(ClientData userData) {
         data = userData;
@@ -78,7 +81,7 @@ public class MainPanel {
             if (saveList.getSelectedRows().length != 0) {
                 boolean canExport = false;
                 for (int i : saveList.getSelectedRows()) {
-                    String status = (String) saveList.getValueAt(i, 2);
+                    String status = (String) saveList.getValueAt(i, SYNC_STATUS_COLUMN);
                     if (status.equals("Not Synced")) {
                         canExport = true;
                         break;
@@ -153,8 +156,8 @@ public class MainPanel {
 
             /* Set the new model */
             saveList.setModel(model);
-            saveList.getColumnModel().getColumn(3).setCellRenderer(new SaveStatusCellRenderer(data.getSettings().getTheme()));
-            saveList.getColumnModel().getColumn(4).setCellRenderer(new BackupStatusCellRenderer(data));
+            saveList.getColumnModel().getColumn(SYNC_STATUS_COLUMN).setCellRenderer(new SaveStatusCellRenderer(data.getSettings().getTheme()));
+            saveList.getColumnModel().getColumn(BACKUP_COLUMN).setCellRenderer(new BackupStatusCellRenderer(data));
             saveList.getTableHeader().setReorderingAllowed(false);
 
             /* Check if the server is online and set statuses accordingly */
