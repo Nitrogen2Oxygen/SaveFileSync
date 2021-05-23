@@ -2,6 +2,7 @@ package com.github.nitrogen2oxygen.savefilesync.ui.model;
 
 import com.github.nitrogen2oxygen.savefilesync.client.ClientData;
 import com.github.nitrogen2oxygen.savefilesync.client.Save;
+import com.github.nitrogen2oxygen.savefilesync.ui.MainPanel;
 import com.github.nitrogen2oxygen.savefilesync.util.FileUtilities;
 import org.apache.commons.io.FileUtils;
 
@@ -100,13 +101,13 @@ public class SaveListTableModel extends DefaultTableModel {
 
     public void noServerFound() {
         for (int i = 0; i < getRowCount(); i++) {
-            setValueAt("No Server", i, 3);
+            setValueAt("No Server", i, MainPanel.SYNC_STATUS_COLUMN);
         }
     }
 
     public void serverOffline() {
         for (int i = 0; i < getRowCount(); i++) {
-            setValueAt("Offline", i, 3);
+            setValueAt("Offline", i, MainPanel.SYNC_STATUS_COLUMN);
         }
     }
 }

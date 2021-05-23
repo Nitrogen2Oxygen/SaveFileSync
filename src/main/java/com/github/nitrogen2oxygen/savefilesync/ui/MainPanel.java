@@ -55,9 +55,8 @@ public class MainPanel {
             "Sync Status",
             "Backup"
     };
-    private static int SIZE_COLUMN = 2;
-    private static int SYNC_STATUS_COLUMN = 3;
-    private static int BACKUP_COLUMN = 4;
+    public static int SYNC_STATUS_COLUMN = 3;
+    public static int BACKUP_COLUMN = 4;
 
     public MainPanel(ClientData userData) {
         data = userData;
