@@ -1,5 +1,7 @@
 package com.github.nitrogen2oxygen.savefilesync.server;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -32,4 +34,19 @@ public abstract class DataServer implements java.io.Serializable {
 
     /* Verifies if the server is working properly */
     public abstract boolean verifyServer();
+
+    /* Gets  the data.json file. If it doesn't exists, it makes one */
+    public JSONObject getServerData() {
+        JSONObject serverData = fetchServerData();
+        if (serverData == null) {
+            initializeServerData();
+            serverData = fetchServerData();
+        }
+        return serverData;
+    }
+    /* Fetches server data file */
+    protected abstract JSONObject fetchServerData();
+
+    /* Creates server data file */
+    protected abstract void initializeServerData();
 }
