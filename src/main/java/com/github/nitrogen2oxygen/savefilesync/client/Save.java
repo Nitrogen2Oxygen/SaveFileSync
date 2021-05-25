@@ -12,8 +12,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-public class Save implements java.io.Serializable {
-    private static final long serialVersionUID = -3053800939549922372L;
+public class Save {
     private final File file;
     private final String name;
 
