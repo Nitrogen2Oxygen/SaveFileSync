@@ -22,7 +22,10 @@ import java.util.Properties;
 public class DataManager {
 
     public static void init() {
-        File clientDataFolder = new File(FileLocations.getDataDirectory());
+        init(FileLocations.getDataDirectory());
+    }
+    public static void init(String location) {
+        File clientDataFolder = new File(location);
         if (!clientDataFolder.isDirectory() || !clientDataFolder.exists()) {
             boolean mkdir = clientDataFolder.mkdir();
             if (!mkdir) {
@@ -34,22 +37,24 @@ public class DataManager {
     }
 
     public static void save(ClientData data) {
+        save(data, FileLocations.getDataDirectory());
+    }
+    public static void save(ClientData data, String directory) {
         DataServer dataServer = data.getServer();
         Settings settings = data.getSettings();
         ArrayList<Save> saves = data.getSaveList();
-        // HashMap<String, Save> saves = data.getSaves();
 
         /* Save the settings to config.properties */
         try {
             Properties props = settings.toProperties();
-            File configFile = new File(FileLocations.getConfigFile());
+            File configFile = new File(FileLocations.getConfigFile(directory));
             configFile.createNewFile();
             FileOutputStream stream = new FileOutputStream(configFile);
             props.store(stream, "");
             stream.close();
 
             /* Save the dataServer to dataServer.ser */
-            File serverFile = new File(FileLocations.getServerFile());
+            File serverFile = new File(FileLocations.getServerFile(directory));
             serverFile.createNewFile();
             ObjectOutputStream serverStream = new ObjectOutputStream(new FileOutputStream(serverFile));
             serverStream.writeObject(dataServer);
@@ -57,7 +62,7 @@ public class DataManager {
 
 
             /* Save the saves to /saves */
-            File savesDirectory = new File(FileLocations.getSaveDirectory());
+            File savesDirectory = new File(FileLocations.getSaveDirectory(directory));
             savesDirectory.mkdirs();
             FileUtils.cleanDirectory(savesDirectory); // Clear any deleted save files or renamed ones
             for (Save save : saves) {
@@ -78,6 +83,11 @@ public class DataManager {
 
     public static ClientData load() {
         updateSaveLocation();
+        return load(FileLocations.getDataDirectory());
+    }
+
+    public static ClientData load(String directory) {
+        updateSaveLocation();
         Settings settings = null;
         DataServer dataServer = null;
         HashMap<String, Save> saves = new HashMap<>();
@@ -85,7 +95,7 @@ public class DataManager {
 
         try {
             /* Get settings */
-            File configFile = new File(FileLocations.getConfigFile());
+            File configFile = new File(FileLocations.getConfigFile(directory));
             if (configFile.exists()) {
                 Properties props = new Properties();
                 FileInputStream stream = new FileInputStream(configFile);
@@ -97,7 +107,7 @@ public class DataManager {
             }
 
             /* Get dataServer */
-            File serverFile = new File(FileLocations.getServerFile());
+            File serverFile = new File(FileLocations.getServerFile(directory));
             if (serverFile.exists()) {
                 try {
                     ObjectInputStream stream = new ObjectInputStream(new FileInputStream(serverFile));
@@ -109,7 +119,7 @@ public class DataManager {
                 }
             }
 
-            File saveDirectory = new File(FileLocations.getSaveDirectory());
+            File saveDirectory = new File(FileLocations.getSaveDirectory(directory));
             if (saveDirectory.exists()) {
                 File[] fileList = saveDirectory.listFiles();
                 if (fileList != null) {

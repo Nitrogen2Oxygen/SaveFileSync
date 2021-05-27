@@ -77,6 +77,5 @@ public class ClientData {
             if (res != 0) return;
         }
         this.saves.put(save.getName(), save);
-        DataManager.save(this);
     }
 }

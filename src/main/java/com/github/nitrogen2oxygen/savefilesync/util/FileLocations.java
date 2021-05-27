@@ -3,20 +3,20 @@ package com.github.nitrogen2oxygen.savefilesync.util;
 import java.nio.file.Paths;
 
 public class FileLocations {
-    public static String getConfigFile() {
-        return Paths.get(getDataDirectory(), "config.properties").toString();
+    public static String getConfigFile(String parent) {
+        return Paths.get(parent, "config.properties").toString();
     }
 
-    public static String getServerFile() {
-        return Paths.get(getDataDirectory(), "server.ser").toString();
+    public static String getServerFile(String parent) {
+        return Paths.get(parent, "server.ser").toString();
     }
 
-    public static String getSaveDirectory() {
-        return Paths.get(getDataDirectory(), "saves").toString();
+    public static String getSaveDirectory(String parent) {
+        return Paths.get(parent, "saves").toString();
     }
 
-    public static String getBackupDirectory() {
-        return Paths.get(getDataDirectory(), "backups").toString();
+    public static String getBackupDirectory(String parent) {
+        return Paths.get(parent, "backups").toString();
     }
 
     public static String getDataDirectory() {

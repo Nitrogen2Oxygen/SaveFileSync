@@ -61,7 +61,7 @@ public class FileUtilities {
         byte[] backupData = save.toZipFile();
         if (backupData == null || Arrays.equals(backupData, new byte[0])) return; // Check to see if data is empty empty
 
-        File backupDirectory = new File(FileLocations.getBackupDirectory());
+        File backupDirectory = new File(FileLocations.getBackupDirectory(FileLocations.getDataDirectory()));
         if (!backupDirectory.exists()) {
             boolean createDir = backupDirectory.mkdirs();
             if (!createDir) {
@@ -83,21 +83,21 @@ public class FileUtilities {
 
     public static void restoreBackup(Save save, Settings settings) throws Exception {
         if (!hasBackup(save)) throw new Exception("Does not have backup. This function should not be called unless a backup has been verified");
-        File backupDirectory = new File(FileLocations.getBackupDirectory());
+        File backupDirectory = new File(FileLocations.getBackupDirectory(FileLocations.getDataDirectory()));
         File backupFile = new File(backupDirectory, save.getName() + ".zip");
         byte[] data = FileUtils.readFileToByteArray(backupFile);
         save.overwriteData(data, true, settings.shouldForceOverwrite()); // Data will be force backed up to allows restoration
     }
 
     public static boolean hasBackup(Save save) {
-        File backupDirectory = new File(FileLocations.getBackupDirectory());
+        File backupDirectory = new File(FileLocations.getBackupDirectory(FileLocations.getDataDirectory()));
         if (!backupDirectory.exists()) return false;
         File backupFile = new File(backupDirectory, save.getName() + ".zip");
         return backupFile.exists();
     }
 
     public static File getBackup(Save save) {
-        File backupDirectory = new File(FileLocations.getBackupDirectory());
+        File backupDirectory = new File(FileLocations.getBackupDirectory(FileLocations.getDataDirectory()));
         if (!backupDirectory.exists()) return null;
         File backupFile = new File(backupDirectory, save.getName() + ".zip");
         if (!backupFile.exists()) return null;
