@@ -34,4 +34,7 @@ public abstract class DataServer implements java.io.Serializable {
 
     /* Verifies if the server is working properly */
     public abstract boolean verifyServer();
+
+    /* Gets the hash of a given save */
+    public abstract String getSaveHash(String name);
 }

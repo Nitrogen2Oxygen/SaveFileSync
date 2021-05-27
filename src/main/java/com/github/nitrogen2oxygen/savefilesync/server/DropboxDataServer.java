@@ -154,6 +154,11 @@ public class DropboxDataServer extends DataServer {
         }
     }
 
+    @Override
+    public String getSaveHash(String name) {
+        return null;
+    }
+
     public static String getApiKey() {
         try (CallbackServer callbackServer = new CallbackServer(Constants.CALLBACK_PORT)) {
             String key = callbackServer.getQuery("code");

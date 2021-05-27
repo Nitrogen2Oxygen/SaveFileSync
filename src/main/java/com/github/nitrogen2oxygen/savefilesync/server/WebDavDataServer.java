@@ -104,6 +104,11 @@ public class WebDavDataServer extends DataServer {
         }
     }
 
+    @Override
+    public String getSaveHash(String name) {
+        return null;
+    }
+
     private URL getSaveURL(String fileName) throws IOException, URISyntaxException {
         URI base = new URL(this.uri).toURI();
         String path = base.getPath() + "/" + fileName.replace(" ", "%20"); // Replace the space first to bypass stupid java using a +

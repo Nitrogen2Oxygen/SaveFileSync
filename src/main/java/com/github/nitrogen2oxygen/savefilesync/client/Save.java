@@ -2,10 +2,12 @@ package com.github.nitrogen2oxygen.savefilesync.client;
 
 import com.github.nitrogen2oxygen.savefilesync.util.FileUtilities;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -65,6 +67,26 @@ public class Save {
 
         /* Return the result */
         return data;
+    }
+
+    public String getDataHash() throws Exception {
+        StringBuilder hashBuilder = new StringBuilder();
+        if (file.isFile()) {
+            hashBuilder.append("/&").append(FileUtilities.toHash(file));
+        } else {
+            boolean first = true;
+            List<String> fileList = FileUtilities.generateFileList(file);
+            for (String fileName : fileList) {
+                if (!first) hashBuilder.append("?");
+                String subDir = fileName.substring(file.getPath().length() + 1);
+                hashBuilder.append(subDir).append(FileUtilities.toHash(new File(fileName)));
+                first = false;
+            }
+        }
+
+        String decodedHash = hashBuilder.toString();
+        String hash = Base64.encodeBase64String(decodedHash.getBytes(StandardCharsets.UTF_8));
+        return hash;
     }
 
     public void overwriteData(byte[] data, boolean makeBackup, boolean forceOverwrite) throws Exception {

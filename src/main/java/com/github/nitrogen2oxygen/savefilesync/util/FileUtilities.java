@@ -5,8 +5,11 @@ import com.github.nitrogen2oxygen.savefilesync.client.Settings;
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
 
+import javax.xml.bind.DatatypeConverter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.security.MessageDigest;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -99,5 +102,13 @@ public class FileUtilities {
         File backupFile = new File(backupDirectory, save.getName() + ".zip");
         if (!backupFile.exists()) return null;
         return backupFile;
+    }
+
+    public static String toHash(File file) throws Exception {
+        if (file.isDirectory()) throw new Exception("Cannot convert directory to hash");
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        md.update(FileUtils.readFileToByteArray(file));
+        byte[] digest = md.digest();
+        return DatatypeConverter.printHexBinary(digest).toUpperCase(Locale.ROOT);
     }
 }

@@ -127,6 +127,11 @@ public class OneDriveDataServer extends DataServer {
         }
     }
 
+    @Override
+    public String getSaveHash(String name) {
+        return null;
+    }
+
     private String getBearerKey() {
         try {
             boolean hasKeys = bearerKey != null && refreshKey != null;
