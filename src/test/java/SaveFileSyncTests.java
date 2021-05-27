@@ -1,6 +1,9 @@
 import com.github.nitrogen2oxygen.savefilesync.client.ClientData;
 import com.github.nitrogen2oxygen.savefilesync.client.Save;
+import com.github.nitrogen2oxygen.savefilesync.server.DataServer;
+import com.github.nitrogen2oxygen.savefilesync.server.ServerType;
 import com.github.nitrogen2oxygen.savefilesync.util.DataManager;
+import com.github.nitrogen2oxygen.savefilesync.util.DataServers;
 import com.github.nitrogen2oxygen.savefilesync.util.FileLocations;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
@@ -9,9 +12,11 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class SaveFileSyncTests {
-    public String testDataDirectory() {
+    public static String testDataDirectory() {
        return Paths.get(System.getProperty("user.home"), ".savefileSync-test").toString();
     }
 
@@ -27,12 +32,12 @@ public class SaveFileSyncTests {
 
         // Make a test save
         File tmpFile = Files.createTempFile("SaveFileSyncTest", ".tmp").toFile();
+        tmpFile.deleteOnExit();
         Save save = new Save("TestSave", tmpFile);
         data.addSave(save);
         assert data.getSave("TestSave") == save;
         data.removeSave("TestSave");
         assert data.getSave("TestSave") == null;
-        tmpFile.delete(); // Cleanup
 
         // Does serialization work correct
         DataManager.save(data, testDataDirectory());
@@ -48,13 +53,15 @@ public class SaveFileSyncTests {
     public void saveFileManagement() throws Exception {
         // Create a few test save files
         File testFile1 = Files.createTempFile("SaveFileSyncTest1", ".tmp").toFile();
-        File testFile2 = Files.createTempFile("SaveFileSyncTest2", ".tmp").toFile();
+        File testFile2 = Files.createTempDirectory("SaveFileSyncTest2").toFile();
         File testFile3 = Files.createTempFile("SaveFileSyncTest3", ".tmp").toFile();
+        testFile1.deleteOnExit();
+        testFile2.deleteOnExit();
+        testFile3.deleteOnExit();
 
         // Write data to files
         FileUtils.write(testFile1, "Testing testing 123!", StandardCharsets.UTF_8);
-        FileUtils.write(testFile2, "Testing testing 456!!", StandardCharsets.UTF_8);
-        FileUtils.write(testFile3, "Testing testing 789!!!", StandardCharsets.UTF_8);
+        FileUtils.write(testFile3, "Testing testing 456!!!", StandardCharsets.UTF_8);
 
         // Create save instances
         Save save1 = new Save("Test 1", testFile1);
@@ -73,20 +80,43 @@ public class SaveFileSyncTests {
         try {
             data.addSave(badSave1);
             assert false;
-        } catch (Exception ignored) {
+        } catch (Exception e) {
             // The function should error out
         }
         try {
             data.addSave(badSave2);
             assert false;
-        } catch (Exception ignored) {
+        } catch (Exception e) {
             // The function should error out
         }
         try {
             data.addSave(badSave3);
             assert false;
-        } catch (Exception ignored) {
+        } catch (Exception e) {
             // The function should error out
+        }
+
+        // Test zip file creation
+        File zipFile1 = Files.createTempFile("SaveFileSyncTest1", ".tmp.zip").toFile();
+        File zipFile2 = Files.createTempFile("SaveFileSyncTest2", ".tmp.zip").toFile();
+        zipFile1.deleteOnExit();
+        zipFile2.deleteOnExit();
+        FileUtils.writeByteArrayToFile(zipFile1, save1.toZipFile());
+        FileUtils.writeByteArrayToFile(zipFile2, save2.toZipFile());
+        ZipFile zip1 = new ZipFile(zipFile1);
+        ZipFile zip2 = new ZipFile(zipFile1);
+
+        // Test zip file extraction
+        ZipEntry entry = zip1.entries().nextElement();
+        assert entry.getName().equals(testFile1.getName());
+    }
+
+    @Test
+    public void serverManagement() {
+        /* We cannot test actual server integrations from unit tests. Those must be done manually */
+        for (ServerType type : ServerType.values()) {
+            DataServer testServer = DataServers.buildServer(type);
+            assert testServer != null;
         }
     }
 }
