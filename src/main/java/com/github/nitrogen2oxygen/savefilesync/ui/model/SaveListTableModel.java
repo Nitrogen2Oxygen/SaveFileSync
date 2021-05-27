@@ -35,6 +35,12 @@ public class SaveListTableModel extends DefaultTableModel {
         // Get save
         String name = (String) getValueAt(row, 0);
         Save save = data.getSave(name);
+        try {
+            String hash = save.getDataHash();
+            System.out.println(hash.length());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         // Set the status
         String status;
@@ -91,10 +97,18 @@ public class SaveListTableModel extends DefaultTableModel {
     }
 
     public void addSave(Save save) {
+        String fileSize;
+        try {
+            fileSize = FileUtils.byteCountToDisplaySize(FileUtils.sizeOf(save.getFile()));
+        }  catch (RuntimeException e) {
+            e.printStackTrace();
+            fileSize = "0 bytes";
+        }
+
         addRow(new Object[] {
                 save.getName(),
                 save.getFile(),
-                FileUtils.byteCountToDisplaySize(FileUtils.sizeOf(save.getFile())),
+                fileSize,
                 "Checking...",
                 "Checking..."
         });
