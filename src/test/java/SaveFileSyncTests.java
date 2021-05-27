@@ -116,7 +116,11 @@ public class SaveFileSyncTests {
         /* We cannot test actual server integrations from unit tests. Those must be done manually */
         for (ServerType type : ServerType.values()) {
             DataServer testServer = DataServers.buildServer(type);
-            assert testServer != null;
+            if (type == ServerType.NONE) {
+                assert testServer == null;
+            } else {
+                assert testServer != null;
+            }
         }
     }
 }
