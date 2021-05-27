@@ -6,9 +6,10 @@ import com.github.nitrogen2oxygen.savefilesync.util.DataManager;
 import com.github.nitrogen2oxygen.savefilesync.util.DataServers;
 import com.github.nitrogen2oxygen.savefilesync.util.FileLocations;
 import org.apache.commons.io.FileUtils;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -16,18 +17,22 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public class SaveFileSyncTests {
-    public static String testDataDirectory() {
-       return Paths.get(System.getProperty("user.home"), ".savefileSync-test").toString();
+    public static ClientData data;
+    public static File dataFolder;
+
+    @Test
+    @BeforeAll
+    @DisplayName("Preparing the test environment")
+    public static void setupData() throws IOException {
+        dataFolder = Files.createTempDirectory("SaveFileSyncTest").toFile();
+        data = DataManager.load(dataFolder.getPath());
     }
 
     @Test
-    public void dataManagement() throws Exception {
-        // Initialize the data
-        DataManager.init(testDataDirectory());
-        ClientData data = DataManager.load(testDataDirectory());
-
+    @DisplayName("Test the main client data object works as intended")
+    public void testData() throws Exception {
         // Check if the data folder exists
-        File dataDirectory = new File(testDataDirectory());
+        File dataDirectory = new File(dataFolder.getPath());
         assert dataDirectory.exists() && dataDirectory.isDirectory();
 
         // Make a test save
@@ -40,17 +45,18 @@ public class SaveFileSyncTests {
         assert data.getSave("TestSave") == null;
 
         // Does serialization work correct
-        DataManager.save(data, testDataDirectory());
-        File serverFile = new File(FileLocations.getServerFile(testDataDirectory()));
+        DataManager.save(data, dataFolder.getPath());
+        File serverFile = new File(FileLocations.getServerFile(dataFolder.getPath()));
         assert serverFile.exists();
-        File settingsFile = new File(FileLocations.getConfigFile(testDataDirectory()));
+        File settingsFile = new File(FileLocations.getConfigFile(dataFolder.getPath()));
         assert settingsFile.exists();
-        File savesDirectory = new File(FileLocations.getSaveDirectory(testDataDirectory()));
+        File savesDirectory = new File(FileLocations.getSaveDirectory(dataFolder.getPath()));
         assert savesDirectory.exists();
     }
 
     @Test
-    public void saveFileManagement() throws Exception {
+    @DisplayName("Ensure many functions related to local save files work")
+    public void testSaveFiles() throws Exception {
         // Create a few test save files
         File testFile1 = Files.createTempFile("SaveFileSyncTest1", ".tmp").toFile();
         File testFile2 = Files.createTempDirectory("SaveFileSyncTest2").toFile();
@@ -68,8 +74,6 @@ public class SaveFileSyncTests {
         Save save2 = new Save("Test 2", testFile2);
 
         // Load files to data
-        DataManager.init(testDataDirectory()); // Just in case
-        ClientData data = DataManager.load(testDataDirectory());
         data.addSave(save1);
         data.addSave(save2);
 
@@ -112,7 +116,8 @@ public class SaveFileSyncTests {
     }
 
     @Test
-    public void serverManagement() {
+    @DisplayName("Test if all server types return valid instances")
+    public void testServers() {
         /* We cannot test actual server integrations from unit tests. Those must be done manually */
         for (ServerType type : ServerType.values()) {
             DataServer testServer = DataServers.buildServer(type);
@@ -123,4 +128,19 @@ public class SaveFileSyncTests {
             }
         }
     }
+
+    @Test
+    @DisplayName("Ensure the settings set up correctly and handle errors")
+    public void testSettings() {
+
+    }
+
+    @Test
+    @AfterAll
+    @DisplayName("Cleans up the test data folder")
+    public static void cleanupTests() throws IOException {
+        FileUtils.cleanDirectory(dataFolder);
+        FileUtils.deleteDirectory(dataFolder);
+    }
+
 }
