@@ -17,6 +17,7 @@ import com.intellij.uiDesigner.core.Spacer;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.text.StyleContext;
 import java.awt.*;
@@ -73,40 +74,10 @@ public class MainPanel {
 
         /* Load the UI */
         reload();
+        reloadSelection(null);
 
         /* Standard action listeners */
-        saveList.getSelectionModel().addListSelectionListener(e -> {
-            // Enable/disable buttons
-            if (saveList.getSelectedRows().length != 0) {
-                boolean canExport = false;
-                for (int i : saveList.getSelectedRows()) {
-                    String status = (String) saveList.getValueAt(i, SYNC_STATUS_COLUMN);
-                    if (status.equals("Not Synced")) {
-                        canExport = true;
-                        break;
-                    }
-                }
-                importButton.setEnabled(canExport);
-                exportButton.setEnabled(canExport);
-            } else {
-                importButton.setEnabled(false);
-                exportButton.setEnabled(false);
-            }
-            if (saveList.getSelectedRows().length == 1) {
-                removeButton.setEnabled(true);
-                editButton.setEnabled(true);
-                createBackupButton.setEnabled(true);
-                int selected = saveList.getSelectedRow();
-                String name = (String) saveList.getValueAt(selected, 0);
-                Save save = data.getSave(name);
-                restoreBackupButton.setEnabled(FileUtilities.hasBackup(save));
-            } else {
-                removeButton.setEnabled(false);
-                editButton.setEnabled(false);
-                createBackupButton.setEnabled(false);
-                restoreBackupButton.setEnabled(false);
-            }
-        });
+        saveList.getSelectionModel().addListSelectionListener(this::reloadSelection);
 
         /* Button events */
         ButtonEvents buttonEvents = new ButtonEvents(data, this);
@@ -120,6 +91,37 @@ public class MainPanel {
         settingsButton.addActionListener(buttonEvents::changeSettings);
         restoreBackupButton.addActionListener(buttonEvents::restoreBackup);
         createBackupButton.addActionListener(buttonEvents::createBackup);
+    }
+
+    private void reloadSelection(ListSelectionEvent e) {
+        // Check some re-used conditions
+        boolean anySelected = saveList.getSelectedRows().length != 0;
+        boolean multipleSelected = saveList.getSelectedRows().length > 1;
+        boolean oneSelected = anySelected && !multipleSelected;
+
+        // Export and import buttons
+        DataServer server = data.getServer();
+        importButton.setEnabled(server != null);
+        exportButton.setEnabled(server != null);
+        if (anySelected) {
+            importButton.setText("Import Selected");
+            exportButton.setText("Export Selected");
+        } else {
+            importButton.setText("Import All");
+            exportButton.setText("Export All");
+        }
+
+        // Remove and edit buttons
+        removeButton.setEnabled(oneSelected);
+        editButton.setEnabled(oneSelected);
+
+        // Create and restore backup buttons
+        if (oneSelected) {
+            int selected = saveList.getSelectedRow();
+            String name = (String) saveList.getValueAt(selected, 0);
+            Save save = data.getSave(name);
+            restoreBackupButton.setEnabled(FileUtilities.hasBackup(save));
+        }
     }
 
     public JPanel getRootPanel() {
@@ -265,22 +267,22 @@ public class MainPanel {
         saveList.setSelectionBackground(new Color(-13487566));
         scrollPane1.setViewportView(saveList);
         removeButton = new JButton();
-        removeButton.setEnabled(false);
+        removeButton.setEnabled(true);
         removeButton.setText("Remove");
         removeButton.setToolTipText("Removes a save file from the local list of saves");
         rootPanel.add(removeButton, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         editButton = new JButton();
-        editButton.setEnabled(false);
+        editButton.setEnabled(true);
         editButton.setText("Edit");
         editButton.setToolTipText("Edits a save file's name and location (changing the name can cause desyncing)");
         rootPanel.add(editButton, new GridConstraints(3, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         exportButton = new JButton();
-        exportButton.setEnabled(false);
+        exportButton.setEnabled(true);
         exportButton.setText("Export");
         exportButton.setToolTipText("Backs up selected file(s) to the server");
         rootPanel.add(exportButton, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         importButton = new JButton();
-        importButton.setEnabled(false);
+        importButton.setEnabled(true);
         importButton.setText("Import");
         importButton.setToolTipText("Imports selected files from the server");
         rootPanel.add(importButton, new GridConstraints(2, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -288,11 +290,11 @@ public class MainPanel {
         settingsButton.setText("Settings");
         rootPanel.add(settingsButton, new GridConstraints(1, 0, 4, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         restoreBackupButton = new JButton();
-        restoreBackupButton.setEnabled(false);
+        restoreBackupButton.setEnabled(true);
         restoreBackupButton.setText("Restore Backup");
         rootPanel.add(restoreBackupButton, new GridConstraints(4, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         createBackupButton = new JButton();
-        createBackupButton.setEnabled(false);
+        createBackupButton.setEnabled(true);
         createBackupButton.setText("Create Backup");
         rootPanel.add(createBackupButton, new GridConstraints(4, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }

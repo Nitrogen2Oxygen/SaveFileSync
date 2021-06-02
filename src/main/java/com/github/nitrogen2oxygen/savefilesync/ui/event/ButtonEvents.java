@@ -31,9 +31,9 @@ public class ButtonEvents {
         if (save == null) return;
         try {
             data.addSave(save);
-        } catch (Exception e) {
+        } catch (Exception err) {
             JOptionPane.showMessageDialog(ui.getRootPanel(),
-                    e.getMessage(),
+                    err.getMessage(),
                     "Error!",
                     JOptionPane.ERROR_MESSAGE);
         }
