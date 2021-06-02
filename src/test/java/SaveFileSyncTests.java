@@ -101,17 +101,13 @@ public class SaveFileSyncTests {
         }
 
         // Test zip file creation
-        File zipFile1 = Files.createTempFile("SaveFileSyncTest1", ".tmp.zip").toFile();
-        File zipFile2 = Files.createTempFile("SaveFileSyncTest2", ".tmp.zip").toFile();
-        zipFile1.deleteOnExit();
-        zipFile2.deleteOnExit();
-        FileUtils.writeByteArrayToFile(zipFile1, save1.toZipFile());
-        FileUtils.writeByteArrayToFile(zipFile2, save2.toZipFile());
-        ZipFile zip1 = new ZipFile(zipFile1);
-        ZipFile zip2 = new ZipFile(zipFile1);
+        File zipFile = Files.createTempFile("SaveFileSyncTest1", ".tmp.zip").toFile();
+        zipFile.deleteOnExit();
+        FileUtils.writeByteArrayToFile(zipFile, save1.toZipFile());
+        ZipFile zip = new ZipFile(zipFile);
 
         // Test zip file extraction
-        ZipEntry entry = zip1.entries().nextElement();
+        ZipEntry entry = zip.entries().nextElement();
         assert entry.getName().equals(testFile1.getName());
     }
 
