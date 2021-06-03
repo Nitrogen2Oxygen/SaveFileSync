@@ -16,6 +16,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class ButtonEvents {
     private final ClientData data;
@@ -51,26 +52,30 @@ public class ButtonEvents {
     }
 
     public void exportSaves(ActionEvent event) {
-        if (data.getServer() == null || !data.getServer().verifyServer()) {
+        if (data.getServer() == null) {
             JOptionPane.showMessageDialog(ui.getRootPanel(),
-                    "Cannot export files without a working data server!",
+                    "Cannot export files without a data server! (This message should not be seen)",
                     "Export Error!",
                     JOptionPane.ERROR_MESSAGE);
             return;
         }
         int[] rows = ui.getSaveList().getSelectedRows();
+        List<Save> exportingSaves = new ArrayList<>();
         if (rows.length == 0) return;
         for (int i : rows) {
             String name = (String) ui.getSaveList().getValueAt(i, 0);
-            Save save = data.getSave(name);
+            exportingSaves.add(data.getSave(name));
+        }
+        // Export each
+        for (Save save : exportingSaves) {
             try {
                 byte[] rawData = save.toZipFile();
                 if (!Arrays.equals(rawData, new byte[0])) {
                     data.getServer().uploadSaveData(save.getName(), rawData);
                 } else {
                     JOptionPane.showMessageDialog(ui.getRootPanel(),
-                            "Cannot export an empty save file!",
-                            name + " Export Error!",
+                            "Cannot export an empty save file! Skipping file!",
+                            save.getName() + " Export Error!",
                             JOptionPane.ERROR_MESSAGE);
                     return;
                 }
@@ -78,43 +83,49 @@ public class ButtonEvents {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(ui.getRootPanel(),
                         "There was en error uploading a file! Aborting export!",
-                        name + " Export Error!",
+                        save.getName() + " Export Error!",
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
         }
+
         ui.reload();
         JOptionPane.showMessageDialog(ui.getRootPanel(),
-                "Successfully uploaded files(s)!",
+                "Successfully exported files(s)!",
                 "Success!",
                 JOptionPane.INFORMATION_MESSAGE);
     }
 
     public void importSaves(ActionEvent event) {
-        if (data.getServer() == null || !data.getServer().verifyServer()) {
+        if (data.getServer() == null) {
             JOptionPane.showMessageDialog(ui.getRootPanel(),
-                    "Cannot import files without a working data server!",
+                    "Cannot import files without a data server! (This message should not be seen)",
                     "Import Error!",
                     JOptionPane.ERROR_MESSAGE);
             return;
         }
         int[] rows = ui.getSaveList().getSelectedRows();
+        List<Save> importingSaves = new ArrayList<>();
         if (rows.length == 0) return;
         for (int i : rows) {
             String name = (String) ui.getSaveList().getValueAt(i, 0);
-            Save save = data.getSave(name);
+            importingSaves.add(data.getSave(name));
+        }
+
+        for (Save save : importingSaves) {
             try {
                 byte[] remoteSaveData = data.getServer().getSaveData(save.getName());
                 save.overwriteData(remoteSaveData, data.getSettings().shouldMakeBackups(), data.getSettings().shouldForceOverwrite());
             } catch (Exception e) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(ui.getRootPanel(),
-                        "There was en error importing a file! Aborting import!",
-                        name + " Import Error!",
+                        "There was an error importing a file! Aborting import!",
+                        save.getName() + " Import Error!",
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
         }
+
         ui.reload();
         JOptionPane.showMessageDialog(ui.getRootPanel(),
                 "Successfully downloaded files(s)!",
@@ -150,7 +161,7 @@ public class ButtonEvents {
         }
     }
 
-    public  void removeSave(ActionEvent event) {
+    public void removeSave(ActionEvent event) {
         int selected = ui.getSaveList().getSelectedRow();
         String name = (String) ui.getSaveList().getValueAt(selected, 0);
         /* Remove save file */

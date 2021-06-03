@@ -101,15 +101,8 @@ public class MainPanel {
 
         // Export and import buttons
         DataServer server = data.getServer();
-        importButton.setEnabled(server != null);
-        exportButton.setEnabled(server != null);
-        if (anySelected) {
-            importButton.setText("Import Selected");
-            exportButton.setText("Export Selected");
-        } else {
-            importButton.setText("Import All");
-            exportButton.setText("Export All");
-        }
+        importButton.setEnabled(server != null && anySelected);
+        exportButton.setEnabled(server != null && anySelected);
 
         // Remove and edit buttons
         removeButton.setEnabled(oneSelected);
@@ -278,12 +271,12 @@ public class MainPanel {
         rootPanel.add(editButton, new GridConstraints(3, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         exportButton = new JButton();
         exportButton.setEnabled(true);
-        exportButton.setText("Export");
+        exportButton.setText("Export Selected");
         exportButton.setToolTipText("Backs up selected file(s) to the server");
         rootPanel.add(exportButton, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         importButton = new JButton();
         importButton.setEnabled(true);
-        importButton.setText("Import");
+        importButton.setText("Import Selected");
         importButton.setToolTipText("Imports selected files from the server");
         rootPanel.add(importButton, new GridConstraints(2, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         settingsButton = new JButton();
