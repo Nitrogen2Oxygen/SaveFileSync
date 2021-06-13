@@ -393,5 +393,4 @@ public class ServerOptions extends JDialog {
     public JComponent $$$getRootComponent$$$() {
         return contentPane;
     }
-
 }

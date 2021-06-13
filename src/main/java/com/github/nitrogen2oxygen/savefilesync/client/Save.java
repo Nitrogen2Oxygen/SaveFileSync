@@ -69,26 +69,6 @@ public class Save {
         return data;
     }
 
-    public String getDataHash() throws Exception {
-        StringBuilder hashBuilder = new StringBuilder();
-        if (file.isFile()) {
-            hashBuilder.append("/&").append(FileUtilities.toHash(file));
-        } else {
-            boolean first = true;
-            List<String> fileList = FileUtilities.generateFileList(file);
-            for (String fileName : fileList) {
-                if (!first) hashBuilder.append("?");
-                String subDir = fileName.substring(file.getPath().length() + 1);
-                hashBuilder.append(subDir).append(FileUtilities.toHash(new File(fileName)));
-                first = false;
-            }
-        }
-
-        String decodedHash = hashBuilder.toString();
-        String hash = Base64.encodeBase64String(decodedHash.getBytes(StandardCharsets.UTF_8));
-        return hash;
-    }
-
     public void overwriteData(byte[] data, boolean makeBackup, boolean forceOverwrite) throws Exception {
         /* Backup our current data if the user wants to */
         if (makeBackup) FileUtilities.makeBackup(this);
