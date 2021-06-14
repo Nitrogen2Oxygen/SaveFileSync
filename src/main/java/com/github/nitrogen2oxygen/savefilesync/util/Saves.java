@@ -9,7 +9,7 @@ import org.json.JSONObject;
 import java.io.File;
 
 public class Saves {
-    public static Save buildFromJSON(JSONObject data) {
+    public static Save buildFromJSON(JSONObject data) throws Exception {
         Save save;
         String name = data.getString("name");
         String location = data.getString("location");
@@ -23,9 +23,15 @@ public class Saves {
         }
         switch (type) {
             case "directory":
+                // Check if its the correct type and throw an error if its not
+                File directory = new File(location);
+                if (!directory.isDirectory()) throw new Exception("File types do not match!");
                 save = new SaveDirectory(name, new File(location));
                 break;
             case "file":
+                // Check if its the correct type and throw an error if its not
+                File file = new File(location);
+                if (!file.isFile()) throw new Exception("File types do not match!");
                 save = new SaveFile(name, new File(location));
                 break;
             default:

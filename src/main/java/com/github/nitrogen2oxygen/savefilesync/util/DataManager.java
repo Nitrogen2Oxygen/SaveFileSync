@@ -126,7 +126,13 @@ public class DataManager {
                         stream.close();
                         JSONObject object = new JSONObject(saveString);
                         String name = object.getString("name");
-                        saves.put(name, Saves.buildFromJSON(object));
+                        try {
+                            saves.put(name, Saves.buildFromJSON(object));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            JOptionPane.showMessageDialog(null, e.getMessage(), "Load error", JOptionPane.ERROR_MESSAGE);
+                            System.exit(1);
+                        }
                     }
                 }
             }
