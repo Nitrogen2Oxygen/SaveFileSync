@@ -7,6 +7,7 @@ import com.github.nitrogen2oxygen.savefilesync.util.DataServers;
 import com.github.nitrogen2oxygen.savefilesync.util.FileLocations;
 import com.github.nitrogen2oxygen.savefilesync.util.Saves;
 import org.apache.commons.io.FileUtils;
+import org.json.JSONObject;
 import org.junit.jupiter.api.*;
 
 import java.io.File;
@@ -81,24 +82,32 @@ public class SaveFileSyncTests {
         Save badSave1 = Saves.build(false, "Bad Test 1", testFile1);
         Save badSave2 = Saves.build(false, "Test 1", testFile3);
         Save badSave3 = Saves.build(true,"Bad Test 3", testFile1.getParentFile());
-        try {
-            data.addSave(badSave1);
-            assert false;
-        } catch (Exception e) {
-            // The function should error out
-        }
-        try {
-            data.addSave(badSave2);
-            assert false;
-        } catch (Exception e) {
-            // The function should error out
-        }
-        try {
-            data.addSave(badSave3);
-            assert false;
-        } catch (Exception e) {
-            // The function should error out
-        }
+
+        Assertions.assertThrows(Exception.class, () -> data.addSave(badSave1));
+        Assertions.assertThrows(Exception.class, () -> data.addSave(badSave2));
+        Assertions.assertThrows(Exception.class, () -> data.addSave(badSave3));
+
+        // Check if building saves verifies the file type
+        Assertions.assertThrows(Exception.class, () -> Saves.build(true, "Bad Test 4", testFile1));
+        Assertions.assertThrows(Exception.class, () -> Saves.build(false, "Bad Test 5", testFile2));
+
+        // Checking the same with json objects
+        JSONObject testObject1 = new JSONObject();
+        JSONObject testObject2 = new JSONObject();
+        Assertions.assertThrows(Exception.class, () -> Saves.buildFromJSON(testObject1));
+
+        testObject1.put("name", "Bad Test 6");
+        testObject1.put("location", testFile1.getPath());
+        Saves.buildFromJSON(testObject1);
+        testObject1.put("type", "directory");
+        Assertions.assertThrows(Exception.class, () -> Saves.buildFromJSON(testObject1));
+
+        testObject2.put("name", "Bad Test 7");
+        testObject2.put("location", testFile2.getPath());
+        Saves.buildFromJSON(testObject2);
+        testObject2.put("type", "file");
+        Assertions.assertThrows(Exception.class, () -> Saves.buildFromJSON(testObject2));
+
 
         // Test zip file creation
         File zipFile = Files.createTempFile("SaveFileSyncTest1", ".tmp.zip").toFile();
