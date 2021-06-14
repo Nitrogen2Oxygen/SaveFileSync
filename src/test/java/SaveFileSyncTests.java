@@ -71,7 +71,7 @@ public class SaveFileSyncTests {
 
         // Create save instances
         Save save1 = Saves.build(false, "Test 1", testFile1);
-        Save save2 = Saves.build(false, "Test 2", testFile2);
+        Save save2 = Saves.build(true, "Test 2", testFile2);
 
         // Load files to data
         data.addSave(save1);
@@ -80,7 +80,7 @@ public class SaveFileSyncTests {
         // Make sure data manager doesn't take bad saves
         Save badSave1 = Saves.build(false, "Bad Test 1", testFile1);
         Save badSave2 = Saves.build(false, "Test 1", testFile3);
-        Save badSave3 = Saves.build(false,"Bad Test 3", testFile1.getParentFile());
+        Save badSave3 = Saves.build(true,"Bad Test 3", testFile1.getParentFile());
         try {
             data.addSave(badSave1);
             assert false;
