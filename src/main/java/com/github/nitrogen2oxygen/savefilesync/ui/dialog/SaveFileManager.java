@@ -123,29 +123,41 @@ public class SaveFileManager extends JDialog {
         String option = (String) saveTypeComboBox.getSelectedItem();
         switch (Objects.requireNonNull(option)) {
             case "File":
+                // Check if all required fields are filled
+                if (fileLocationField.getText().isEmpty() || fileNameField.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(this,
+                            "Please fill in all required fields!", "Create Save Error!", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 // Build save file with information
                 String fileName = fileNameField.getText();
                 if (invalidName(fileName)) {
                     JOptionPane.showMessageDialog(this,
-                            "Name cannot contain any special characters!", "Error!", JOptionPane.ERROR_MESSAGE);
+                            "Name cannot contain any special characters!", "Create Save Error!", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
                 File file = new File(fileLocationField.getText());
                 if (!file.isFile()) {
                     JOptionPane.showMessageDialog(this,
-                            "Directories cannot be registered to single save files", "Create Save Error!", JOptionPane.ERROR_MESSAGE);
+                            "Single files cannot be ", "Create Save Error!", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
                 save = new SaveFile(fileName, file);
                 break;
             case "Directory":
+                // Check if all required fields are filled
+                if (directoryLocationField.getText().isEmpty() || directoryNameField.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(this,
+                            "Please fill in all required fields!", "Create Save Error!", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 // Build save directory
                 String directoryName = directoryNameField.getText();
                 if (invalidName(directoryName)) {
                     JOptionPane.showMessageDialog(this,
-                            "Name cannot contain any special characters!", "Error!", JOptionPane.ERROR_MESSAGE);
+                            "Name cannot contain any special characters!", "Create Save Error!", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 File directory = new File(directoryLocationField.getText());
