@@ -66,14 +66,11 @@ public class DataManager {
             savesDirectory.mkdirs();
             FileUtils.cleanDirectory(savesDirectory); // Clear any deleted save files or renamed ones
             for (Save save : saves) {
-                File saveFile = new File(savesDirectory, save.getName() + ".json");
-                saveFile.createNewFile();
-                JSONObject saveObject = new JSONObject();
-                saveObject.put("name", save.getName());
-                saveObject.put("location", save.getFile().getPath());
-                String saveString = saveObject.toString();
-                FileOutputStream saveStream = new FileOutputStream(saveFile);
-                saveStream.write(saveString.getBytes(StandardCharsets.UTF_8));
+                File saveJsonFile = new File(savesDirectory, save.getName() + ".json");
+                saveJsonFile.createNewFile();
+                String saveData = save.toJSON();
+                FileOutputStream saveStream = new FileOutputStream(saveJsonFile);
+                saveStream.write(saveData.getBytes(StandardCharsets.UTF_8));
                 saveStream.close();
             }
         } catch (IOException | JSONException e) {

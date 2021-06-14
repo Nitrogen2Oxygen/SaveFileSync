@@ -3,6 +3,7 @@ package com.github.nitrogen2oxygen.savefilesync.util;
 import com.github.nitrogen2oxygen.savefilesync.save.Save;
 import com.github.nitrogen2oxygen.savefilesync.save.SaveDirectory;
 import com.github.nitrogen2oxygen.savefilesync.save.SaveFile;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -12,7 +13,15 @@ public class Saves {
         Save save;
         String name = data.getString("name");
         String location = data.getString("location");
-        switch (data.getString("type")) {
+        String type;
+        try {
+            type = data.getString("type");
+        } catch (JSONException e) {
+            // Attempt to figure out the save type manually
+            File saveFile = new File(location);
+            type = saveFile.isDirectory() ? "directory" : "file";
+        }
+        switch (type) {
             case "directory":
                 save = new SaveDirectory(name, new File(location));
                 break;
@@ -34,5 +43,9 @@ public class Saves {
             if (location.isDirectory()) throw new Exception("Save type does not match file type.");
             return new SaveFile(name, location);
         }
+    }
+
+    public static boolean isDirectory(Save save) {
+        return save.getClass().equals(SaveDirectory.class);
     }
 }

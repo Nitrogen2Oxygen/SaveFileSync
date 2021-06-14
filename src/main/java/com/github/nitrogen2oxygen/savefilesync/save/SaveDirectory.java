@@ -1,5 +1,7 @@
 package com.github.nitrogen2oxygen.savefilesync.save;
 
+import org.json.JSONObject;
+
 import java.io.File;
 
 public class SaveDirectory extends Save {
@@ -19,6 +21,10 @@ public class SaveDirectory extends Save {
 
     @Override
     public String toJSON() {
-        return null;
+        JSONObject json = new JSONObject();
+        json.put("type", "directory");
+        json.put("name", getName());
+        json.put("location", getFile().getPath());
+        return json.toString();
     }
 }
