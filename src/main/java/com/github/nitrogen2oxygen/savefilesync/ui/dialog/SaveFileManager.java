@@ -1,6 +1,8 @@
 package com.github.nitrogen2oxygen.savefilesync.ui.dialog;
 
 import com.github.nitrogen2oxygen.savefilesync.save.Save;
+import com.github.nitrogen2oxygen.savefilesync.save.SaveDirectory;
+import com.github.nitrogen2oxygen.savefilesync.save.SaveFile;
 import com.github.nitrogen2oxygen.savefilesync.util.Constants;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
@@ -9,7 +11,10 @@ import com.intellij.uiDesigner.core.Spacer;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SaveFileManager extends JDialog {
     private JPanel contentPane;
@@ -23,6 +28,9 @@ public class SaveFileManager extends JDialog {
     private JTextField fileNameField;
     private JTextField fileLocationField;
     private JButton fileBrowseButton;
+    private JTextField directoryNameField;
+    private JTextField directoryLocationField;
+    private JButton directoryBrowseButton;
 
     private Save save;
     public Boolean saveChanges;
@@ -73,12 +81,19 @@ public class SaveFileManager extends JDialog {
             }
         });
         fileBrowseButton.addActionListener(e -> {
-            /* We want to choose a file or folder to use. Multi-select files are not allowed, so either 1 folder or 1 file */
             JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY); // Accept files AND directories
+            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY); // Accept files ONLY
             int chooseFile = fileChooser.showOpenDialog(this);
             if (chooseFile == JFileChooser.APPROVE_OPTION) {
                 fileLocationField.setText(fileChooser.getSelectedFile().toString());
+            }
+        });
+        directoryBrowseButton.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY); // Accept directories ONLY
+            int chooseFile = fileChooser.showOpenDialog(this);
+            if (chooseFile == JFileChooser.APPROVE_OPTION) {
+                directoryLocationField.setText(fileChooser.getSelectedFile().toString());
             }
         });
     }
@@ -89,25 +104,57 @@ public class SaveFileManager extends JDialog {
     }
 
     private void onOK() {
+        String option = (String) saveTypeComboBox.getSelectedItem();
+        switch (Objects.requireNonNull(option)) {
+            case "File":
+                // Build save file with information
+                String fileName = fileNameField.getText();
+                if (!isValidName(fileName)) {
+                    JOptionPane.showMessageDialog(this,
+                            "Name cannot contain any special characters!", "Error!", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                File file = new File(fileLocationField.getText());
+                if (!file.isFile()) {
+                    JOptionPane.showMessageDialog(this,
+                            "Directories cannot be registered to single save files", "Create Save Error!", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                save = new SaveFile(fileName, file);
+                break;
+            case "Directory":
+                // Build save directory
+                String directoryName = directoryNameField.getText();
+                if (!isValidName(directoryName)) {
+                    JOptionPane.showMessageDialog(this,
+                            "Name cannot contain any special characters!", "Error!", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                File directory = new File(directoryLocationField.getText());
+                if (!directory.isDirectory()) {
+                    JOptionPane.showMessageDialog(this,
+                            "Directories cannot be registered to single save files", "Create Save Error!", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                save = new SaveDirectory(directoryName, directory);
+                // TODO: Add extra components to directory (exclusions and such)
+                break;
+            default:
+                JOptionPane.showMessageDialog(this,
+                        "Please choose a save type to begin!", "Create Save Error!", JOptionPane.ERROR_MESSAGE);
+                return;
+        }
         saveChanges = true;
-        /* if (locationTextField.getText().length() == 0 || nameTextField.getText().length() == 0) {
-            JOptionPane.showMessageDialog(this,
-                    "All data fields are required!", "Error!", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        /* We only want letters, numbers and spaces. This prevents chaos /
+        dispose();
+    }
+
+    private static boolean isValidName(String name) {
         Pattern pattern = Pattern.compile("^[A-Za-z0-9 ]*$");
-        Matcher matcher = pattern.matcher(nameTextField.getText());
-        if (!matcher.matches()) {
-            JOptionPane.showMessageDialog(this,
-                    "Name cannot contain any special characters!", "Error!", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        File file = new File(locationTextField.getText());
-        if (!file.exists()) return;
-        String inputName = nameTextField.getText();
-        save = new Save(inputName, file);
-        dispose(); */
+        Matcher matcher = pattern.matcher(name);
+        return matcher.matches();
     }
 
     public static Save main() {
@@ -162,17 +209,31 @@ public class SaveFileManager extends JDialog {
         managerPanel.setLayout(new CardLayout(0, 0));
         contentPane.add(managerPanel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         directoryManager = new JPanel();
-        directoryManager.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        directoryManager.setLayout(new GridLayoutManager(3, 3, new Insets(0, 0, 0, 0), -1, -1));
         managerPanel.add(directoryManager, "directory");
+        final JLabel label1 = new JLabel();
+        label1.setText("Name:");
+        directoryManager.add(label1, new GridConstraints(0, 0, 2, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label2 = new JLabel();
+        label2.setText("Directory:");
+        directoryManager.add(label2, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        directoryNameField = new JTextField();
+        directoryNameField.setText("");
+        directoryManager.add(directoryNameField, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        directoryLocationField = new JTextField();
+        directoryManager.add(directoryLocationField, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        directoryBrowseButton = new JButton();
+        directoryBrowseButton.setText("Browse...");
+        directoryManager.add(directoryBrowseButton, new GridConstraints(2, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         fileManager = new JPanel();
         fileManager.setLayout(new GridLayoutManager(2, 3, new Insets(0, 0, 0, 0), -1, -1));
         managerPanel.add(fileManager, "file");
-        final JLabel label1 = new JLabel();
-        label1.setText("Name:");
-        fileManager.add(label1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label2 = new JLabel();
-        label2.setText("File:");
-        fileManager.add(label2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label3 = new JLabel();
+        label3.setText("Name:");
+        fileManager.add(label3, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label4 = new JLabel();
+        label4.setText("File:");
+        fileManager.add(label4, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         fileNameField = new JTextField();
         fileManager.add(fileNameField, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         fileLocationField = new JTextField();
