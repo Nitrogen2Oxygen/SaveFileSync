@@ -1,8 +1,8 @@
 package com.github.nitrogen2oxygen.savefilesync.util;
 
 import com.github.nitrogen2oxygen.savefilesync.client.ClientData;
-import com.github.nitrogen2oxygen.savefilesync.client.Save;
 import com.github.nitrogen2oxygen.savefilesync.client.Settings;
+import com.github.nitrogen2oxygen.savefilesync.save.Save;
 import com.github.nitrogen2oxygen.savefilesync.server.DataServer;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -129,9 +129,7 @@ public class DataManager {
                         stream.close();
                         JSONObject object = new JSONObject(saveString);
                         String name = object.getString("name");
-                        String location = object.getString("location");
-                        File saveFile = new File(location);
-                        saves.put(name, new Save(name, saveFile));
+                        saves.put(name, Saves.buildFromJSON(object));
                     }
                 }
             }

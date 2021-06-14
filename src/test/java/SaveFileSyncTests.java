@@ -1,10 +1,11 @@
 import com.github.nitrogen2oxygen.savefilesync.client.ClientData;
-import com.github.nitrogen2oxygen.savefilesync.client.Save;
+import com.github.nitrogen2oxygen.savefilesync.save.Save;
 import com.github.nitrogen2oxygen.savefilesync.server.DataServer;
 import com.github.nitrogen2oxygen.savefilesync.server.ServerType;
 import com.github.nitrogen2oxygen.savefilesync.util.DataManager;
 import com.github.nitrogen2oxygen.savefilesync.util.DataServers;
 import com.github.nitrogen2oxygen.savefilesync.util.FileLocations;
+import com.github.nitrogen2oxygen.savefilesync.util.Saves;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.*;
 
@@ -12,7 +13,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -38,7 +38,7 @@ public class SaveFileSyncTests {
         // Make a test save
         File tmpFile = Files.createTempFile("SaveFileSyncTest", ".tmp").toFile();
         tmpFile.deleteOnExit();
-        Save save = new Save("TestSave", tmpFile);
+        Save save = Saves.build(false, "TestSave", tmpFile);
         data.addSave(save);
         assert data.getSave("TestSave") == save;
         data.removeSave("TestSave");
@@ -70,17 +70,17 @@ public class SaveFileSyncTests {
         FileUtils.write(testFile3, "Testing testing 456!!!", StandardCharsets.UTF_8);
 
         // Create save instances
-        Save save1 = new Save("Test 1", testFile1);
-        Save save2 = new Save("Test 2", testFile2);
+        Save save1 = Saves.build(false, "Test 1", testFile1);
+        Save save2 = Saves.build(false, "Test 2", testFile2);
 
         // Load files to data
         data.addSave(save1);
         data.addSave(save2);
 
         // Make sure data manager doesn't take bad saves
-        Save badSave1 = new Save("Bad Test 1", testFile1);
-        Save badSave2 = new Save("Test 1", testFile3);
-        Save badSave3 = new Save("Bad Test 3", testFile1.getParentFile());
+        Save badSave1 = Saves.build(false, "Bad Test 1", testFile1);
+        Save badSave2 = Saves.build(false, "Test 1", testFile3);
+        Save badSave3 = Saves.build(false,"Bad Test 3", testFile1.getParentFile());
         try {
             data.addSave(badSave1);
             assert false;
@@ -103,7 +103,7 @@ public class SaveFileSyncTests {
         // Test zip file creation
         File zipFile = Files.createTempFile("SaveFileSyncTest1", ".tmp.zip").toFile();
         zipFile.deleteOnExit();
-        FileUtils.writeByteArrayToFile(zipFile, save1.toZipFile());
+        FileUtils.writeByteArrayToFile(zipFile, save1.toZipData());
         ZipFile zip = new ZipFile(zipFile);
 
         // Test zip file extraction

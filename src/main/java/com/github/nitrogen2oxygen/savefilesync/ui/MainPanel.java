@@ -2,6 +2,7 @@ package com.github.nitrogen2oxygen.savefilesync.ui;
 
 import com.github.nitrogen2oxygen.savefilesync.client.ClientData;
 import com.github.nitrogen2oxygen.savefilesync.client.theme.ThemeColor;
+import com.github.nitrogen2oxygen.savefilesync.save.Save;
 import com.github.nitrogen2oxygen.savefilesync.server.DataServer;
 import com.github.nitrogen2oxygen.savefilesync.ui.event.ButtonEvents;
 import com.github.nitrogen2oxygen.savefilesync.util.Themes;
@@ -9,7 +10,6 @@ import com.github.nitrogen2oxygen.savefilesync.util.DataServers;
 import com.github.nitrogen2oxygen.savefilesync.ui.model.SaveListTableModel;
 import com.github.nitrogen2oxygen.savefilesync.ui.renderer.BackupStatusCellRenderer;
 import com.github.nitrogen2oxygen.savefilesync.ui.renderer.SaveStatusCellRenderer;
-import com.github.nitrogen2oxygen.savefilesync.client.Save;
 import com.github.nitrogen2oxygen.savefilesync.util.FileUtilities;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;

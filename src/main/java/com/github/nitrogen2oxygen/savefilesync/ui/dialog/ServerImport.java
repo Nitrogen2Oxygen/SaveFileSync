@@ -1,8 +1,9 @@
 package com.github.nitrogen2oxygen.savefilesync.ui.dialog;
 
-import com.github.nitrogen2oxygen.savefilesync.client.Save;
+import com.github.nitrogen2oxygen.savefilesync.save.Save;
 import com.github.nitrogen2oxygen.savefilesync.server.DataServer;
 import com.github.nitrogen2oxygen.savefilesync.util.Constants;
+import com.github.nitrogen2oxygen.savefilesync.util.Saves;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
@@ -98,11 +99,11 @@ public class ServerImport extends JDialog {
             String firstEntry = entries.nextElement().getName();
             boolean hasMoreEntries = entries.hasMoreElements();
             if (hasMoreEntries) {
-                save = new Save(name, savePath);
+                save = Saves.build(true, name, savePath);
             } else {
                 File saveFile = new File(savePath, firstEntry);
                 saveFile.createNewFile();
-                save = new Save(name, saveFile);
+                save = Saves.build(false, name, savePath);
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,8 +1,8 @@
 package com.github.nitrogen2oxygen.savefilesync.ui.event;
 
 import com.github.nitrogen2oxygen.savefilesync.client.ClientData;
-import com.github.nitrogen2oxygen.savefilesync.client.Save;
 import com.github.nitrogen2oxygen.savefilesync.client.Settings;
+import com.github.nitrogen2oxygen.savefilesync.save.Save;
 import com.github.nitrogen2oxygen.savefilesync.server.DataServer;
 import com.github.nitrogen2oxygen.savefilesync.ui.MainPanel;
 import com.github.nitrogen2oxygen.savefilesync.ui.dialog.ChangeSettings;
@@ -69,7 +69,7 @@ public class ButtonEvents {
         // Export each
         for (Save save : exportingSaves) {
             try {
-                byte[] rawData = save.toZipFile();
+                byte[] rawData = save.toZipData();
                 if (!Arrays.equals(rawData, new byte[0])) {
                     data.getServer().uploadSaveData(save.getName(), rawData);
                 } else {
@@ -115,7 +115,7 @@ public class ButtonEvents {
         for (Save save : importingSaves) {
             try {
                 byte[] remoteSaveData = data.getServer().getSaveData(save.getName());
-                save.overwriteData(remoteSaveData, data.getSettings().shouldMakeBackups(), data.getSettings().shouldForceOverwrite());
+                save.writeData(remoteSaveData, data.getSettings().shouldMakeBackups(), data.getSettings().shouldForceOverwrite());
             } catch (Exception e) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(ui.getRootPanel(),

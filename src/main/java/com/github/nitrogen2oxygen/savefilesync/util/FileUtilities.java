@@ -1,14 +1,13 @@
 package com.github.nitrogen2oxygen.savefilesync.util;
 
-import com.github.nitrogen2oxygen.savefilesync.client.Save;
 import com.github.nitrogen2oxygen.savefilesync.client.Settings;
+import com.github.nitrogen2oxygen.savefilesync.save.Save;
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.security.MessageDigest;
 import java.util.*;
 import java.util.zip.ZipEntry;
@@ -58,7 +57,7 @@ public class FileUtilities {
     }
 
     public static void makeBackup(Save save) throws Exception {
-        byte[] backupData = save.toZipFile();
+        byte[] backupData = save.toZipData();
         if (backupData == null || Arrays.equals(backupData, new byte[0])) return; // Check to see if data is empty empty
 
         File backupDirectory = new File(FileLocations.getBackupDirectory(FileLocations.getDataDirectory()));
@@ -86,7 +85,7 @@ public class FileUtilities {
         File backupDirectory = new File(FileLocations.getBackupDirectory(FileLocations.getDataDirectory()));
         File backupFile = new File(backupDirectory, save.getName() + ".zip");
         byte[] data = FileUtils.readFileToByteArray(backupFile);
-        save.overwriteData(data, true, settings.shouldForceOverwrite()); // Data will be force backed up to allows restoration
+        save.writeData(data, true, settings.shouldForceOverwrite()); // Data will be force backed up to allows restoration
     }
 
     public static boolean hasBackup(Save save) {

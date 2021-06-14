@@ -1,7 +1,7 @@
 package com.github.nitrogen2oxygen.savefilesync.ui.model;
 
 import com.github.nitrogen2oxygen.savefilesync.client.ClientData;
-import com.github.nitrogen2oxygen.savefilesync.client.Save;
+import com.github.nitrogen2oxygen.savefilesync.save.Save;
 import com.github.nitrogen2oxygen.savefilesync.ui.MainPanel;
 import com.github.nitrogen2oxygen.savefilesync.util.FileUtilities;
 import org.apache.commons.io.FileUtils;
@@ -50,7 +50,7 @@ public class SaveListTableModel extends DefaultTableModel {
 
             /* Get the file data from server and save file */
             byte[] remoteSave = data.getServer().getSaveData(save.getName());
-            byte[] localSave = save.toZipFile();
+            byte[] localSave = save.toZipData();
             if (remoteSave == null || Arrays.equals(remoteSave, new byte[0])) {
                 status = "Not Synced";
             } else if (localSave == null || Arrays.equals(localSave, new byte[0])) {
