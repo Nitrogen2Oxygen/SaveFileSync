@@ -1,7 +1,7 @@
 package com.github.nitrogen2oxygen.savefilesync.ui.model;
 
 import com.github.nitrogen2oxygen.savefilesync.client.ClientData;
-import com.github.nitrogen2oxygen.savefilesync.save.Save;
+import com.github.nitrogen2oxygen.savefilesync.client.save.Save;
 import com.github.nitrogen2oxygen.savefilesync.ui.MainPanel;
 import com.github.nitrogen2oxygen.savefilesync.util.FileUtilities;
 import org.apache.commons.io.FileUtils;

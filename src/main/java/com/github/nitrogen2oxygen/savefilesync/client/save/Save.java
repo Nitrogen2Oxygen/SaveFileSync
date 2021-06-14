@@ -1,4 +1,4 @@
-package com.github.nitrogen2oxygen.savefilesync.save;
+package com.github.nitrogen2oxygen.savefilesync.client.save;
 
 import java.io.File;
 

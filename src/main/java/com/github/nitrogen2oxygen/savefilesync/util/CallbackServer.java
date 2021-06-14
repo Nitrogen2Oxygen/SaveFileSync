@@ -1,4 +1,4 @@
-package com.github.nitrogen2oxygen.savefilesync.io;
+package com.github.nitrogen2oxygen.savefilesync.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -1,9 +1,8 @@
 package com.github.nitrogen2oxygen.savefilesync.client;
 
-import com.github.nitrogen2oxygen.savefilesync.save.Save;
+import com.github.nitrogen2oxygen.savefilesync.client.save.Save;
 import com.github.nitrogen2oxygen.savefilesync.server.DataServer;
 import com.github.nitrogen2oxygen.savefilesync.util.Constants;
-import com.github.nitrogen2oxygen.savefilesync.util.DataManager;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;

@@ -1,5 +1,5 @@
 import com.github.nitrogen2oxygen.savefilesync.client.ClientData;
-import com.github.nitrogen2oxygen.savefilesync.save.Save;
+import com.github.nitrogen2oxygen.savefilesync.client.save.Save;
 import com.github.nitrogen2oxygen.savefilesync.server.DataServer;
 import com.github.nitrogen2oxygen.savefilesync.server.ServerType;
 import com.github.nitrogen2oxygen.savefilesync.util.DataManager;

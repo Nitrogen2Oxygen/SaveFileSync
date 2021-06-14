@@ -1,8 +1,8 @@
 package com.github.nitrogen2oxygen.savefilesync.ui.dialog;
 
-import com.github.nitrogen2oxygen.savefilesync.save.Save;
-import com.github.nitrogen2oxygen.savefilesync.save.SaveDirectory;
-import com.github.nitrogen2oxygen.savefilesync.save.SaveFile;
+import com.github.nitrogen2oxygen.savefilesync.client.save.Save;
+import com.github.nitrogen2oxygen.savefilesync.client.save.SaveDirectory;
+import com.github.nitrogen2oxygen.savefilesync.client.save.SaveFile;
 import com.github.nitrogen2oxygen.savefilesync.util.Constants;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;

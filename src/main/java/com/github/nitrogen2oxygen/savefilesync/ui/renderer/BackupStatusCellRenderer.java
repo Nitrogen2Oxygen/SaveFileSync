@@ -2,7 +2,7 @@ package com.github.nitrogen2oxygen.savefilesync.ui.renderer;
 
 import com.github.nitrogen2oxygen.savefilesync.client.ClientData;
 import com.github.nitrogen2oxygen.savefilesync.client.theme.ThemeColor;
-import com.github.nitrogen2oxygen.savefilesync.save.Save;
+import com.github.nitrogen2oxygen.savefilesync.client.save.Save;
 import com.github.nitrogen2oxygen.savefilesync.util.Themes;
 import com.github.nitrogen2oxygen.savefilesync.util.FileUtilities;
 import org.ocpsoft.prettytime.PrettyTime;

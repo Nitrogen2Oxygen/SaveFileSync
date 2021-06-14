@@ -2,7 +2,7 @@ package com.github.nitrogen2oxygen.savefilesync.ui;
 
 import com.github.nitrogen2oxygen.savefilesync.client.ClientData;
 import com.github.nitrogen2oxygen.savefilesync.client.theme.ThemeColor;
-import com.github.nitrogen2oxygen.savefilesync.save.Save;
+import com.github.nitrogen2oxygen.savefilesync.client.save.Save;
 import com.github.nitrogen2oxygen.savefilesync.server.DataServer;
 import com.github.nitrogen2oxygen.savefilesync.ui.event.ButtonEvents;
 import com.github.nitrogen2oxygen.savefilesync.util.Themes;

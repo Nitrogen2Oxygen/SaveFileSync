@@ -1,6 +1,6 @@
 package com.github.nitrogen2oxygen.savefilesync.server;
 
-import com.github.nitrogen2oxygen.savefilesync.io.CallbackServer;
+import com.github.nitrogen2oxygen.savefilesync.util.CallbackServer;
 import com.github.nitrogen2oxygen.savefilesync.util.Constants;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
