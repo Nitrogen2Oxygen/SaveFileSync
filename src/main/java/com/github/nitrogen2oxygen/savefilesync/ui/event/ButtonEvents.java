@@ -177,7 +177,7 @@ public class ButtonEvents {
         String name = (String) ui.getSaveList().getValueAt(selected, 0);
         Save save = data.getSave(name);
         String oldName = save.getName();
-        Save newSave = SaveFileManager.edit(save.getName(), save.getFile().getPath());
+        Save newSave = SaveFileManager.edit(save);
         if (newSave == null) return;
         try {
             data.removeSave(oldName);

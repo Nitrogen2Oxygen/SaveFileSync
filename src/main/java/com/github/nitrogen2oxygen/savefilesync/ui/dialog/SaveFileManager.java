@@ -4,6 +4,7 @@ import com.github.nitrogen2oxygen.savefilesync.client.save.Save;
 import com.github.nitrogen2oxygen.savefilesync.client.save.SaveDirectory;
 import com.github.nitrogen2oxygen.savefilesync.client.save.SaveFile;
 import com.github.nitrogen2oxygen.savefilesync.util.Constants;
+import com.github.nitrogen2oxygen.savefilesync.util.Saves;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
@@ -46,8 +47,7 @@ public class SaveFileManager extends JDialog {
         setLocationRelativeTo(null);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
-
-        // TODO: Add edit save data to input fields
+        CardLayout cl = (CardLayout) managerPanel.getLayout();
 
         buttonCancel.addActionListener(e -> onCancel());
         buttonOK.addActionListener(e -> onOK());
@@ -56,7 +56,6 @@ public class SaveFileManager extends JDialog {
         saveTypeComboBox.addItem("File or Directory?");
         saveTypeComboBox.addItem("File");
         saveTypeComboBox.addItem("Directory");
-        CardLayout cl = (CardLayout) managerPanel.getLayout();
         saveTypeComboBox.addActionListener(e -> {
             String option = (String) saveTypeComboBox.getSelectedItem();
             switch (Objects.requireNonNull(option)) {
@@ -72,6 +71,23 @@ public class SaveFileManager extends JDialog {
             }
         });
         cl.show(managerPanel, "none");
+
+        // Put data if a save is being edited
+        if (save != null) {
+            if (Saves.isDirectory(save)) {
+                String name = save.getName();
+                String location = save.getFile().toString();
+                directoryNameField.setText(name);
+                directoryLocationField.setText(location);
+                saveTypeComboBox.setSelectedItem("Directory");
+            } else {
+                String name = save.getName();
+                String location = save.getFile().toString();
+                fileNameField.setText(name);
+                fileLocationField.setText(location);
+                saveTypeComboBox.setSelectedItem("File");
+            }
+        }
 
         // call onCancel() when cross is clicked
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -109,7 +125,7 @@ public class SaveFileManager extends JDialog {
             case "File":
                 // Build save file with information
                 String fileName = fileNameField.getText();
-                if (!isValidName(fileName)) {
+                if (invalidName(fileName)) {
                     JOptionPane.showMessageDialog(this,
                             "Name cannot contain any special characters!", "Error!", JOptionPane.ERROR_MESSAGE);
                     return;
@@ -127,7 +143,7 @@ public class SaveFileManager extends JDialog {
             case "Directory":
                 // Build save directory
                 String directoryName = directoryNameField.getText();
-                if (!isValidName(directoryName)) {
+                if (invalidName(directoryName)) {
                     JOptionPane.showMessageDialog(this,
                             "Name cannot contain any special characters!", "Error!", JOptionPane.ERROR_MESSAGE);
                     return;
@@ -151,10 +167,10 @@ public class SaveFileManager extends JDialog {
         dispose();
     }
 
-    private static boolean isValidName(String name) {
+    private static boolean invalidName(String name) {
         Pattern pattern = Pattern.compile("^[A-Za-z0-9 ]*$");
         Matcher matcher = pattern.matcher(name);
-        return matcher.matches();
+        return !matcher.matches();
     }
 
     public static Save main() {
@@ -165,9 +181,8 @@ public class SaveFileManager extends JDialog {
         return dialog.save;
     }
 
-    public static Save edit(String name, String path) {
-        // TODO: add edit
-        SaveFileManager dialog = new SaveFileManager();
+    public static Save edit(Save save) {
+        SaveFileManager dialog = new SaveFileManager(save);
         dialog.pack();
         dialog.setVisible(true);
         if (!dialog.saveChanges) return null;
