@@ -50,7 +50,7 @@ public class OneDriveDataServer extends DataServer {
     }
 
     @Override
-    public ArrayList<String> getSaveNames() {
+    public List<String> getSaveNames() {
         try {
             HttpURLConnection connection = (HttpURLConnection) new URL(rootURL + "drive/special/approot/children").openConnection();
             connection.setRequestMethod("GET");
@@ -62,7 +62,7 @@ public class OneDriveDataServer extends DataServer {
             InputStream inputStream = connection.getInputStream();
             JSONObject response = new JSONObject(IOUtils.toString(inputStream, StandardCharsets.UTF_8));
             JSONArray files = response.getJSONArray("value");
-            ArrayList<String> names = new ArrayList<>();
+            List<String> names = new ArrayList<>();
             for (int i = 0; i < files.length(); i++) {
                 JSONObject file = files.getJSONObject(i);
                 String fileName = file.getString("name");

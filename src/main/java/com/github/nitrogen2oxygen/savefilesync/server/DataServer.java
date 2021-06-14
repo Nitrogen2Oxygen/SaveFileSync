@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public abstract class DataServer implements java.io.Serializable {
     private static final long serialVersionUID = -4315689195751908240L;
@@ -24,7 +25,7 @@ public abstract class DataServer implements java.io.Serializable {
     public abstract HashMap<String, String> getData();
 
     /* Lists the names of all saves on the server */
-    public abstract ArrayList<String> getSaveNames();
+    public abstract List<String> getSaveNames();
 
     /* Gets the raw data of the ZIP file from a given name */
     public abstract byte[] getSaveData(String name);

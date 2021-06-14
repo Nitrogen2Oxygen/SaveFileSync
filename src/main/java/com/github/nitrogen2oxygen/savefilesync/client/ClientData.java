@@ -10,6 +10,7 @@ import javax.swing.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class ClientData {
     private DataServer server; // Everything we need server wise is located here
@@ -45,8 +46,8 @@ public class ClientData {
         return saves.get(name);
     }
 
-    public ArrayList<Save> getSaveList() {
-        ArrayList<Save> saveList = new ArrayList<>();
+    public List<Save> getSaveList() {
+        List<Save> saveList = new ArrayList<>();
         for (String saveName : saves.keySet()) {
             Save save = saves.get(saveName);
             saveList.add(save);

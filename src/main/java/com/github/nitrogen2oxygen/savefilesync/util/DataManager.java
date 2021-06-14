@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Properties;
 
 public class DataManager {
@@ -42,7 +43,7 @@ public class DataManager {
     public static void save(ClientData data, String directory) {
         DataServer dataServer = data.getServer();
         Settings settings = data.getSettings();
-        ArrayList<Save> saves = data.getSaveList();
+        List<Save> saves = data.getSaveList();
 
         /* Save the settings to config.properties */
         try {

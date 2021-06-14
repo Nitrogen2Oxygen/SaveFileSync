@@ -134,10 +134,10 @@ public class ButtonEvents {
     }
 
     public void serverImport(ActionEvent event) {
-        ArrayList<String> newSaves = new ArrayList<>();
-        ArrayList<String> serverSaveNames = data.getServer().getSaveNames();
-        ArrayList<String> localSaveNames = new ArrayList<>();
-        ArrayList<Save> localSaves = data.getSaveList();
+        List<String> newSaves = new ArrayList<>();
+        List<String> serverSaveNames = data.getServer().getSaveNames();
+        List<String> localSaveNames = new ArrayList<>();
+        List<Save> localSaves = data.getSaveList();
         for (Save save : localSaves) {
             localSaveNames.add(save.getName());
         }

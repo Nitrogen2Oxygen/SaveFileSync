@@ -15,8 +15,8 @@ import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -33,7 +33,7 @@ public class ServerImport extends JDialog {
     private Boolean cancelled;
     private Save save;
 
-    public ServerImport(DataServer dataServer, ArrayList<String> names) {
+    public ServerImport(DataServer dataServer, List<String> names) {
         this.dataServer = dataServer;
         setContentPane(contentPane);
         setModal(true);
@@ -129,7 +129,7 @@ public class ServerImport extends JDialog {
         return save;
     }
 
-    public static Save main(DataServer dataServer, ArrayList<String> names) {
+    public static Save main(DataServer dataServer, List<String> names) {
         if (names.size() == 0) return null;
         ServerImport dialog = new ServerImport(dataServer, names);
         dialog.pack();

@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 
 public class WebDavDataServer extends DataServer {
 
@@ -54,7 +55,7 @@ public class WebDavDataServer extends DataServer {
     }
 
     @Override
-    public ArrayList<String> getSaveNames()  {
+    public List<String> getSaveNames()  {
         return new ArrayList<>();
     }
 

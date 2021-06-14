@@ -16,10 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.*;
 
 public class DropboxDataServer extends DataServer {
     private static final long serialVersionUID = 8175793937439456805L;
@@ -59,7 +56,7 @@ public class DropboxDataServer extends DataServer {
     }
 
     @Override
-    public ArrayList<String> getSaveNames() {
+    public List<String> getSaveNames() {
         try {
             JSONObject json = new JSONObject();
             json.put("path", "");
@@ -76,7 +73,7 @@ public class DropboxDataServer extends DataServer {
             InputStream stream = connection.getInputStream();
             JSONObject response = new JSONObject(IOUtils.toString(stream, StandardCharsets.UTF_8));
             JSONArray entries = response.getJSONArray("entries");
-            ArrayList<String> names = new ArrayList<>();
+            List<String> names = new ArrayList<>();
             for (int i = 0; i < entries.length(); i++) {
                 JSONObject entry = entries.getJSONObject(i);
                 String name = entry.getString("name");
