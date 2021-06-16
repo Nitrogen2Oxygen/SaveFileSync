@@ -4,6 +4,7 @@ import com.github.nitrogen2oxygen.savefilesync.client.save.Save;
 import com.github.nitrogen2oxygen.savefilesync.client.save.SaveDirectory;
 import com.github.nitrogen2oxygen.savefilesync.client.save.SaveFile;
 import com.github.nitrogen2oxygen.savefilesync.util.Constants;
+import com.github.nitrogen2oxygen.savefilesync.util.Exclusion;
 import com.github.nitrogen2oxygen.savefilesync.util.Saves;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
@@ -82,6 +83,15 @@ public class SaveFileManager extends JDialog {
                 directoryNameField.setText(name);
                 directoryLocationField.setText(location);
                 saveTypeComboBox.setSelectedItem("Directory");
+                Exclusion[] exclusions = ((SaveDirectory) save).getExclusions();
+                StringBuilder exclusionString = new StringBuilder();
+                boolean first = true;
+                for (Exclusion exclusion : exclusions) {
+                    if (!first) exclusionString.append("\n");
+                    exclusionString.append(exclusion.getExclusion());
+                    first = false;
+                }
+                directoryExclusions.setText(exclusionString.toString());
             } else {
                 String name = save.getName();
                 String location = save.getFile().toString();
@@ -168,9 +178,9 @@ public class SaveFileManager extends JDialog {
                             "Directories cannot be registered to single save files", "Create Save Error!", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-
-                save = new SaveDirectory(directoryName, directory);
-                // TODO: Add extra components to directory (exclusions and such)
+                SaveDirectory saveDir = new SaveDirectory(directoryName, directory);
+                if (directoryExclusions.getText().length() > 0) saveDir.setExclusions(directoryExclusions.getText());
+                save = saveDir;
                 break;
             default:
                 JOptionPane.showMessageDialog(this,
