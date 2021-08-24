@@ -30,16 +30,12 @@ public class Saves {
                 File directory = new File(location);
                 if (!directory.isDirectory()) throw new Exception("File types do not match!");
                 SaveDirectory saveDir = new SaveDirectory(name, new File(location));
-                try {
-                    JSONArray exclusions = data.getJSONArray("exclusions");
-                    List<String> exclusionList = new ArrayList<>();
-                    for (int i = 0; i < exclusions.length(); i++) {
-                        exclusionList.add(exclusions.getString(i));
-                    }
-                    saveDir.setExclusions(exclusionList.toArray(new String[0]));
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                JSONArray exclusions = data.getJSONArray("exclusions");
+                List<String> exclusionList = new ArrayList<>();
+                for(int i = 0; i < exclusions.length(); i++){
+                    exclusionList.add(exclusions.getString(i));
                 }
+                saveDir.setExclusions(exclusionList.toArray(new String[0]));
                 save = saveDir;
                 break;
             case "file":
