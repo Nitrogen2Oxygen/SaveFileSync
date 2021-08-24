@@ -3,13 +3,10 @@ package com.github.nitrogen2oxygen.savefilesync.util;
 import com.github.nitrogen2oxygen.savefilesync.client.save.Save;
 import com.github.nitrogen2oxygen.savefilesync.client.save.SaveDirectory;
 import com.github.nitrogen2oxygen.savefilesync.client.save.SaveFile;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Saves {
     public static Save buildFromJSON(JSONObject data) throws Exception {
@@ -29,14 +26,7 @@ public class Saves {
                 // Check if its the correct type and throw an error if its not
                 File directory = new File(location);
                 if (!directory.isDirectory()) throw new Exception("File types do not match!");
-                SaveDirectory saveDir = new SaveDirectory(name, new File(location));
-                JSONArray exclusions = data.getJSONArray("exclusions");
-                List<String> exclusionList = new ArrayList<>();
-                for(int i = 0; i < exclusions.length(); i++){
-                    exclusionList.add(exclusions.getString(i));
-                }
-                saveDir.setExclusions(exclusionList.toArray(new String[0]));
-                save = saveDir;
+                save = new SaveDirectory(name, new File(location));
                 break;
             case "file":
                 // Check if its the correct type and throw an error if its not

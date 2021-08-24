@@ -1,43 +1,22 @@
 package com.github.nitrogen2oxygen.savefilesync.client.save;
 
-import com.github.nitrogen2oxygen.savefilesync.util.Exclusion;
 import com.github.nitrogen2oxygen.savefilesync.util.FileUtilities;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 public class SaveDirectory extends Save {
-    private Exclusion[] exclusions = new Exclusion[0];
-
     public SaveDirectory(String name, File file) {
         super(name, file);
-    }
-
-    public void setExclusions(String exclusions) {
-        this.setExclusions(exclusions.split("\n"));
-    }
-
-    public void setExclusions(String[] exclusionStrings) {
-        List<Exclusion> exclusionList = new ArrayList<>();
-        for (String str : exclusionStrings) {
-            exclusionList.add(new Exclusion(str));
-        }
-        exclusions = exclusionList.toArray(new Exclusion[0]);
-    }
-
-    public Exclusion[] getExclusions() {
-        return exclusions;
     }
 
     @Override
@@ -122,11 +101,6 @@ public class SaveDirectory extends Save {
         json.put("type", "directory");
         json.put("name", getName());
         json.put("location", getFile().getPath());
-        JSONArray exclusionArray = new JSONArray();
-        for (Exclusion exc : exclusions) {
-            exclusionArray.put(exc.getExclusion());
-        }
-        json.put("exclusions", exclusionArray);
         return json.toString();
     }
 }
