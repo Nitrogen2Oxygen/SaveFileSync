@@ -1,3 +1,5 @@
+**NOTICE: As of 10/31/2021 this project will cease recieving any updates. The official rewrite and rebranding will be available under [SaveDataSync](https://github.com/Nitrogen2Oxygen/SaveDataSync). Furthermore, this repo will be permanently archived and eventually privated in roughly a month. No one actually ended up using this app so this shouldn't matter, but eh.**
+
 # Save File Sync
 A Java application for syncing files between different computers through a mutual data servers.
 
